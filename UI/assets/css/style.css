@@ -1,0 +1,45 @@
+@import '../css/nav.css';
+@import '../css/hero.css';
+@import '../css/feed.css';
+@import '../css/login-register.css';
+@import '../css/add-edit.css';
+@import '../css/helpers.css';
+
+html {
+  font-size: 62.5%;
+}
+* {
+  box-sizing: border-box;
+  line-height: 145%;
+  padding: 0;
+  margin: 0;
+}
+body {
+  font-size: 1.6rem;
+  background: linear-gradient(
+      45deg,
+      transparent 24%,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(255, 255, 255, 0.05) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(3, 3, 3, 0.05) 75%,
+      rgba(255, 255, 255, 0.05) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(255, 255, 255, 0.05) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(3, 3, 3, 0.05) 75%,
+      rgba(255, 255, 255, 0.05) 76%,
+      transparent 77%,
+      transparent
+    ),
+    #e2e2e2e7;
+  background-size: 5rem 5rem;
+}
