@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log In | iReporter</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="top-nav">
+        <span class="top-nav__toggle"></span>
+        <a href="#" class="top-nav__logo"
+          ><img src="../assets/images/logo.svg" alt="logo"
+        /></a>
+        <ul class="top-nav__list">
+          <li class="top-nav__list-item">
+            <a href="../../index.html" class="top-nav__link">Home</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <section class="wrapper wrapper--spaced">
+      <div class="auth">
+        <h2 class="auth__mode">Log in</h2>
+
+        <form class="auth__form" id="login-form" action="POST">
+          <label class="form__label" for="login-username">username</label>
+          <input
+            class="auth__username"
+            type="text"
+            name="login-username"
+            id="login-username"
+            required
+          />
+          <label class="form__label" for="login-password">login</label>
+          <input
+            class="auth__password"
+            type="password"
+            name="login-password"
+            id="login-password"
+            required
+          />
+          <input class="auth__submit" type="submit" value="Log In" />
+          <small class="form__link"
+            >No account? <a href="./signup.html">Sign Up!</a></small
+          >
+        </form>
+      </div>
+    </section>
+    <script src="../assets/js/nav.js"></script>
+  </body>
+</html>
