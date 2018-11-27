@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile | iReporter</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="top-nav">
+        <span class="top-nav__toggle"></span>
+        <a href="#" class="top-nav__logo"
+          ><img src="../assets/images/logo.svg" alt="logo"
+        /></a>
+        <ul class="top-nav__list">
+          <li class="top-nav__list-item">
+            <a href="../../index.html" class="top-nav__link">Home</a>
+          </li>
+          <li class="top-nav__list-item">
+            <a href="./add-edit.html" class="top-nav__link">Create Record</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <div class="sidebar-header top-pad">
+      <div class="record__info-bar">
+        <div class="record__info-button-holder">
+          <button class="record__info-button" type="button">
+            <span class="record__info-text">Draft</span>
+            <span class="record__info-count draft">10</span>
+          </button>
+          <button class="record__info-button" type="button">
+            <span class="record__info-text">Resolved</span>
+            <span class="record__info-count resolved">20</span>
+          </button>
+          <button class="record__info-button" type="button">
+            <span class="record__info-text">Under Investigation</span>
+            <span class="record__info-count pending">20</span>
+          </button>
+          <button class="record__info-button" type="button">
+            <span class="record__info-text">Rejected</span>
+            <span class="record__info-count rejected">20</span>
+          </button>
+        </div>
+      </div>
+      <div class="profile__record-div">
+        <div class="feed__header feed__header--profile">
+          <form class="feed-filter feed-filter--profile ">
+            <fieldset>
+              <input
+                checked
+                class="feed-filter__radio"
+                type="radio"
+                name="profile-feed-filter-radio"
+                id="records-all"
+                value="all"
+              />
+              <label class="feed-filter__tag" for="records-all">All </label>
+
+              <input
+                class="feed-filter__radio"
+                type="radio"
+                name="profile-feed-filter-radio"
+                id="records-draft"
+                value="draft"
+              />
+              <label class="feed-filter__tag" for="records-draft">
+                Drafts
+              </label>
+
+              <input
+                class="feed-filter__radio"
+                type="radio"
+                name="profile-feed-filter-radio"
+                id="records-resolved"
+                value="resolved"
+              />
+              <label class="feed-filter__tag" for="records-resolved">
+                Resolved
+              </label>
+
+              <input
+                class="feed-filter__radio"
+                type="radio"
+                name="profile-feed-filter-radio"
+                id="records-rejected"
+                value="rejected"
+              />
+              <label class="feed-filter__tag" for="records-rejected">
+                Rejected
+              </label>
+
+              <input
+                class="feed-filter__radio"
+                type="radio"
+                name="profile-feed-filter-radio"
+                id="records-pending"
+                value="under investigation"
+              />
+              <label class="feed-filter__tag" for="records-pending">
+                Pending
+              </label>
+
+              <input
+                class="feed-filter__radio"
+                type="radio"
+                name="profile-feed-filter-radio"
+                id="records-red"
+                value="red-flag"
+              />
+              <label class="feed-filter__tag" for="records-red">
+                Red-Flags
+              </label>
+            </fieldset>
+          </form>
+        </div>
+        <div class="profile__record-list thin-scroll">
+          <div class="profile__record-item">
+            <div class="profile__record-image-div">
+              <img
+                class="profile__record-image"
+                src="../assets/images/234864-1600x1000.jpg"
+                alt=""
+              />
+            </div>
+            <div class="profile__record-details">
+              <h2 class="profile__record-title">
+                some people i'm suspicious of
+              </h2>
+              <p class="profile__record-summary thin-scroll">
+                True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.
+    Take Murali* for example. He wanted to expand his business with new seeds and a pond, but lacked the funds to do it. Like many others, he saw no option but to apply for a government agricultural subsidy.
+    Yet instead of granting money, Murali says, the official demanded it – refusing to process the application unless Murali paid a bribe. Unable to pay, Murali left empty-handed. He returned many times,
+    but nothing changed.
+              </p>
+            </div>
+          </div>
+          <div class="profile__record-item">
+            <div class="profile__record-image-div">
+              <img
+                class="profile__record-image"
+                src="../assets/images/234864-1600x1000.jpg"
+                alt=""
+              />
+            </div>
+            <div class="profile__record-details">
+              <h2 class="profile__record-title">
+                some people i'm suspicious of
+              </h2>
+              <p class="profile__record-summary thin-scroll">
+                True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.
+    Take Murali* for example. He wanted to expand his business with new seeds and a pond, but lacked the funds to do it. Like many others, he saw no option but to apply for a government agricultural subsidy.
+    Yet instead of granting money, Murali says, the official demanded it – refusing to process the application unless Murali paid a bribe. Unable to pay, Murali left empty-handed. He returned many times,
+    but nothing changed.
+              </p>
+            </div>
+          </div>
+          <div class="profile__record-item">
+            <div class="profile__record-image-div">
+              <img
+                class="profile__record-image"
+                src="../assets/images/234864-1600x1000.jpg"
+                alt=""
+              />
+            </div>
+            <div class="profile__record-details">
+              <h2 class="profile__record-title">
+                some people i'm suspicious of
+              </h2>
+              <p class="profile__record-summary thin-scroll">
+                True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.
+    Take Murali* for example. He wanted to expand his business with new seeds and a pond, but lacked the funds to do it. Like many others, he saw no option but to apply for a government agricultural subsidy.
+    Yet instead of granting money, Murali says, the official demanded it – refusing to process the application unless Murali paid a bribe. Unable to pay, Murali left empty-handed. He returned many times,
+    but nothing changed.
+              </p>
+            </div>
+          </div>
+          <div class="profile__record-item">
+            <div class="profile__record-image-div">
+              <img
+                class="profile__record-image"
+                src="../assets/images/234864-1600x1000.jpg"
+                alt=""
+              />
+            </div>
+            <div class="profile__record-details">
+              <h2 class="profile__record-title">
+                some people i'm suspicious of
+              </h2>
+              <p class="profile__record-summary thin-scroll">
+                True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.
+    Take Murali* for example. He wanted to expand his business with new seeds and a pond, but lacked the funds to do it. Like many others, he saw no option but to apply for a government agricultural subsidy.
+    Yet instead of granting money, Murali says, the official demanded it – refusing to process the application unless Murali paid a bribe. Unable to pay, Murali left empty-handed. He returned many times,
+    but nothing changed.
+              </p>
+            </div>
+          </div>
+          <div class="profile__record-item">
+            <div class="profile__record-image-div">
+              <img
+                class="profile__record-image"
+                src="../assets/images/234864-1600x1000.jpg"
+                alt=""
+              />
+            </div>
+            <div class="profile__record-details">
+              <h2 class="profile__record-title">
+                some people i'm suspicious of
+              </h2>
+              <p class="profile__record-summary thin-scroll">
+                True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.
+    Take Murali* for example. He wanted to expand his business with new seeds and a pond, but lacked the funds to do it. Like many others, he saw no option but to apply for a government agricultural subsidy.
+    Yet instead of granting money, Murali says, the official demanded it – refusing to process the application unless Murali paid a bribe. Unable to pay, Murali left empty-handed. He returned many times,
+    but nothing changed.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../assets/js/nav.js"></script>
+  </body>
+</html>
