@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | iReporter</title>
+    <link rel="stylesheet" href="./UI/assets/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="top-nav">
+        <span class="top-nav__toggle"></span>
+        <a href="#" class="top-nav__logo"
+          ><img src="./UI/assets/images/logo.svg" alt="logo"
+        /></a>
+        <ul class="top-nav__list">
+          <li class="top-nav__list-item">
+            <a href="./UI/views/add-edit.html" class="top-nav__link">Create Record</a>
+          </li>
+          <li class="top-nav__list-item">
+            <a href="#" class="top-nav__link">About Us</a>
+          </li>
+          <li class="top-nav__list-item">
+            <a href="./UI/views/login.html" class="top-nav__link">Login</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="hero top-pad">
+      <div class="hero-slider">
+        <div class="hero-item">
+          <div class="hero-item__image-div">
+            <img class="hero-item__image" src="./UI/assets/images/234864-1600x1000.jpg" />
+          </div>
+          <div class="hero-item__details">
+            <h2 class="hero-item__title">Title</h2>
+            <p class="hero-item__summary">
+              Description Description Description Description Description
+              Description Description Description Description Description
+              Description DescriptionDescription Description Description
+              Description Description Description Description Description
+              Description Description
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="content">
+      <section class="feed">
+        <div class="feed__header">
+          <form class="feed-filter">
+            <fieldset>
+              <input
+                checked
+                class="feed-filter__radio"
+                type="radio"
+                name="feed-filter-radio"
+                id="records-all"
+                value="all"
+              />
+              <label class="feed-filter__tag" for="records-all">All </label>
+
+              <input
+                class="feed-filter__radio"
+                type="radio"
+                name="feed-filter-radio"
+                id="records-interventions"
+                value="intervention"
+              />
+              <label class="feed-filter__tag" for="records-interventions">
+                Interventions
+              </label>
+
+              <input
+                class="feed-filter__radio"
+                type="radio"
+                name="feed-filter-radio"
+                id="records-red"
+                value="red-flag"
+              />
+              <label class="feed-filter__tag" for="records-red">
+                Red-Flags
+              </label>
+            </fieldset>
+          </form>
+          <h2 class="feed-filter__label">Newest Records</h2>
+        </div>
+        <div class="record-list">
+        </div>
+      </section>
+    </div>
+    <script src="./UI/assets/js/nav.js"></script>
+    <script src="./UI/assets/js/feed.js"></script>
+    <script src="./UI/assets/js/index.js"></script>
+  </body>
+</html>
