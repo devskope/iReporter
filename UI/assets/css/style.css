@@ -4,6 +4,7 @@
 @import '../css/login-register.css';
 @import '../css/add-edit.css';
 @import '../css/helpers.css';
+@import '../css/user-profile.css';
 
 html {
   font-size: 62.5%;
