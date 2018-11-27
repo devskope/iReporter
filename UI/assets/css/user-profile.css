@@ -1,3 +1,4 @@
+.status__filter-bar,
 .record__info-bar {
   display: flex;
   flex-direction: row;
@@ -5,12 +6,14 @@
   justify-content: flex-end;
   height: 20rem;
 }
+.status__filter-button-holder,
 .record__info-button-holder {
   display: flex;
   align-self: flex-end;
   margin-block-end: 0.3rem;
   width: auto;
 }
+.status__filter-button,
 .record__info-button {
   background: rgb(148, 146, 146, 0.876) !important;
   position: relative;
@@ -62,6 +65,7 @@
 }
 
 @media screen and (min-width: 768px) {
+  .status__filter-bar,
   .record__info-bar {
     flex-direction: column;
     justify-content: center;
@@ -69,19 +73,23 @@
     max-height: 100vh;
 
   }
+  .status__filter-button-holder,
   .record__info-button-holder {
     flex-direction: column;
     align-self: center;
     padding: 2rem 0;
   }
+  .status__filter-button,
   .record__info-button {
     width: auto;
     height: 11rem;
     font-size: 1.6rem;
   }
+  .status__filter-button:hover,
   .record__info-button:hover {
     border-radius: 7%;
   }
+  .status__filter-button,
   .record__info-button:not(:first-of-type) {
     margin-top: 1rem;
   }
@@ -99,15 +107,18 @@
   }
 }
 @media screen and (max-width: 767.9px) {
+  .status__filter-bar,
   .record__info-bar {
     flex-direction: column;
     max-height: 14rem;
   }
+  .status__filter-button-holder,
   .record__info-button-holder {
     justify-content: center;
     width: 100%;
     padding: 0 .2rem;
   }
+  .status__filter-button,
   .record__info-button {
     margin: auto 1.5rem;
     text-align: center;
@@ -123,11 +134,13 @@
   }
 }
 @media screen and (max-width: 425px) {
+  .status__filter-button-holder,
   .record__info-button-holder {
     justify-content: space-around;
     width: 100%;
     padding: 0 .2rem;
   }
+  .status__filter-button,
   .record__info-button {
     height: 9rem;
     width: 9.7rem;
