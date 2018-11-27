@@ -27,7 +27,12 @@
       <section class="wrapper">
         <div class="bg-grey">
           <h1 class="add-edit__mode">Add new record</h1>
-          <form class="add-edit__form" id="add-edit--form" enctype="multipart/form-data" method="POST">
+          <form
+            class="add-edit__form"
+            id="add-edit--form"
+            enctype="multipart/form-data"
+            method="POST"
+          >
             <div>
               <label for="add-edit-type">Type</label>
               <select
@@ -39,6 +44,14 @@
                 <option value="red-flag">red flag</option>
                 <option value="intervention">Intervention</option>
               </select>
+            </div>
+            <div class="add-edit__media">
+              <label for="add-edit-media-toggle">Photos/Video:</label>
+              <input
+                class="add-edit__media-toggle"
+                type="checkbox"
+                id="add-edit-media-toggle"
+              />
             </div>
             <div class="full-width">
               <label for="add-edit-title">Title</label>
@@ -66,7 +79,9 @@
                 name="add-edit-location"
                 placeholder="Start typing a location"
               />
-              <button class="add-edit__location--clear " id="coords-reset">Clear</button>
+              <button class="add-edit__location--clear" id="coords-reset">
+                Clear
+              </button>
             </div>
             <input
               class="add-edit__coords full-width"
@@ -76,7 +91,7 @@
               disabled
               hidden
             />
-            <div>
+            <div class="hidden gone">
               <label for="add-edit-pictures">Pictures</label>
               <input
                 class="add-edit__pictures"
@@ -88,7 +103,7 @@
                 capture="environment"
               />
             </div>
-            <div>
+            <div class="hidden gone">
               <label for="add-edit-videos">Videos</label>
               <input
                 class="add-edit__videos"
