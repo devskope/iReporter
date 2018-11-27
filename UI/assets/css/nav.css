@@ -1,5 +1,5 @@
 .top-nav {
-  background-color: transparent;
+  background-color: rgba(168, 168, 168, 0.97);
   border-bottom-right-radius: 0.3rem;
   border-bottom-left-radius: 0.3rem;
   padding: 0 1rem;
@@ -8,11 +8,13 @@
   top: 1rem;
   right: 0.3rem;
   transition: all 0.25s ease-in-out;
+  z-index: 12;
 }
 .top-nav.active {
-  background-color: rgba(168, 168, 168, 0.75);
   border: 0.1rem solid rgba(3, 3, 3, 0.2);
   transition: all 0.08s ease-out;
+  padding-top: .5rem;
+  margin-top: -.5rem;
 }
 .top-nav__toggle {
   position: absolute;
@@ -21,7 +23,7 @@
   width: 2.4rem;
   height: 2rem;
   background: transparent;
-  color: black;
+  color: rgb(251, 200, 166);
   border-top: 0.3rem solid;
   border-bottom: 0.3rem solid;
   font-size: 0;
@@ -33,30 +35,28 @@
   content: '';
   display: block;
   width: 100%;
-  height: 0.25rem;
+  height: 0.28rem;
   position: absolute;
   top: 50%;
   left: 50%;
-  background: rgb(228, 136, 16);
+  background: rgb(251, 216, 145);
   transform: translate(-50%, -50%);
-  transition: transform 0.1s ease-in-out;
+  transition: transform 0.3s ease-in;
 }
 
 .top-nav__toggle:hover {
-  color: rgb(228, 136, 16);
+  color: rgba(148, 146, 146, 0.89);
 }
 .top-nav__toggle.active {
   border-color: transparent;
-
 }
 .top-nav__toggle.active:before {
+  background: rgba(148, 146, 146, 0.89);
   transform: translate(-50%, -50%) rotate(45deg);
 }
 .top-nav__toggle.active:after {
+  background: rgba(148, 146, 146, 0.89);
   transform: translate(-50%, -50%) rotate(-45deg);
-}
-.top-nav__toggle.active:hover {
-  background-color: rgba(148, 146, 146, 0.89);
 }
 .top-nav__logo {
   margin-top: 2rem;
@@ -68,7 +68,7 @@
 .top-nav__logo img {
   object-fit: contain;
   height: auto;
-  width: 2rem
+  width: 2rem;
 }
 .top-nav__list {
   list-style: none;
@@ -76,9 +76,12 @@
 }
 .top-nav__list.active {
   display: block;
-  margin: 1.2rem 1rem;
+  margin: 1.2rem 0;
   width: fit-content;
-  height: 22rem;
+  height: 100%;
+}
+.top-nav__list.active .top-nav__list-item {
+  margin-top: 1.5rem;
 }
 .top-nav__list-item {
   text-align: center;
@@ -107,7 +110,6 @@
     top: 0;
     right: 0;
     left: 0;
-    background-color: rgba(168, 168, 168, 0.9);
     display: flex;
     align-content: center;
     justify-content: space-between;
@@ -128,6 +130,5 @@
   }
   .top-nav__list-item {
     flex-basis: auto;
-    /* padding: 0 .25rem */
   }
 }
