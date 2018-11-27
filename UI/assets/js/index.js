@@ -4,30 +4,91 @@ const feedCategoryLabel = document.querySelector('.feed-filter__label');
 
 const state = { feedFilter: 'all' };
 
-const spawnElement = (tagName = '', attrs = {}) => {
-  const element = document.createElement(tagName);
-  Object.keys(attrs).forEach(attr =>
-    element.setAttribute(`${attr}`, attrs[attr])
-  );
-  return element;
-};
-
 // /* sample data */
 const sampleRes = [
   {
     type: 'red-flag',
     title: `some people i'm suspicious of`,
-    details: `oy! vey some individuals are really corrupt and very inconsiderate fa`
+    details: ` True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.
+    Take Murali* for example. He wanted to expand his business with new seeds and a pond, but lacked the funds to do it. Like many others, he saw no option but to apply for a government agricultural subsidy.
+    Yet instead of granting money, Murali says, the official demanded it – refusing to process the application unless Murali paid a bribe. Unable to pay, Murali left empty-handed. He returned many times,
+    but nothing changed. `
+  },
+  {
+    type: 'red-flag',
+    title: `some people i'm suspicious of`,
+    details: ` True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.
+    Take Murali* for example. He wanted to expand his business with new seeds and a pond, but lacked the funds to do it. Like many others, he saw no option but to apply for a government agricultural subsidy.
+    Yet instead of granting money, Murali says, the official demanded it – refusing to process the application unless Murali paid a bribe. Unable to pay, Murali left empty-handed. He returned many times,
+    but nothing changed. `
+  },
+  {
+    type: 'red-flag',
+    title: `some people i'm suspicious of`,
+    details: ` True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.
+    Take Murali* for example. He wanted to expand his business with new seeds and a pond, but lacked the funds to do it. Like many others, he saw no option but to apply for a government agricultural subsidy.
+    Yet instead of granting money, Murali says, the official demanded it – refusing to process the application unless Murali paid a bribe. Unable to pay, Murali left empty-handed. He returned many times,
+    but nothing changed. `
   },
   {
     type: 'intervention',
     title: `do help`,
-    details: `oy! vey some individuals are really corrupt and very inconsiderate fa`
+    details: `True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.
+    Take Murali* for example. He wanted to expand his business with new seeds and a pond, but lacked the funds to do it. Like many others, he saw no option but to apply for a government agricultural subsidy.
+    Yet instead of granting money, Murali says, the official demanded it – refusing to process the application unless Murali paid a bribe. Unable to pay, Murali left empty-handed. He returned many times,
+    but nothing changed.`
+  },
+  {
+    type: 'red-flag',
+    title: `reporting activities`,
+    details: `1. Name and contact details (optional) 
+    Anyone is entitled to make an anonymous complaint but this may affect the effectiveness of the investigation as the ICAC may need to verify matters, or obtain further details which can be difficult without contact information. In addition, the ICAC will not be able to advise the complainant of any decisions or action on the matter. 
+    
+    2. Names of NSW agencies and public sector officials involved
+    Provide the names and positions of the officials involved if known.
+    
+    3. How you became aware of the matter
+    Include any relevant dates and the name and position of any person with whom you interacted or observed.
+    
+    4. A summary of the matter
+    Include names, any relevant dates, locations and all other relevant information.
+    
+    5. Other people aware of the matter
+    Include the names and contact details of other people who may be able to assist the ICAC.
+    
+    6. Other organisations contacted
+    Provide the names of any organisations or regulators the matter was reported to, the date of contact and their response.
+    
+    7. Documentary evidence
+    Include details on any relevant documents or other information that may help the ICAC in its assessment. The actual documentation does not need to be included in the report.`
   },
   {
     type: 'red-flag',
     title: `hmm i'm suspicious of`,
-    details: `oy! vey some individuals are really corrupt and very inconsiderate fa`
+    details: `True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.`
+  },
+  {
+    type: 'intervention',
+    title: `hmm i'm suspicious of`,
+    details: `True story accompanying image
+    At the foothills of the Himalayas lies the rural district of Jhanjharpur.
+    Located on the banks of the River Kamala, this is a fertile region for agriculture. 
+    Yet with little money for irrigation or equipment, life remains a daily struggle for the many small-scale farmers.`
   }
 ];
 
@@ -52,47 +113,27 @@ const recordsToFeedComponents = recArray =>
   </div>
   <div class="record-item__details">
     <h2 class="record-item__title">${title}</h2>
-    <p class="record-item__summary">
-      ${`${details.substring(0, 100)}...`}
+    <p class="record-item__summary thin-scroll">
+      ${details}
     </p>
-</div>`;
+  </div>`;
       return component;
     }
   );
 
-const loadFeed = (records, nodeName) =>
-  recordsToFeedComponents(records).forEach(component => {
-    nodeName.appendChild(component);
-  });
-
-const filterFeed = (records, tag, feedNode) => {
-  const components = [];
-  feedNode.innerHTML = '';
-
-  if (tag === 'all') {
-    loadFeed(records, feedNode);
-    state.feedFilter = tag;
-    return;
-  }
-  recordsToFeedComponents(records).forEach(recordComponent => {
-    if (recordComponent.classList.contains(`${tag}`)) {
-      components.push(recordComponent);
-    }
-  });
-  if (components.length > 0) {
-    components.forEach(component => feedNode.appendChild(component));
-  } else feedCategoryLabel.textContent = 'No Records found';
-  state.feedFilter = tag;
-};
-
 feedFilterSwitch.forEach(filter => {
   filter.addEventListener('click', () => {
     if (state.feedFilter !== filter.value) {
-      filterFeed(sampleRes, filter.value, recordList);
+      state.feedFilter = filterFeed(
+        recordsToFeedComponents(sampleRes),
+        filter.value,
+        recordList,
+        feedCategoryLabel
+      );
     }
   });
 });
 
 window.addEventListener('load', () => {
-  loadFeed(sampleRes, recordList);
+  loadFeed(recordsToFeedComponents(sampleRes), recordList);
 });
