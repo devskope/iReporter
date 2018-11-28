@@ -1,0 +1,8 @@
+node_modules/
+package-lock.json
+.env
+.nyc_output
+coverage
+dist/
+*.lcov
+npm-debug.log*
