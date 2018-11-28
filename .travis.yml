@@ -1,0 +1,14 @@
+sudo: false
+language: node_js
+node_js:
+- 10.13.0
+before_install:
+- npm install -g codecov
+install:
+- npm install
+cache:
+  directories:
+  - "$HOME/.npm"
+script:
+- npm test
+after_success: npm run coverage
