@@ -1,0 +1,16 @@
+{
+  "extends": ["airbnb", "plugin:prettier/recommended"],
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "rules": {
+    "import/prefer-default-export": 0,
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true
+      }
+    ]
+  }
+}
