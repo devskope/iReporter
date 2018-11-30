@@ -6,7 +6,7 @@ class RecDB extends Array {
       createdOn: Date.now(),
     };
     this.push(recordToSave);
-    return Promise.resolve(this.pop());
+    return Promise.resolve(this.slice(-1));
   }
 }
 
