@@ -1,6 +1,7 @@
+import { recordStore } from '../src/config/db';
 import { sampleRedFlagToAdd, sampleInvalidRedFlag } from './helpers';
 
-export default ({ server, chai, expect, ROOT_URL, logger }) => {
+export default ({ server, chai, expect, ROOT_URL }) => {
   describe('Red-flag records', () => {
     describe('Creation', () => {
       it('Records missing required field returns error response', () => {
@@ -9,7 +10,6 @@ export default ({ server, chai, expect, ROOT_URL, logger }) => {
           .post(`${ROOT_URL}/red-flags`)
           .send(sampleInvalidRedFlag)
           .end((err, { body, status }) => {
-            logger(body);
             expect(status).eq(400);
             expect(body.errors[0]).eq('missing required title field');
           });
@@ -44,6 +44,31 @@ export default ({ server, chai, expect, ROOT_URL, logger }) => {
           .end((err, { body, status }) => {
             expect(status).eq(201);
             expect(body.data[0].message).eq('Created red-flag record');
+          });
+      });
+    });
+
+    describe('Fetching all', () => {
+      it('Returns a not found response when no records exist', () => {
+        recordStore.clear();
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/red-flags`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors[0]).eq('No red-flag records found');
+          });
+      });
+
+      it('Should fetch all available red-flag records', () => {
+        [...Array(3)].forEach(() => recordStore.commit(sampleRedFlagToAdd));
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/red-flags`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.a('object');
           });
       });
     });
