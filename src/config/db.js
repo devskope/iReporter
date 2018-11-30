@@ -1,4 +1,12 @@
 class RecDB extends Array {
+  clear() {
+    this.length = 0;
+  }
+
+  fetch() {
+    return this;
+  }
+
   commit(record) {
     const recordToSave = {
       ...record,
@@ -6,10 +14,8 @@ class RecDB extends Array {
       createdOn: Date.now(),
     };
     this.push(recordToSave);
-    return Promise.resolve(this.pop());
+    return Promise.resolve(this.slice(-1));
   }
 }
 
-const recordStore = new RecDB();
-
-export default recordStore;
+export const recordStore = new RecDB();

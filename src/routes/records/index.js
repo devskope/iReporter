@@ -15,5 +15,6 @@ router.post(
   strictRecordType('red-flag'),
   redFlagController.createRecord
 );
+router.get('/red-flags', redFlagController.fetchAllRecords);
 
 export default router;
