@@ -1,5 +1,6 @@
 import { RedFlag } from '../../models/records';
 import successResponse from '../../helpers/successResponse';
+import handleError from '../../helpers/errorHelper';
 
 const createRecord = (req, res) => {
   const { title, comment, location } = req.body;
@@ -12,4 +13,12 @@ const createRecord = (req, res) => {
     );
 };
 
-export default { createRecord };
+const fetchAllRecords = (req, res) => {
+  RedFlag.getAll().then(redFlagRecords =>
+    redFlagRecords.length > 0
+      ? successResponse(res, redFlagRecords, 200)
+      : handleError(res, 'No red-flag records found', 404)
+  );
+};
+
+export default { createRecord, fetchAllRecords };

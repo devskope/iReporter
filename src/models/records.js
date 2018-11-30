@@ -1,4 +1,4 @@
-import recordStore from '../config/db';
+import { recordStore } from '../config/db';
 
 class Record {
   constructor({ title, type, createdBy, comment, location, images, videos }) {
@@ -24,5 +24,12 @@ class Record {
 export class RedFlag extends Record {
   constructor({ ...args }) {
     super({ type: 'red-flag', ...args });
+  }
+
+  static getAll() {
+    const allRecords = recordStore.fetch();
+    return Promise.resolve(
+      allRecords.filter(record => record.type === 'red-flag')
+    );
   }
 }
