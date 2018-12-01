@@ -7,8 +7,12 @@
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "build": "babel src -d dist --source-maps",
     "devstart": "DEBUG=iReporter* nodemon src/server --exec babel-node",
+    "heroku-postbuild": "npm run build",
     "start": "node dist/server",
     "test": "DEBUG=iReporter* nyc mocha test/index.js --exit"
+  },
+  "engines": {
+    "node": "10.x"
   },
   "husky": {
     "hooks": {
