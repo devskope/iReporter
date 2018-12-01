@@ -21,7 +21,12 @@ class Record {
     const theOne = recordStore
       .fetch()
       .filter(record => record.type === type && record.id === id);
-    return Promise.resolve(theOne);
+    return Promise.resolve(...theOne);
+  }
+
+  static patch(type, id, patch, prop) {
+    recordStore[id - 1][prop] = patch;
+    return Record.getOneByID(id, type);
   }
 
   set setStatus(status) {
@@ -44,5 +49,9 @@ export class RedFlag extends Record {
 
   static getOneByID(id) {
     return super.getOneByID(id, 'red-flag');
+  }
+
+  static patch(id, patch, prop) {
+    return super.patch('red-flag', id, patch, prop);
   }
 }
