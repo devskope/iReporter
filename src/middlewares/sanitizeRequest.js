@@ -2,11 +2,11 @@ import handleError, { missingFieldsMessage } from '../helpers/errorHelper';
 import jsonParse from '../helpers/jsonParse';
 
 export const validTypes = {
-  title: 'string',
-  type: 'string',
-  comment: 'string',
+  title: String(),
+  type: String(),
+  comment: String(),
   status: ['under investigation', 'resolved', 'rejected', 'draft'],
-  location: 'string',
+  location: String(),
 };
 
 export const checkRequired = checkWhat => (req, res, next) => {

@@ -12,6 +12,18 @@ class Record {
     this.status = 'under investigation';
   }
 
+  static getAll(type) {
+    const allRecords = recordStore.fetch();
+    return Promise.resolve(allRecords.filter(record => record.type === type));
+  }
+
+  static getOneByID(id, type) {
+    const theOne = recordStore
+      .fetch()
+      .filter(record => record.type === type && record.id === id);
+    return Promise.resolve(theOne);
+  }
+
   set setStatus(status) {
     this.status = status;
   }
@@ -27,9 +39,10 @@ export class RedFlag extends Record {
   }
 
   static getAll() {
-    const allRecords = recordStore.fetch();
-    return Promise.resolve(
-      allRecords.filter(record => record.type === 'red-flag')
-    );
+    return super.getAll('red-flag');
+  }
+
+  static getOneByID(id) {
+    return super.getOneByID(id, 'red-flag');
   }
 }
