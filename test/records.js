@@ -1,6 +1,11 @@
 import { recordStore } from '../src/config/db';
 import { RedFlag } from '../src/models/records';
-import { ID, sampleRedFlagToAdd, sampleInvalidRedFlag } from './helpers';
+import {
+  ID,
+  recordPatches,
+  sampleRedFlagToAdd,
+  sampleInvalidRedFlag,
+} from './helpers';
 
 export default ({ server, chai, expect, ROOT_URL }) => {
   describe('Red-flag records', () => {
@@ -49,7 +54,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
       });
     });
 
-    describe('Fetching all', () => {
+    describe('Fetching', () => {
       it('Returns a not found response when no records exist', () => {
         recordStore.clear();
         chai
@@ -93,6 +98,68 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(status).eq(200);
             expect(body.data).to.be.an.instanceof(Array);
             expect(body.data[0]).to.be.an('object');
+          });
+      });
+    });
+
+    describe('Updating', () => {
+      it('Should not update record with non-existent id', () => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/red-flags/${ID.nonExistent}/comment`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body).to.have.property('errors');
+            expect(body).to.not.have.property('data');
+          });
+      });
+
+      it('Should succesfully update location of record with valid id', () => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/red-flags/${ID.valid}/location`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body).to.have.property('data');
+            expect(body.data[0]).to.have.property('message');
+          });
+      });
+
+      it('Should return success when location patch equals original', () => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/red-flags/${ID.valid}/location`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body).to.have.property('data');
+            expect(body.data[0]).to.have.property('message');
+          });
+      });
+
+      it('Should succesfully update comment of record with valid id', () => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/red-flags/${ID.valid}/comment`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body).to.have.property('data');
+            expect(body.data[0]).to.have.property('message');
+          });
+      });
+
+      it('Should return success when comment patch equals original', () => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/red-flags/${ID.valid}/comment`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body).to.have.property('data');
+            expect(body.data[0]).to.have.property('message');
           });
       });
     });
