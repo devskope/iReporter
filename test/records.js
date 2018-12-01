@@ -1,5 +1,6 @@
 import { recordStore } from '../src/config/db';
-import { sampleRedFlagToAdd, sampleInvalidRedFlag } from './helpers';
+import { RedFlag } from '../src/models/records';
+import { ID, sampleRedFlagToAdd, sampleInvalidRedFlag } from './helpers';
 
 export default ({ server, chai, expect, ROOT_URL }) => {
   describe('Red-flag records', () => {
@@ -61,14 +62,37 @@ export default ({ server, chai, expect, ROOT_URL }) => {
       });
 
       it('Should fetch all available red-flag records', () => {
-        [...Array(3)].forEach(() => recordStore.commit(sampleRedFlagToAdd));
+        new RedFlag(sampleRedFlagToAdd).save();
         chai
           .request(server)
-          .get(`${ROOT_URL}/red-flags`)
+          .get(`${ROOT_URL}/red-flags/`)
           .end((err, { body, status }) => {
             expect(status).eq(200);
             expect(body.data).to.be.an.instanceof(Array);
-            expect(body.data[0]).to.be.a('object');
+            expect(body.data[0]).to.be.an('object');
+          });
+      });
+
+      it('Returns a not found response when specific record ID does not exist', () => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/red-flags/${ID.nonExistent}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors[0]).eq(
+              `No order found with id '${ID.nonExistent}'`
+            );
+          });
+      });
+
+      it('Should fetch a specific red-flag record by ID', () => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/red-flags/${ID.valid}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.an('object');
           });
       });
     });
