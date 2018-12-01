@@ -14,13 +14,18 @@ export const checkRequired = checkWhat => (req, res, next) => {
   const missingFields = [];
 
   switch (checkWhat) {
+    case 'comment':
+      if (!body.comment) missingFields.push('comment');
+      break;
+    case 'location':
+      if (!body.location) missingFields.push('location');
+      break;
     case 'record':
       missingFields.push(
         ...['type', 'title', 'comment'].filter(
           param => body[param] === undefined
         )
       );
-
       break;
     default:
       break;
