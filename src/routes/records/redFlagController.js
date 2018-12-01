@@ -1,6 +1,7 @@
 import { RedFlag } from '../../models/records';
 import successResponse from '../../helpers/successResponse';
 import handleError from '../../helpers/errorHelper';
+import jsonParse from '../../helpers/jsonParse';
 
 const createRecord = (req, res) => {
   const { title, comment, location } = req.body;
@@ -21,4 +22,13 @@ const fetchAllRecords = (req, res) => {
   );
 };
 
-export default { createRecord, fetchAllRecords };
+const fetchRecordByID = (req, res) => {
+  const { id } = req.params;
+  RedFlag.getOneByID(jsonParse(id)).then(record =>
+    record.length > 0
+      ? successResponse(res, record)
+      : handleError(res, `No order found with id '${id}'`, 404)
+  );
+};
+
+export default { createRecord, fetchAllRecords, fetchRecordByID };

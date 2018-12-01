@@ -1,3 +1,5 @@
+export const ID = { nonExistent: 12000, valid: 1 };
+
 export const sampleRedFlagToAdd = {
   title: 'funny business',
   type: 'red-flag',
