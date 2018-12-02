@@ -36,5 +36,10 @@ router.patch(
   verifyRequestTypes('record'),
   redFlagController.updateLocation
 );
+router.delete(
+  '/red-flags/:id',
+  loadOneByID({ what: 'red-flag' }),
+  redFlagController.deleteRecordByID
+);
 
 export default router;
