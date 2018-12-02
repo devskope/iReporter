@@ -49,10 +49,16 @@ const updateLocation = ({ body, record }, res) =>
         message: 'Location unchanged, nothing to update',
       });
 
+const deleteRecordByID = ({ record }, res) =>
+  RedFlag.delete(record.id).then(({ id }) =>
+    successResponse(res, { id, message: 'red-flag record has been deleted' })
+  );
+
 export default {
   createRecord,
   fetchAllRecords,
   fetchRecordByID,
   updateComment,
   updateLocation,
+  deleteRecordByID,
 };

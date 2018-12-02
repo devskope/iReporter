@@ -163,5 +163,17 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
     });
+    describe('Deletion', () => {
+      it('Should delete a record found by id', () => {
+        chai
+          .request(server)
+          .delete(`${ROOT_URL}/red-flags/${ID.valid}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).is.an.instanceof(Array);
+            expect(body.data[0]).to.have.property('message');
+          });
+      });
+    });
   });
 };

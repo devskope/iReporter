@@ -29,8 +29,8 @@ class Record {
     return Record.getOneByID(id, type);
   }
 
-  set setStatus(status) {
-    this.status = status;
+  static delete(id) {
+    return recordStore.delete(id);
   }
 
   save() {
@@ -53,5 +53,9 @@ export class RedFlag extends Record {
 
   static patch(id, patch, prop) {
     return super.patch('red-flag', id, patch, prop);
+  }
+
+  static delete(id) {
+    return super.delete(id);
   }
 }
