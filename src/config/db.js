@@ -16,6 +16,11 @@ class RecDB extends Array {
     this.push(recordToSave);
     return Promise.resolve(...this.slice(-1));
   }
+
+  delete(id) {
+    this.splice(id - 1, 1);
+    return Promise.resolve(id);
+  }
 }
 
 export const recordStore = new RecDB();
