@@ -47,7 +47,8 @@ export const verifyRequestTypes = verifyWhat => (req, res, next) => {
   const isEmpty = stringParam => stringParam === '';
 
   if (verifyWhat === 'record') {
-    Object.keys(recordRequestParams).forEach(param => {
+    Object.keys(recordRequestParams).forEach(reqParam => {
+      const param = reqParam.trim();
       switch (param) {
         case 'status':
           if (recordRequestParams[param] === undefined) {
@@ -112,6 +113,9 @@ export const verifyRequestTypes = verifyWhat => (req, res, next) => {
             );
           }
           break;
+      }
+      if (req.body[param]) {
+        req.body[param] = req.body[param].trim();
       }
     });
   }
