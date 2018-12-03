@@ -125,3 +125,70 @@ export const verifyRequestTypes = verifyWhat => (req, res, next) => {
   }
   return next();
 };
+
+/* export const verifyRequestTypes = () => (req, res, next) => {
+  const { body } = req;
+  const errors = [];
+  let long;
+  let lat;
+
+  Object.keys(body).forEach(param => {
+    switch (param) {
+      case 'status':
+        if (body[param] === undefined || null) {
+          break;
+        }
+
+        if (
+          typeof body[param] !== 'string' ||
+          !validTypes.status.includes(body[param])
+        ) {
+          errors.push(`cannot parse invalid status "${body[param]}"`);
+        }
+
+        break;
+      case 'location':
+        if (body[param] === undefined || null) {
+          break;
+        }
+
+        if (typeof body[param] !== typeof validTypes[param]) {
+          errors.push(
+            `cannot parse invalid Location "${
+              body[param]
+            }" - location must be a comma separated string of numeric longitude and latitude`
+          );
+        } else {
+          [long, lat] = body[param].split(',');
+          if (
+            typeof long === 'undefined' ||
+            typeof jsonParse(long.trim()) !== 'number' ||
+            (typeof lat === 'undefined' ||
+              typeof jsonParse(lat.trim()) !== 'number')
+          ) {
+            errors.push(
+              `cannot parse invalid Location "${
+                body[param]
+              }" - location must be a comma separated string of numeric longitude and latitude`
+            );
+          }
+        }
+        break;
+      default:
+        if (body[param] === undefined || null) {
+          break;
+        }
+
+        if (typeof body[param] !== typeof validTypes[param]) {
+          errors.push(
+            `invalid ${param} "${body[param]}" - ${param} should be a ${
+              validTypes[param]
+            }`
+          );
+        }
+        break;
+    }
+  });
+
+  return errors.length > 0 ? handleError(res, errors, 422) : next();
+}; */
