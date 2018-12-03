@@ -11,5 +11,6 @@ export default (
   code = 500
 ) =>
   response.status(code).json({
+    status: code,
     errors: errors instanceof Array ? errors : [errors],
   });
