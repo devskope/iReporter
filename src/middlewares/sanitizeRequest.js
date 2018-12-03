@@ -44,15 +44,18 @@ export const verifyRequestTypes = verifyWhat => (req, res, next) => {
   let long;
   let lat;
 
+  const isEmpty = stringParam => stringParam === '';
+
   if (verifyWhat === 'record') {
     Object.keys(recordRequestParams).forEach(param => {
       switch (param) {
         case 'status':
-          if (recordRequestParams[param] === undefined || null) {
+          if (recordRequestParams[param] === undefined) {
             break;
           }
 
           if (
+            isEmpty(recordRequestParams[param]) ||
             typeof recordRequestParams[param] !== 'string' ||
             !validTypes.status.includes(recordRequestParams[param])
           ) {
@@ -63,11 +66,14 @@ export const verifyRequestTypes = verifyWhat => (req, res, next) => {
 
           break;
         case 'location':
-          if (recordRequestParams[param] === undefined || null) {
+          if (recordRequestParams[param] === undefined) {
             break;
           }
 
-          if (typeof recordRequestParams[param] !== typeof validTypes[param]) {
+          if (
+            isEmpty(recordRequestParams[param]) ||
+            typeof recordRequestParams[param] !== typeof validTypes[param]
+          ) {
             errors.push(
               `cannot parse invalid Location "${
                 recordRequestParams[param]
@@ -91,15 +97,18 @@ export const verifyRequestTypes = verifyWhat => (req, res, next) => {
 
           break;
         default:
-          if (recordRequestParams[param] === undefined || null) {
+          if (recordRequestParams[param] === undefined) {
             break;
           }
 
-          if (typeof recordRequestParams[param] !== typeof validTypes[param]) {
+          if (
+            isEmpty(recordRequestParams[param]) ||
+            typeof recordRequestParams[param] !== typeof validTypes[param]
+          ) {
             errors.push(
-              `invalid ${param} "${
-                recordRequestParams[param]
-              }" - ${param} should be a ${validTypes[param]}`
+              `invalid ${param} - ${param} should be a valid non-empty ${typeof validTypes[
+                param
+              ]}`
             );
           }
           break;
