@@ -55,14 +55,14 @@ export default ({ server, chai, expect, ROOT_URL }) => {
     });
 
     describe('Fetching', () => {
-      it('Returns a not found response when no records exist', () => {
+      it('Returns an empty array when no records exist', () => {
         recordStore.clear();
         chai
           .request(server)
           .get(`${ROOT_URL}/red-flags`)
           .end((err, { body, status }) => {
-            expect(status).eq(404);
-            expect(body.errors[0]).eq('No red-flag records found');
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
           });
       });
 
