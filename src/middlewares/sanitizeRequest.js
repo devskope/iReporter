@@ -31,97 +31,105 @@ export const checkRequired = checkWhat => (req, res, next) => {
       break;
   }
 
-  if (missingFields.length > 0) {
-    return handleError(res, missingFieldsMessage(missingFields), 400);
-  }
-  return next();
+  return missingFields.length > 0
+    ? handleError(res, missingFieldsMessage(missingFields), 400)
+    : next();
 };
 
-export const verifyRequestTypes = verifyWhat => (req, res, next) => {
-  const { title, type, comment, status, location } = req.body;
-  const recordRequestParams = { title, type, comment, status, location };
+export const strictRecordType = type => (req, res, next) => {
+  const { body } = req;
+
+  switch (type) {
+    case 'red-flag':
+      if (body.type !== type) {
+        handleError(res, 'invalid record type', 400);
+      } else {
+        next();
+      }
+
+      break;
+    default:
+      break;
+  }
+};
+
+export const verifyRequestTypes = (req, res, next) => {
+  const { body } = req;
   const errors = [];
   let long;
   let lat;
 
   const isEmpty = stringParam => stringParam === '';
 
-  if (verifyWhat === 'record') {
-    Object.keys(recordRequestParams).forEach(reqParam => {
-      const param = reqParam.trim();
-      switch (param) {
-        case 'status':
-          if (recordRequestParams[param] === undefined) {
-            break;
-          }
-
-          if (
-            isEmpty(recordRequestParams[param]) ||
-            typeof recordRequestParams[param] !== 'string' ||
-            !validTypes.status.includes(recordRequestParams[param])
-          ) {
-            errors.push(
-              `cannot parse invalid status "${recordRequestParams[param]}"`
-            );
-          }
-
+  Object.keys(body).forEach(reqParam => {
+    const param = reqParam.trim();
+    switch (param) {
+      case 'status':
+        if (body[param] === undefined) {
           break;
-        case 'location':
-          if (recordRequestParams[param] === undefined) {
-            break;
-          }
+        }
 
+        if (
+          isEmpty(body[param]) ||
+          typeof body[param] !== 'string' ||
+          !validTypes.status.includes(body[param])
+        ) {
+          errors.push(`cannot parse invalid status "${body[param]}".`);
+        }
+
+        break;
+      case 'location':
+        if (body[param] === undefined) {
+          break;
+        }
+
+        if (
+          isEmpty(body[param]) ||
+          typeof body[param] !== typeof validTypes[param]
+        ) {
+          errors.push(
+            `cannot parse invalid Location "${
+              body[param]
+            }" - location must be a comma separated string of numeric latitude and longitude coodinates.`
+          );
+        } else {
+          [long, lat] = body[param].split(',');
           if (
-            isEmpty(recordRequestParams[param]) ||
-            typeof recordRequestParams[param] !== typeof validTypes[param]
+            typeof long === 'undefined' ||
+            typeof jsonParse(long.trim()) !== 'number' ||
+            (typeof lat === 'undefined' ||
+              typeof jsonParse(lat.trim()) !== 'number')
           ) {
             errors.push(
               `cannot parse invalid Location "${
-                recordRequestParams[param]
+                body[param]
               }" - location must be a comma separated string of numeric longitude and latitude`
             );
-          } else {
-            [long, lat] = recordRequestParams[param].split(',');
-            if (
-              typeof long === 'undefined' ||
-              typeof jsonParse(long.trim()) !== 'number' ||
-              (typeof lat === 'undefined' ||
-                typeof jsonParse(lat.trim()) !== 'number')
-            ) {
-              errors.push(
-                `cannot parse invalid Location "${
-                  recordRequestParams[param]
-                }" - location must be a comma separated string of numeric longitude and latitude`
-              );
-            }
           }
+        }
 
+        break;
+      default:
+        if (body[param] === undefined) {
           break;
-        default:
-          if (recordRequestParams[param] === undefined) {
-            break;
-          }
+        }
 
-          if (
-            isEmpty(recordRequestParams[param]) ||
-            typeof recordRequestParams[param] !== typeof validTypes[param]
-          ) {
-            errors.push(
-              `invalid ${param} - ${param} should be a valid non-empty ${typeof validTypes[
-                param
-              ]}`
-            );
-          }
-          break;
-      }
-      if (req.body[param]) {
-        req.body[param] = req.body[param].trim();
-      }
-    });
-  }
+        if (
+          isEmpty(body[param]) ||
+          typeof body[param] !== typeof validTypes[param]
+        ) {
+          errors.push(
+            `invalid ${param} - ${param} should be a valid non-empty ${typeof validTypes[
+              param
+            ]}.`
+          );
+        }
+        break;
+    }
+    if (req.body[param]) {
+      req.body[param] = req.body[param].trim();
+    }
+  });
 
-  if (errors.length > 0) {
-    return handleError(res, errors, 422);
-  }
-  return next();
+  return errors.length > 0 ? handleError(res, errors, 422) : next();
 };
