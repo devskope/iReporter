@@ -27,6 +27,7 @@ export const checkRequired = checkWhat => (req, res, next) => {
         )
       );
       break;
+    /* istanbul ignore next */
     default:
       break;
   }
@@ -48,6 +49,7 @@ export const strictRecordType = type => (req, res, next) => {
       }
 
       break;
+    /* istanbul ignore next */
     default:
       break;
   }
@@ -61,73 +63,53 @@ export const verifyRequestTypes = (req, res, next) => {
 
   const isEmpty = stringParam => stringParam === '';
 
-  Object.keys(body).forEach(reqParam => {
-    const param = reqParam.trim();
-    switch (param) {
-      case 'status':
-        if (body[param] === undefined) {
-          break;
-        }
-
-        if (
-          isEmpty(body[param]) ||
-          typeof body[param] !== 'string' ||
-          !validTypes.status.includes(body[param])
-        ) {
-          errors.push(`cannot parse invalid status "${body[param]}".`);
-        }
-
-        break;
-      case 'location':
-        if (body[param] === undefined) {
-          break;
-        }
-
-        if (
-          isEmpty(body[param]) ||
-          typeof body[param] !== typeof validTypes[param]
-        ) {
-          errors.push(
-            `cannot parse invalid Location "${
-              body[param]
-            }" - location must be a comma separated string of numeric latitude and longitude coodinates.`
-          );
-        } else {
-          [long, lat] = body[param].split(',');
+  Object.keys(body).forEach(param => {
+    if (body[param] !== undefined && typeof body[param] === 'string') {
+      body[param] = body[param].trim();
+      switch (param) {
+        case 'status':
           if (
-            typeof long === 'undefined' ||
-            typeof jsonParse(long.trim()) !== 'number' ||
-            (typeof lat === 'undefined' ||
-              typeof jsonParse(lat.trim()) !== 'number')
+            isEmpty(body[param]) ||
+            !validTypes.status.includes(body[param])
           ) {
+            errors.push(`cannot parse invalid status "${body[param]}".`);
+          }
+
+          break;
+        case 'location':
+          if (isEmpty(body[param])) {
             errors.push(
               `cannot parse invalid Location "${
                 body[param]
-              }" - location must be a comma separated string of numeric longitude and latitude`
+              }" - location must be a comma separated string of numeric latitude and longitude coodinates.`
+            );
+          } else {
+            [long, lat] = body[param].split(',');
+            if (
+              typeof long === 'undefined' ||
+              typeof jsonParse(long.trim()) !== 'number' ||
+              (typeof lat === 'undefined' ||
+                typeof jsonParse(lat.trim()) !== 'number')
+            ) {
+              errors.push(
+                `cannot parse invalid Location "${
+                  body[param]
+                }" - location must be a comma separated string of numeric longitude and latitude`
+              );
+            }
+          }
+
+          break;
+        default:
+          if (isEmpty(body[param])) {
+            errors.push(
+              `invalid ${param} - ${param} should be a valid non-empty ${typeof validTypes[
+                param
+              ]}.`
             );
           }
-        }
-
-        break;
-      default:
-        if (body[param] === undefined) {
           break;
-        }
-
-        if (
-          isEmpty(body[param]) ||
-          typeof body[param] !== typeof validTypes[param]
-        ) {
-          errors.push(
-            `invalid ${param} - ${param} should be a valid non-empty ${typeof validTypes[
-              param
-            ]}.`
-          );
-        }
-        break;
-    }
-    if (req.body[param]) {
-      req.body[param] = req.body[param].trim();
+      }
     }
   });
 
