@@ -40,6 +40,28 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(status).eq(422);
             expect(body.errors[0]).to.be.a('string');
           });
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/red-flags`)
+          .send({
+            ...sampleRedFlagToAdd,
+            ...{ location: '', title: '' },
+          })
+          .end((err, { body, status }) => {
+            expect(status).eq(422);
+            expect(body.errors[0]).to.be.a('string');
+          });
+      });
+
+      it('should not create records for valid requests with the wrong recordtype', () => {
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/red-flags`)
+          .send({ sampleRedFlagToAdd, ...{ type: 'wrong' } })
+          .end((err, { body, status }) => {
+            expect(status).eq(400);
+            expect(typeof body.errors[0]).eq('string');
+          });
       });
 
       it('Creates a valid red-flag record', () => {
