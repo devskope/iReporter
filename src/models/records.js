@@ -1,6 +1,6 @@
 import { recordStore } from '../config/db';
 
-class Record {
+export class Record {
   constructor({ title, type, createdBy, comment, location, images, videos }) {
     this.title = title;
     this.type = type;
@@ -9,7 +9,7 @@ class Record {
     this.location = location;
     this.images = images;
     this.videos = videos;
-    this.status = 'under investigation';
+    this.status = 'draft';
   }
 
   static getAll(type) {
@@ -17,16 +17,14 @@ class Record {
     return Promise.resolve(allRecords.filter(record => record.type === type));
   }
 
-  static getOneByID(id, type) {
-    const theOne = recordStore
-      .fetch()
-      .filter(record => record.type === type && record.id === id);
+  static getOneByID(id) {
+    const theOne = recordStore.fetch().filter(record => record.id === id);
     return Promise.resolve(...theOne);
   }
 
-  static patch(type, id, patch, prop) {
+  static patch(id, patch, prop) {
     recordStore[id - 1][prop] = patch;
-    return Record.getOneByID(id, type);
+    return Record.getOneByID(id);
   }
 
   static delete(id) {
@@ -48,11 +46,11 @@ export class RedFlag extends Record {
   }
 
   static getOneByID(id) {
-    return super.getOneByID(id, 'red-flag');
+    return super.getOneByID(id);
   }
 
   static patch(id, patch, prop) {
-    return super.patch('red-flag', id, patch, prop);
+    return super.patch(id, patch, prop);
   }
 
   static delete(id) {
