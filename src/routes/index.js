@@ -1,4 +1,4 @@
-import recordRouter from './records/index';
+import recordRouter from './records';
 
 const ROOT_URL = '/api/v1';
 

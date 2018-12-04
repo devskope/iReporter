@@ -12,13 +12,12 @@ const createRecord = (req, res) => {
     );
 };
 
-const fetchAllRecords = (req, res) => {
+const fetchAllRecords = (req, res) =>
   RedFlag.getAll().then(redFlagRecords =>
     redFlagRecords.length > 0
       ? successResponse(res, redFlagRecords)
       : successResponse(res)
   );
-};
 
 const fetchRecordByID = ({ record }, res) => successResponse(res, record);
 
@@ -49,7 +48,7 @@ const updateLocation = ({ body, record }, res) =>
       });
 
 const deleteRecordByID = ({ record }, res) =>
-  RedFlag.delete(record.id).then(({ id }) =>
+  RedFlag.delete(record.id).then(id =>
     successResponse(res, { id, message: 'red-flag record has been deleted' })
   );
 
