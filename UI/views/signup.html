@@ -1,76 +1,69 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Up | iReporter</title>
-    <link rel="stylesheet" href="../assets/css/style.css" />
-  </head>
-  <body>
-    <header>
-      <nav class="top-nav">
-        <span class="top-nav__toggle"></span>
-        <a href="#" class="top-nav__logo"
-          ><img src="../assets/images/logo.svg" alt="logo"
-        /></a>
-        <ul class="top-nav__list">
-          <li class="top-nav__list-item">
-            <a href="../../index.html" class="top-nav__link">Home</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
-    <section class="wrapper wrapper--spaced">
-      <div class="auth">
-        <h2 class="auth__mode">Sign up</h2>
-        <form class="auth__form" id="sign-up-form" action="POST">
-          <label class="form__label" for="signup-username">username</label>
-          <input
-            class="auth__username"
-            type="text"
-            name="signup-username"
-            id="signup-username"
-            required
-          />
-          <label class="form__label" for="signup-password">password</label>
-          <input
-            class="auth__password"
-            type="password"
-            name="signup-password"
-            id="signup-password"
-            required
-          />
-          <label class="form__label" for="signup-password2"
-            >Retype password</label
-          >
-          <input
-            class="auth__password"
-            type="password"
-            name="signup-password2"
-            id="signup-password2"
-            required
-          />
-          <label class="form__label" for="signup-email">Email</label>
-          <input
-            class="auth__email"
-            type="email"
-            name="signup-email"
-            id="signup-email"
-          />
-          <label class="form__label" for="signup-tel">Phone</label>
-          <input
-            class="auth__tel"
-            type="tel"
-            name="signup-tel"
-            id="signup-tel"
-          />
-          <input class="auth__submit" type="submit" value="Sign Up" />
-          <small class="form__link"
-            >Already done? <a href="./login.html">Log In</a></small
-          >
-        </form>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up | iReporter</title>
+  <link rel="stylesheet" href="../assets/css/nustyle.css">
+</head>
+
+<body>
+  <nav class="topbar">
+    <div class="topbar__wrapper">
+      <a href="#" class="topbar__brand">iReporter</a>
+      <ul class="links">
+        <li><a class="topbar__link" href="../../index.html">Home</a></li>
+        <li><a class="topbar__link" href="#">About</a></li>
+        <li><a href="./login.html" class="btn--nav">Log In</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class="auth">
+    <form class="auth__form">
+      <div class="auth__title">
+        <h2 class="main-text">Signup</h2>
+        <p class="sub-text">Start reporting</p>
       </div>
-    </section>
-    <script src="../assets/js/nav.js"></script>
-  </body>
+      <div class="auth__form-field">
+        <label for="reg_fullname">Name</label>
+        <input type="text" id="reg_fullname" placeholder="Ahmed Obi">
+      </div>
+      <div class="auth__form-field">
+        <label for="reg_fullname">Username</label>
+        <input type="text" id="reg_fullname" placeholder="Ahmed Obi">
+      </div>
+      <div class="auth__form-field">
+        <label for="reg_email">Email</label>
+        <input type="email" id="reg_email" placeholder="email@example.com">
+      </div>
+      <div class="auth__form-field">
+        <label for="reg_phone">Phone</label>
+        <input type="tel" id="reg_phone" placeholder="0812 345 6789">
+      </div>
+      <div class="auth__form-field">
+        <label for="reg_pass">Password</label>
+        <input type="password" id="reg_pass" placeholder="******">
+      </div>
+      <button class="btn btn--submit" type="submit">Create account</button>
+      <div class="auth__hint-field">
+        <p>Forgot Password? <a href="#">We can help</a></p>
+        <p>Have an account? <a href="./login.html">Log In</a></p>
+      </div>
+    </form>
+  </main>
+  <footer class="footer">
+    <div class="links-wrapper ">
+      <a class="footer__link" href="home.html" target="_blank">Home</a>
+      <a class="footer__link" href="about.html" target="_blank">About</a>
+      <a class="footer__link" href="login.html" target="_blank">Login</a>
+      <a class="footer__link" href="register.html" target="_blank">Register</a>
+    </div>
+    <div <p class="copyright">iReporter &copy;2018</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+
 </html>
