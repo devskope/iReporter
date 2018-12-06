@@ -9,6 +9,7 @@ import loadRecordByID from '../middlewares/loadRecordByID';
 
 const router = new Router();
 
+
 router.post(
   '/red-flags',
   checkRequired('record'),
@@ -17,24 +18,28 @@ router.post(
   redFlagController.createRecord
 );
 router.get('/red-flags', redFlagController.fetchAllRecords);
-router.get('/red-flags/:id', loadRecordByID, redFlagController.fetchRecordByID);
+router.get(
+  '/red-flags/:id',
+  loadRecordByID('red-flag'),
+  redFlagController.fetchRecordByID
+);
 router.patch(
   '/red-flags/:id/comment',
   checkRequired('comment'),
-  loadRecordByID,
+  loadRecordByID('red-flag'),
   verifyRequestTypes,
   redFlagController.updateComment
 );
 router.patch(
   '/red-flags/:id/location',
   checkRequired('location'),
-  loadRecordByID,
+  loadRecordByID('red-flag'),
   verifyRequestTypes,
   redFlagController.updateLocation
 );
 router.delete(
   '/red-flags/:id',
-  loadRecordByID,
+  loadRecordByID('red-flag'),
   redFlagController.deleteRecordByID
 );
 

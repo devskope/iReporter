@@ -2,15 +2,15 @@ import { Record } from '../models/records';
 import jsonParse from '../helpers/jsonParse';
 import handleError from '../helpers/errorHelper';
 
-export default (req, res, next) => {
+export default type => (req, res, next) => {
   const { id } = req.params;
 
-  Record.getOneByID(jsonParse(id)).then(record =>
-    record
+  Record.getOneByID(jsonParse(id)).then(({ rows }) =>
+    rows[0] && rows[0].type === type
       ? (() => {
-          req.record = record;
+          req.record = { ...rows[0] };
           next();
         })()
-      : handleError(res, `No order found with id '${id}'`, 404)
+      : handleError(res, `No record exists with id '${id}'`, 404)
   );
 };
