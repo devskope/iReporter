@@ -49,6 +49,14 @@ export const strictRecordType = type => (req, res, next) => {
       }
 
       break;
+    case 'intervention':
+      if (body.type !== type) {
+        handleError(res, 'invalid record type', 400);
+      } else {
+        next();
+      }
+
+      break;
     /* istanbul ignore next */
     default:
       break;
