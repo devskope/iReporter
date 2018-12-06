@@ -95,7 +95,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .end((err, { body, status }) => {
             expect(status).eq(404);
             expect(body.errors[0]).eq(
-              `No record exist with id '${ID.nonExistent}'`
+              `No record exists with id '${ID.nonExistent}'`
             );
           });
       });
