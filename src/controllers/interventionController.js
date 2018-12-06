@@ -14,7 +14,13 @@ const createRecord = (req, res) => {
   });
 };
 
+const fetchAllRecords = (req, res) =>
+  Intervention.getAll().then(({ rows }) =>
+    rows.length > 0 ? successResponse(res, rows) : successResponse(res)
+  );
+
 
 export default {
   createRecord,
+  fetchAllRecords,
 };

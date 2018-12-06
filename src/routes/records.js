@@ -50,5 +50,6 @@ router.post(
   verifyRequestTypes,
   interventionController.createRecord
 );
+router.get('/interventions', interventionController.fetchAllRecords);
 
 export default router;
