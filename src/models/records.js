@@ -1,4 +1,4 @@
-import { recordStore } from '../config/db';
+import db from '../db/db';
 
 export class Record {
   constructor({ title, type, createdBy, comment, location, images, videos }) {
@@ -12,27 +12,50 @@ export class Record {
     this.status = 'draft';
   }
 
-  static getAll(type) {
-    const allRecords = recordStore.fetch();
-    return Promise.resolve(allRecords.filter(record => record.type === type));
+  static getAll() {
+    return db.query(`SELECT * FROM records ORDER BY id ASC`);
+  }
+
+  static getAllByType(type) {
+    const queryString = [
+      `SELECT * FROM records WHERE type = $1 ORDER BY id ASC`,
+      [type],
+    ];
+    return db.query(...queryString);
   }
 
   static getOneByID(id) {
-    const theOne = recordStore.fetch().filter(record => record.id === id);
-    return Promise.resolve(...theOne);
+    const queryString = [`SELECT * FROM records WHERE id = $1`, [id]];
+    return db.query(...queryString);
   }
 
   static patch(id, patch, prop) {
-    recordStore[id - 1][prop] = patch;
-    return Record.getOneByID(id);
+    const queryString = [
+      `UPDATE records SET ${prop} = ($1) WHERE id =($2)`,
+      [patch, id],
+    ];
+
+    return db.query(...queryString);
   }
 
   static delete(id) {
-    return recordStore.delete(id);
+    const queryString = [`DELETE FROM records WHERE id = $1`, [id]];
+    return db.query(...queryString);
   }
 
   save() {
-    return recordStore.commit(this);
+    const queryString = [
+      'INSERT INTO records(title, type, location, comment, status, created_by) VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
+      [
+        this.title,
+        this.type,
+        this.location,
+        this.comment,
+        this.status,
+        'sammy',
+      ],
+    ];
+    return db.query(...queryString);
   }
 }
 
@@ -42,7 +65,7 @@ export class RedFlag extends Record {
   }
 
   static getAll() {
-    return super.getAll('red-flag');
+    return super.getAllByType('red-flag');
   }
 
   static getOneByID(id) {

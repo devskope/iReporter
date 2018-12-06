@@ -1,4 +1,3 @@
-import { recordStore } from '../src/config/db';
 import { RedFlag } from '../src/models/records';
 import {
   ID,
@@ -77,19 +76,8 @@ export default ({ server, chai, expect, ROOT_URL }) => {
     });
 
     describe('Fetching', () => {
-      it('Returns an empty array when no records exist', () => {
-        recordStore.clear();
-        chai
-          .request(server)
-          .get(`${ROOT_URL}/red-flags`)
-          .end((err, { body, status }) => {
-            expect(status).eq(200);
-            expect(body.data).to.be.an.instanceof(Array);
-          });
-      });
-
-      it('Should fetch all available red-flag records', () => {
-        new RedFlag(sampleRedFlagToAdd).save();
+      it('Should fetch all available red-flag records', async () => {
+        await new RedFlag(sampleRedFlagToAdd).save();
         chai
           .request(server)
           .get(`${ROOT_URL}/red-flags/`)
@@ -107,7 +95,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .end((err, { body, status }) => {
             expect(status).eq(404);
             expect(body.errors[0]).eq(
-              `No order found with id '${ID.nonExistent}'`
+              `No record exist with id '${ID.nonExistent}'`
             );
           });
       });
