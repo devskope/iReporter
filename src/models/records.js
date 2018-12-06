@@ -83,7 +83,7 @@ export class RedFlag extends Record {
 
 export class Intervention extends Record {
   constructor({ ...args }) {
-    super({ type: 'red-flag', ...args });
+    super({ type: 'intervention', ...args });
   }
 
   static getAll() {
