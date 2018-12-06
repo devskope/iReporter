@@ -273,6 +273,29 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(body.data[0]).to.be.an('object');
           });
       });
+
+      it('Returns a not found response when specific record ID does not exist', () => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/interventions/${ID.nonExistent}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors[0]).eq(
+              `No record exists with id '${ID.nonExistent}'`
+            );
+          });
+      });
+
+      it('Should fetch a specific intervention record by ID', () => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/interventions/${ID.valid}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.an('object');
+          });
+      });
     });
   });
 };
