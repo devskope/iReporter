@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import redFlagController from '../controllers/redFlagController';
+import interventionController from '../controllers/interventionController';
 import {
   checkRequired,
   strictRecordType,
@@ -40,6 +41,14 @@ router.delete(
   '/red-flags/:id',
   loadRecordByID('red-flag'),
   redFlagController.deleteRecordByID
+);
+
+router.post(
+  '/interventions',
+  checkRequired('record'),
+  strictRecordType('intervention'),
+  verifyRequestTypes,
+  redFlagController.createRecord
 );
 
 export default router;
