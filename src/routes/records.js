@@ -48,7 +48,7 @@ router.post(
   checkRequired('record'),
   strictRecordType('intervention'),
   verifyRequestTypes,
-  redFlagController.createRecord
+  interventionController.createRecord
 );
 
 export default router;

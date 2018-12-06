@@ -8,7 +8,7 @@ const createRecord = (req, res) => {
   newIntervention.save().then(({ rows }) => {
     successResponse(
       res,
-      { ...rows[0], message: `Created intervention record` },
+      { ...rows[0], message: `Created Intervention record` },
       201
     );
   });
