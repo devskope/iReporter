@@ -4,6 +4,8 @@ import {
   recordPatches,
   sampleRedFlagToAdd,
   sampleInvalidRedFlag,
+  sampleInvalidIntervention,
+  sampleInterventionToAdd,
 } from './helpers';
 
 export default ({ server, chai, expect, ROOT_URL }) => {
@@ -182,6 +184,75 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(status).eq(200);
             expect(body.data).is.an.instanceof(Array);
             expect(body.data[0]).to.have.property('message');
+          });
+      });
+    });
+  });
+
+  describe('Intervention records', () => {
+    describe('Creation', () => {
+      it('Records missing required field returns error response', () => {
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/interventions`)
+          .send(sampleInvalidIntervention)
+          .end((err, { body, status }) => {
+            expect(status).eq(400);
+            expect(body.errors[0]).eq('missing required title field');
+          });
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/interventions`)
+          .send({ ...sampleInvalidIntervention, ...{ comment: undefined } })
+          .end((err, { body, status }) => {
+            expect(status).eq(400);
+            expect(body.errors[0]).eq(
+              'missing required title and comment fields'
+            );
+          });
+      });
+
+      it('mismatched request data types should return error', () => {
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/interventions`)
+          .send({ ...sampleInterventionToAdd, ...{ location: 'knowhere' } })
+          .end((err, { body, status }) => {
+            expect(status).eq(422);
+            expect(body.errors[0]).to.be.a('string');
+          });
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/interventions`)
+          .send({
+            ...sampleInterventionToAdd,
+            ...{ location: '', title: '' },
+          })
+          .end((err, { body, status }) => {
+            expect(status).eq(422);
+            expect(body.errors[0]).to.be.a('string');
+          });
+      });
+
+      it('should not create records for valid requests with the wrong recordtype', () => {
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/interventions`)
+          .send({ sampleInterventionToAdd, ...{ type: 'wrong' } })
+          .end((err, { body, status }) => {
+            expect(status).eq(400);
+            expect(typeof body.errors[0]).eq('string');
+          });
+      });
+
+      it('Creates a valid Intervention record', () => {
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/interventions`)
+          .send(sampleInterventionToAdd)
+          .end((err, { body, status }) => {
+            expect(status).eq(201);
+            expect(body.data[0].message).eq('Created Intervention record');
           });
       });
     });

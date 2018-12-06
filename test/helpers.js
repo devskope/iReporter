@@ -17,3 +17,15 @@ export const sampleInvalidRedFlag = {
   location: '101.68685499999992,3.139003',
   comment: 'I smell something fishy',
 };
+
+export const sampleInterventionToAdd = {
+  title: 'help needed',
+  type: 'intervention',
+  location: '101.68685499999992,3.139003',
+  comment: 'inverene please',
+};
+export const sampleInvalidIntervention = {
+  type: 'intervention',
+  location: '101.68685499999992,3.139003',
+  comment: 'inverene please',
+};
