@@ -3,7 +3,7 @@ import db from './db';
 
 const logger = debug('iReporter::initdb:');
 const Models = {
-  recordSchema: `
+  userSchema: `
     CREATE TABLE IF NOT EXISTS users
       (
        id SERIAL PRIMARY KEY,
@@ -17,7 +17,7 @@ const Models = {
        is_admin BOOLEAN DEFAULT 'false'
       )`,
 
-  userSchema: `
+  recordSchema: `
     CREATE TABLE IF NOT EXISTS records
       (
        id       SERIAL PRIMARY KEY,
