@@ -1,4 +1,4 @@
-import { recordStore } from '../src/config/db';
+import db from '../src/db/dbrc';
 import { RedFlag } from '../src/models/records';
 import {
   ID,
@@ -77,8 +77,8 @@ export default ({ server, chai, expect, ROOT_URL }) => {
     });
 
     describe('Fetching', () => {
-      it('Returns an empty array when no records exist', () => {
-        recordStore.clear();
+      it('Returns an empty array when no records exist', async() => {
+        await db.blowAway();
         chai
           .request(server)
           .get(`${ROOT_URL}/red-flags`)
@@ -88,8 +88,10 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
 
-      it('Should fetch all available red-flag records', () => {
-        new RedFlag(sampleRedFlagToAdd).save();
+      it('Should fetch all available red-flag records', async() => {
+        await db.dbInit();
+        await new RedFlag(sampleRedFlagToAdd).save();
+        await new RedFlag(sampleRedFlagToAdd).save();
         chai
           .request(server)
           .get(`${ROOT_URL}/red-flags/`)
@@ -107,7 +109,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .end((err, { body, status }) => {
             expect(status).eq(404);
             expect(body.errors[0]).eq(
-              `No order found with id '${ID.nonExistent}'`
+              `No record exists with id '${ID.nonExistent}'`
             );
           });
       });
