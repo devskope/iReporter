@@ -1,4 +1,5 @@
 import { RedFlag } from '../src/models/records';
+import { Intervention } from '../src/models/records';
 import {
   ID,
   recordPatches,
@@ -80,6 +81,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
     describe('Fetching', () => {
       it('Should fetch all available red-flag records', async () => {
         await new RedFlag(sampleRedFlagToAdd).save();
+        await new RedFlag(sampleRedFlagToAdd).save();
         chai
           .request(server)
           .get(`${ROOT_URL}/red-flags/`)
@@ -121,6 +123,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .patch(`${ROOT_URL}/red-flags/${ID.nonExistent}/comment`)
           .send(recordPatches)
           .end((err, { body, status }) => {
+            console.log(body)
             expect(status).eq(404);
             expect(body).to.have.property('errors');
             expect(body).to.not.have.property('data');
@@ -253,6 +256,21 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .end((err, { body, status }) => {
             expect(status).eq(201);
             expect(body.data[0].message).eq('Created Intervention record');
+          });
+      });
+    });
+
+    describe('Fetching', () => {
+      it('Should fetch all available intervention records', async () => {
+        await new Intervention(sampleInterventionToAdd).save();
+        await new Intervention(sampleInterventionToAdd).save();
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/interventions/`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.an('object');
           });
       });
     });
