@@ -80,25 +80,3 @@ export class RedFlag extends Record {
     return super.delete(id);
   }
 }
-
-export class Intervention extends Record {
-  constructor({ ...args }) {
-    super({ type: 'red-flag', ...args });
-  }
-
-  static getAll() {
-    return super.getAllByType('intervention');
-  }
-
-  static getOneByID(id) {
-    return super.getOneByID(id);
-  }
-
-  static patch(id, patch, prop) {
-    return super.patch(id, patch, prop);
-  }
-
-  static delete(id) {
-    return super.delete(id);
-  }
-}

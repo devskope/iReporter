@@ -10,6 +10,7 @@ import loadRecordByID from '../middlewares/loadRecordByID';
 
 const router = new Router();
 
+
 router.post(
   '/red-flags',
   checkRequired('record'),
