@@ -10,7 +10,6 @@ import loadRecordByID from '../middlewares/loadRecordByID';
 
 const router = new Router();
 
-
 router.post(
   '/red-flags',
   checkRequired('record'),
@@ -51,5 +50,7 @@ router.post(
   verifyRequestTypes,
   interventionController.createRecord
 );
+
+router.get('/interventions', interventionController.fetchAllRecords);
 
 export default router;
