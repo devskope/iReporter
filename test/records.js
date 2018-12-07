@@ -1,5 +1,5 @@
 import db from '../src/db/dbrc';
-import { RedFlag } from '../src/models/records';
+import { RedFlag, Intervention } from '../src/models/records';
 import {
   ID,
   recordPatches,
@@ -79,7 +79,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
     });
 
     describe('Fetching', () => {
-      it('Returns an empty array when no records exist', async() => {
+      it('Returns an empty array when no records exist', async () => {
         await db.blowAway();
         chai
           .request(server)
@@ -90,7 +90,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
 
-      it('Should fetch all available red-flag records', async() => {
+      it('Should fetch all available red-flag records', async () => {
         await db.dbInit();
         await new RedFlag(sampleRedFlagToAdd).save();
         await new RedFlag(sampleRedFlagToAdd).save();
@@ -224,7 +224,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             );
           });
       });
-       it('mismatched request data types should return error', () => {
+      it('mismatched request data types should return error', () => {
         chai
           .request(server)
           .post(`${ROOT_URL}/interventions`)
@@ -245,7 +245,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(body.errors[0]).to.be.a('string');
           });
       });
-       it('should not create records for valid requests with the wrong recordtype', () => {
+      it('should not create records for valid requests with the wrong recordtype', () => {
         chai
           .request(server)
           .post(`${ROOT_URL}/interventions`)
@@ -255,7 +255,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(typeof body.errors[0]).eq('string');
           });
       });
-       it('Creates a valid Intervention record', () => {
+      it('Creates a valid Intervention record', () => {
         chai
           .request(server)
           .post(`${ROOT_URL}/interventions`)
@@ -265,7 +265,21 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(body.data[0].message).eq('Created Intervention record');
           });
       });
+
+      describe('Fetching', () => {
+        it('Should fetch all available intervention records', async () => {
+          await new Intervention(sampleInterventionToAdd).save();
+          await new Intervention(sampleInterventionToAdd).save();
+          chai
+            .request(server)
+            .get(`${ROOT_URL}/interventions/`)
+            .end((err, { body, status }) => {
+              expect(status).eq(200);
+              expect(body.data).to.be.an.instanceof(Array);
+              expect(body.data[0]).to.be.an('object');
+            });
+        });
+      });
     });
   });
-
 };
