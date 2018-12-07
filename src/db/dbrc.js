@@ -11,6 +11,7 @@ const Models = {
        lastname  VARCHAR NOT NULL,
        othernames VARCHAR,
        username  VARCHAR UNIQUE NOT NULL,
+       password  VARCHAR NOT NULL,
        email  VARCHAR NOT NULL,
        phone  VARCHAR,
        registered TIMESTAMPTZ NOT NULL DEFAULT NOW(),
