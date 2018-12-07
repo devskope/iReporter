@@ -17,3 +17,17 @@ export const sampleInvalidRedFlag = {
   location: '101.68685499999992,3.139003',
   comment: 'I smell something fishy',
 };
+
+export const sampleInvalidUser = {
+  username: 'rollo',
+  password: 'weaksauce',
+  firstname: 'apollo',
+  lastname: 'varga',
+};
+export const sampleValidUser = {
+  email: 'op@yi.him',
+  username: 'rollo',
+  password: 'weaksauce',
+  firstname: 'apollo',
+  lastname: 'varga',
+};

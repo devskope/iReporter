@@ -9,6 +9,55 @@ import {
 
 export default ({ server, chai, expect, ROOT_URL }) => {
   describe('Red-flag records', () => {
+    describe('Fetching', () => {
+      it('Returns an empty array when no records exist', async () => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/red-flags`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+          });
+      });
+
+      it('Should fetch all available red-flag records', async () => {
+        await db.dbInit();
+        await new RedFlag(sampleRedFlagToAdd).save();
+        await new RedFlag(sampleRedFlagToAdd).save();
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/red-flags/`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.an('object');
+          });
+      });
+
+      it('Returns a not found response when specific record ID does not exist', () => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/red-flags/${ID.nonExistent}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors[0]).eq(
+              `No record exists with id '${ID.nonExistent}'`
+            );
+          });
+      });
+
+      it('Should fetch a specific red-flag record by ID', () => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/red-flags/${ID.valid}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.an('object');
+          });
+      });
+    });
+
     describe('Creation', () => {
       it('Records missing required field returns error response', () => {
         chai
@@ -72,56 +121,6 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .end((err, { body, status }) => {
             expect(status).eq(201);
             expect(body.data[0].message).eq('Created red-flag record');
-          });
-      });
-    });
-
-    describe('Fetching', () => {
-      it('Returns an empty array when no records exist', async() => {
-        await db.blowAway();
-        chai
-          .request(server)
-          .get(`${ROOT_URL}/red-flags`)
-          .end((err, { body, status }) => {
-            expect(status).eq(200);
-            expect(body.data).to.be.an.instanceof(Array);
-          });
-      });
-
-      it('Should fetch all available red-flag records', async() => {
-        await db.dbInit();
-        await new RedFlag(sampleRedFlagToAdd).save();
-        await new RedFlag(sampleRedFlagToAdd).save();
-        chai
-          .request(server)
-          .get(`${ROOT_URL}/red-flags/`)
-          .end((err, { body, status }) => {
-            expect(status).eq(200);
-            expect(body.data).to.be.an.instanceof(Array);
-            expect(body.data[0]).to.be.an('object');
-          });
-      });
-
-      it('Returns a not found response when specific record ID does not exist', () => {
-        chai
-          .request(server)
-          .get(`${ROOT_URL}/red-flags/${ID.nonExistent}`)
-          .end((err, { body, status }) => {
-            expect(status).eq(404);
-            expect(body.errors[0]).eq(
-              `No record exists with id '${ID.nonExistent}'`
-            );
-          });
-      });
-
-      it('Should fetch a specific red-flag record by ID', () => {
-        chai
-          .request(server)
-          .get(`${ROOT_URL}/red-flags/${ID.valid}`)
-          .end((err, { body, status }) => {
-            expect(status).eq(200);
-            expect(body.data).to.be.an.instanceof(Array);
-            expect(body.data[0]).to.be.an('object');
           });
       });
     });
