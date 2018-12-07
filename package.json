@@ -8,7 +8,7 @@
     "build": "babel src -d dist --source-maps",
     "devstart": "DEBUG=iReporter* nodemon src/server --exec babel-node",
     "initdb": "DEBUG=iReporter* babel-node src/db/dbrc.js ",
-    "heroku-postbuild": "npm run build",
+    "heroku-postbuild": " npm run build",
     "start": "node dist/server",
     "test": "DEBUG=iReporter* nyc mocha test/index.js --exit"
   },
