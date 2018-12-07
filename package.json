@@ -7,7 +7,8 @@
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "build": "babel src -d dist --source-maps",
     "devstart": "DEBUG=iReporter* nodemon src/server --exec babel-node",
-    "heroku-postbuild": "npm run build",
+    "initdb": "DEBUG=iReporter* babel-node src/db/dbrc.js ",
+    "heroku-postbuild": "npm run build && npm run initdb",
     "start": "node dist/server",
     "test": "DEBUG=iReporter* nyc mocha test/index.js --exit"
   },
@@ -47,8 +48,10 @@
   "dependencies": {
     "debug": "^4.1.0",
     "dotenv": "^6.1.0",
+    "eslint-config-airbnb": "^17.1.0",
     "express": "^4.16.4",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "pg": "^7.7.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.5",

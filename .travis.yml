@@ -1,4 +1,6 @@
 sudo: false
+services:
+  - postgresql
 language: node_js
 node_js:
 - 10.13.0
@@ -9,8 +11,17 @@ install:
 cache:
   directories:
   - "$HOME/.npm"
+before_script:
+  - psql -U postgres -c 'create database ireporter;'
 script:
+- npm run initdb
 - npm test
+install:
+- npm install
+cache:
+  directories:
+  - "$HOME/.npm"
+
 deploy:
   provider: heroku
   api_key:
