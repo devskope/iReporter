@@ -7,6 +7,7 @@ export const validTypes = {
   comment: String(),
   status: ['under investigation', 'resolved', 'rejected', 'draft'],
   location: String(),
+  password: String(),
 };
 
 export const checkRequired = checkWhat => (req, res, next) => {
@@ -23,6 +24,13 @@ export const checkRequired = checkWhat => (req, res, next) => {
     case 'record':
       missingFields.push(
         ...['type', 'title', 'comment'].filter(
+          param => body[param] === undefined
+        )
+      );
+      break;
+    case 'user':
+      missingFields.push(
+        ...['email', 'username', 'password', 'firstname', 'lastname'].filter(
           param => body[param] === undefined
         )
       );
@@ -67,6 +75,12 @@ export const verifyRequestTypes = (req, res, next) => {
     if (body[param] !== undefined && typeof body[param] === 'string') {
       body[param] = body[param].trim();
       switch (param) {
+        case 'email':
+          if (isEmpty(body[param]) || !/^.+@.+\..+$/.test(body[param])) {
+            errors.push(`cannot parse invalid email "${body[param]}".`);
+          }
+
+          break;
         case 'status':
           if (
             isEmpty(body[param]) ||

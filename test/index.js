@@ -3,6 +3,7 @@ import chaiHttp from 'chai-http';
 import debug from 'debug';
 import server from '../src/server';
 import records from './records';
+import users from './users';
 
 chai.use(chaiHttp);
 
@@ -12,3 +13,4 @@ const ROOT_URL = `/api/v1`;
 const testArgs = { server, chai, expect, ROOT_URL, logger };
 
 records(testArgs);
+users(testArgs);
