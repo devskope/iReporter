@@ -20,11 +20,6 @@ export class User {
     this.isAdmin = false;
   }
 
-  static findByUsername(username) {
-    const queryString = [`SELECT * FROM users WHERE username = $1`, [username]];
-    return db.query(...queryString);
-  }
-
   save() {
     const queryString = [
       `INSERT INTO users(firstname,
