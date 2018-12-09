@@ -23,20 +23,21 @@ const Models = {
       (
        id       SERIAL PRIMARY KEY,
        created_on TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-       created_by VARCHAR NOT NULL,
+       created_by INTEGER,
        title VARCHAR NOT NULL,
        type  VARCHAR NOT NULL,
        comment VARCHAR NOT NULL,
        location VARCHAR,
-       status VARCHAR NOT NULL
+       status VARCHAR NOT NULL,
+       FOREIGN KEY (created_by) REFERENCES users (id) ON DELETE CASCADE
       )`,
 };
 const dropTable = table => `DROP TABLE IF EXISTS ${table} CASCADE`;
 
 const dbInit = () =>
   Promise.all([
-    db.query(Models.recordSchema),
     db.query(Models.userSchema),
+    db.query(Models.recordSchema),
   ]).then(() => logger(`Created  DB Tables`));
 
 const blowAway = () => {

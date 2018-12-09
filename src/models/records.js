@@ -52,7 +52,7 @@ export class Record {
         this.location,
         this.comment,
         this.status,
-        'sammy',
+        this.createdBy,
       ],
     ];
     return db.query(...queryString);
