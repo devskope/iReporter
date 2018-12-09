@@ -35,6 +35,11 @@ export const checkRequired = checkWhat => (req, res, next) => {
         )
       );
       break;
+    case 'login':
+      missingFields.push(
+        ...['username', 'password'].filter(param => body[param] === undefined)
+      );
+      break;
     /* istanbul ignore next */
     default:
       break;
