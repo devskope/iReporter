@@ -34,11 +34,11 @@ const Models = {
 };
 const dropTable = table => `DROP TABLE IF EXISTS ${table} CASCADE`;
 
-const dbInit = () =>
-  Promise.all([
-    db.query(Models.userSchema),
-    db.query(Models.recordSchema),
-  ]).then(() => logger(`Created  DB Tables`));
+const dbInit = async () => {
+  await db.query(Models.userSchema);
+  await db.query(Models.recordSchema);
+  logger('Created DB Tables');
+};
 
 const blowAway = () => {
   Promise.all([
