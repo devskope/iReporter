@@ -1,5 +1,5 @@
 import db from '../src/db/dbrc';
-import { RedFlag } from '../src/models/records';
+import { RedFlag, Intervention } from '../src/models/records';
 import {
   ID,
   recordPatches,
@@ -224,6 +224,21 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(status).eq(201);
             expect(body.data[0].message).eq('Created Intervention record');
             done();
+          });
+      });
+    });
+
+    describe('Fetching', () => {
+      it('Should fetch all available intervention records', async () => {
+        await new Intervention(sampleInterventionToAdd).save();
+        await new Intervention(sampleInterventionToAdd).save();
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/interventions/`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.an('object');
           });
       });
     });
