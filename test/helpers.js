@@ -18,6 +18,13 @@ export const sampleInvalidRedFlag = {
   comment: 'I smell something fishy',
 };
 
+export const sampleInterventionToAdd = {
+  type: 'intervention',
+  location: '50.68685499999992,3.89',
+  title: 'need intervention',
+  comment: 'more on the state of the nations roads',
+};
+
 export const sampleInvalidUser = {
   username: 'rollo',
   password: 'weaksauce',

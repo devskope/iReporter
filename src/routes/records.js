@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import interventionController from '../controllers/interventionController';
 import redFlagController from '../controllers/redFlagController';
 import {
   checkRequired,
@@ -8,7 +9,6 @@ import {
 import loadRecordByID from '../middlewares/loadRecordByID';
 
 const router = new Router();
-
 
 router.post(
   '/red-flags',
@@ -41,6 +41,16 @@ router.delete(
   '/red-flags/:id',
   loadRecordByID('red-flag'),
   redFlagController.deleteRecordByID
+);
+
+/* interventions */
+
+router.post(
+  '/interventions',
+  checkRequired('record'),
+  strictRecordType('intervention'),
+  verifyRequestTypes,
+  interventionController.createRecord
 );
 
 export default router;
