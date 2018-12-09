@@ -19,7 +19,10 @@ const fetchAllRecords = (req, res) =>
     rows.length > 0 ? successResponse(res, rows) : successResponse(res)
   );
 
+const fetchRecordByID = ({ record }, res) => successResponse(res, record);
+
 export default {
   createRecord,
   fetchAllRecords,
+  fetchRecordByID,
 };

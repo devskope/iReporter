@@ -241,6 +241,18 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(body.data[0]).to.be.an('object');
           });
       });
+
+      it('Should fetch a specific intervention record by ID', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/interventions/5`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.an('object');
+            done();
+          });
+      });
     });
   });
 };

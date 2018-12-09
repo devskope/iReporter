@@ -55,4 +55,10 @@ router.post(
 
 router.get('/interventions', interventionController.fetchAllRecords);
 
+router.get(
+  '/interventions/:id',
+  loadRecordByID('intervention'),
+  interventionController.fetchRecordByID
+);
+
 export default router;
