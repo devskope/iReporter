@@ -13,6 +13,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(body.errors).to.be.an.instanceof(Array);
           });
       });
+
       it('Should create valid User', () => {
         chai
           .request(server)
@@ -20,6 +21,16 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .send(sampleValidUser)
           .end((err, { status }) => {
             expect(status).eq(201);
+          });
+      });
+
+      it('Should not create duplicate User', () => {
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/auth/signup`)
+          .send(sampleValidUser)
+          .end((err, { status }) => {
+            expect(status).eq(409);
           });
       });
     });
