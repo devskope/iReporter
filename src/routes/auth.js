@@ -16,4 +16,12 @@ router.post(
   authController.createUser
 );
 
+router.post(
+  '/auth/login',
+  checkRequired('login'),
+  verifyRequestTypes,
+  findByUsername,
+  authController.loginUser
+);
+
 export default router;
