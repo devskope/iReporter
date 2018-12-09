@@ -54,6 +54,7 @@ export const strictRecordType = type => (req, res, next) => {
   const { body } = req;
 
   switch (type) {
+    case 'intervention':
     case 'red-flag':
       if (body.type !== type) {
         handleError(res, 'invalid record type', 400);
