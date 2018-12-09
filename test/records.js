@@ -5,6 +5,7 @@ import {
   recordPatches,
   sampleRedFlagToAdd,
   sampleInvalidRedFlag,
+  sampleInterventionToAdd,
 } from './helpers';
 
 export default ({ server, chai, expect, ROOT_URL }) => {
@@ -195,6 +196,34 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(status).eq(200);
             expect(body.data).is.an.instanceof(Array);
             expect(body.data[0]).to.have.property('message');
+          });
+      });
+    });
+  });
+
+  describe('Interventions', () => {
+    describe('Creation', () => {
+      it('should not create records for valid requests with the wrong recordtype', done => {
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/interventions`)
+          .send({ ...sampleInterventionToAdd, ...{ type: 'red-flag' } })
+          .end((err, { body, status }) => {
+            expect(status).eq(400);
+            expect(typeof body.errors[0]).eq('string');
+            done();
+          });
+      });
+
+      it('Creates a valid intervention record', done => {
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/interventions`)
+          .send(sampleInterventionToAdd)
+          .end((err, { body, status }) => {
+            expect(status).eq(201);
+            expect(body.data[0].message).eq('Created Intervention record');
+            done();
           });
       });
     });
