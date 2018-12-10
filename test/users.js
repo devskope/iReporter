@@ -20,8 +20,10 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .request(server)
           .post(`${ROOT_URL}/auth/signup`)
           .send(sampleValidUser)
-          .end((err, { status }) => {
+          .end((err, { body, status }) => {
             expect(status).eq(201);
+            expect(body.data[0]).have.own.property('user');
+            expect(body.data[0]).to.have.own.property('token');
             done();
           });
       });
@@ -59,6 +61,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .end((err, { body, status }) => {
             expect(status).eq(200);
             expect(body.data[0]).have.own.property('user');
+            expect(body.data[0]).to.have.own.property('token');
             done();
           });
       });
