@@ -254,5 +254,59 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
     });
+
+    describe('Updating', () => {
+      it('Should succesfully update comment of record with valid id', done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/interventions/5/comment`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body).to.have.property('data');
+            expect(body.data[0]).to.have.property('message');
+            done();
+          });
+      });
+
+      it('Should return success when comment patch equals original', done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/interventions/5/comment`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body).to.have.property('data');
+            expect(body.data[0]).to.have.property('message');
+            done();
+          });
+      });
+
+      it('Should succesfully update location of record with valid id', done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/interventions/5/location`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body).to.have.property('data');
+            expect(body.data[0]).to.have.property('message');
+            done();
+          });
+      });
+
+      it('Should return success when location patch equals original', done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/interventions/5/location`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body).to.have.property('data');
+            expect(body.data[0]).to.have.property('message');
+            done();
+          });
+      });
+    });
   });
 };

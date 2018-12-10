@@ -61,4 +61,20 @@ router.get(
   interventionController.fetchRecordByID
 );
 
+router.patch(
+  '/interventions/:id/comment',
+  checkRequired('comment'),
+  loadRecordByID('intervention'),
+  verifyRequestTypes,
+  interventionController.updateComment
+);
+
+router.patch(
+  '/interventions/:id/location',
+  checkRequired('location'),
+  loadRecordByID('intervention'),
+  verifyRequestTypes,
+  interventionController.updateLocation
+);
+
 export default router;

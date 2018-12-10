@@ -21,8 +21,36 @@ const fetchAllRecords = (req, res) =>
 
 const fetchRecordByID = ({ record }, res) => successResponse(res, record);
 
+const updateComment = ({ body, record }, res) =>
+  record.comment !== body.comment
+    ? Intervention.patch(record.id, body.comment, 'comment').then(({ id }) =>
+        successResponse(res, {
+          id,
+          message: 'Updated intervention record’s comment',
+        })
+      )
+    : successResponse(res, {
+        id: record.id,
+        message: 'Comment unchanged, nothing to update',
+      });
+
+const updateLocation = ({ body, record }, res) =>
+  record.location !== body.location
+    ? Intervention.patch(record.id, body.location, 'location').then(({ id }) =>
+        successResponse(res, {
+          id,
+          message: 'Updated intervention record’s location',
+        })
+      )
+    : successResponse(res, {
+        id: record.id,
+        message: 'Location unchanged, nothing to update',
+      });
+
 export default {
   createRecord,
   fetchAllRecords,
   fetchRecordByID,
+  updateComment,
+  updateLocation,
 };
