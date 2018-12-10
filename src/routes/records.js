@@ -77,4 +77,10 @@ router.patch(
   interventionController.updateLocation
 );
 
+router.delete(
+  '/interventions/:id',
+  loadRecordByID('intervention'),
+  redFlagController.deleteRecordByID
+);
+
 export default router;
