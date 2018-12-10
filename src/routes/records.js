@@ -69,4 +69,12 @@ router.patch(
   interventionController.updateComment
 );
 
+router.patch(
+  '/interventions/:id/location',
+  checkRequired('location'),
+  loadRecordByID('intervention'),
+  verifyRequestTypes,
+  interventionController.updateLocation
+);
+
 export default router;
