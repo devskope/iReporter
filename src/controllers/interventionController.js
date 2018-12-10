@@ -47,10 +47,19 @@ const updateLocation = ({ body, record }, res) =>
         message: 'Location unchanged, nothing to update',
       });
 
+const deleteRecordByID = ({ record }, res) =>
+  Intervention.delete(record.id).then(() =>
+    successResponse(res, {
+      id: record.id,
+      message: 'intervention record has been deleted',
+    })
+  );
+
 export default {
   createRecord,
   fetchAllRecords,
   fetchRecordByID,
   updateComment,
   updateLocation,
+  deleteRecordByID,
 };
