@@ -3,6 +3,8 @@ import tokenGen from '../src/helpers/tokenGen';
 export const recordPatches = {
   comment: 'lorem ipsum dolor sit amet',
   location: '-94.68589980000002, 46.729553',
+  status: 'resolved',
+  invalidStatus: 'gibberish',
 };
 
 export const records = {
