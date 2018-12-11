@@ -1,4 +1,4 @@
-import { sampleValidUser, sampleInvalidUser } from './helpers';
+import { user } from './helpers';
 
 export default ({ server, chai, expect, ROOT_URL }) => {
   describe('Users', () => {
@@ -7,7 +7,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
         chai
           .request(server)
           .post(`${ROOT_URL}/auth/signup`)
-          .send(sampleInvalidUser)
+          .send(user.invalid)
           .end((err, { body, status }) => {
             expect(status).eq(400);
             expect(body.errors).to.be.an.instanceof(Array);
@@ -19,7 +19,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
         chai
           .request(server)
           .post(`${ROOT_URL}/auth/signup`)
-          .send(sampleValidUser)
+          .send(user.valid)
           .end((err, { body, status }) => {
             expect(status).eq(201);
             expect(body.data[0]).have.own.property('user');
@@ -32,7 +32,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
         chai
           .request(server)
           .post(`${ROOT_URL}/auth/signup`)
-          .send(sampleValidUser)
+          .send(user.valid)
           .end((err, { status }) => {
             expect(status).eq(409);
             done();
@@ -45,7 +45,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
         chai
           .request(server)
           .post(`${ROOT_URL}/auth/login`)
-          .send({ ...sampleValidUser, ...{ username: undefined } })
+          .send({ ...user.valid, ...{ username: undefined } })
           .end((err, { body, status }) => {
             expect(status).eq(400);
             expect(body.errors).to.be.an.instanceof(Array);
@@ -57,7 +57,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
         chai
           .request(server)
           .post(`${ROOT_URL}/auth/login`)
-          .send(sampleValidUser)
+          .send(user.valid)
           .end((err, { body, status }) => {
             expect(status).eq(200);
             expect(body.data[0]).have.own.property('user');
