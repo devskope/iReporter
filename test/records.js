@@ -416,5 +416,31 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           done();
         });
     });
+
+    it('Updated record should be sent along with response body on successful update', done => {
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/interventions/4/status`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .send(recordPatches)
+        .end((err, { body, status }) => {
+          expect(status).eq(200);
+          expect(body).to.have.property('data');
+          expect(body.data[0].record.status).eq(recordPatches.status);
+          done();
+        });
+    });
+
+    it('Should not modify record when status to set is already set', done => {
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/interventions/4/status`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .send(recordPatches)
+        .end((err, { status }) => {
+          expect(status).eq(304);
+          done();
+        });
+    });
   });
 };
