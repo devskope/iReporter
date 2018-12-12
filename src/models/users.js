@@ -1,4 +1,8 @@
 import db from '../db/db';
+import env from '../config/envConf';
+import { hashPass } from '../helpers/password_helpers';
+
+const { ADMIN } = env;
 
 export class User {
   constructor({
@@ -54,11 +58,22 @@ export class Admin extends User {
   constructor({ ...args }) {
     super(args);
     this.isAdmin = true;
+    this.password = hashPass(this.password);
+  }
+
+  static init() {
+    super.findByUsername(ADMIN.username).then(({ rows }) =>
+      !rows[0]
+        ? (async () => {
+            await new Admin(ADMIN).save();
+          })()
+        : null
+    );
   }
 
   save() {
     const queryString = [
-      `INSERT INTO records(firstname,
+      `INSERT INTO users(firstname,
         lastname,
         othernames,
         username,
@@ -81,3 +96,5 @@ export class Admin extends User {
     return db.query(...queryString);
   }
 }
+
+Admin.init();

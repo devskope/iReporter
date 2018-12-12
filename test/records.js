@@ -1,5 +1,6 @@
 import { RedFlag, Intervention } from '../src/models/records';
 import { recordPatches, records, user } from './helpers';
+import env from '../src/config/envConf';
 
 export default ({ server, chai, expect, ROOT_URL }) => {
   let authToken;
@@ -354,6 +355,92 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             done();
           });
       });
+    });
+  });
+
+  describe('Order Status mutations', () => {
+    let adminToken;
+    before(done => {
+      chai
+        .request(server)
+        .post(`${ROOT_URL}/auth/login`)
+        .send(env.ADMIN)
+        .end((err, { body }) => {
+          [{ token: adminToken }] = body.data;
+          done();
+        });
+    });
+
+    it('Non-admin should not mutate record status', done => {
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/interventions/4/status`)
+        .set('authorization', `Bearer ${authToken}`)
+        .send(recordPatches)
+        .end((err, { body, status }) => {
+          expect(status).eq(401);
+          expect(body).to.have.property('errors');
+          expect(body.errors[0]).eq(
+            'you do not have sufficient privileges to access the requested resouce'
+          );
+          done();
+        });
+    });
+
+    it('Admin should not set an invalid status', done => {
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/red-flags/2/status`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .send({ status: recordPatches.invalidStatus })
+        .end((err, { body, status }) => {
+          expect(status).eq(422);
+          expect(body).to.have.property('errors');
+          expect(body.errors[0]).eq(
+            `cannot parse invalid status "${recordPatches.invalidStatus}".`
+          );
+          done();
+        });
+    });
+
+    it('Admin can mutate record status', done => {
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/red-flags/2/status`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .send(recordPatches)
+        .end((err, { body, status }) => {
+          expect(status).eq(200);
+          expect(body).to.have.property('data');
+          expect(body.data[0]).to.have.property('message');
+          done();
+        });
+    });
+
+    it('Updated record should be sent along with response body on successful update', done => {
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/interventions/4/status`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .send(recordPatches)
+        .end((err, { body, status }) => {
+          expect(status).eq(200);
+          expect(body).to.have.property('data');
+          expect(body.data[0].record.status).eq(recordPatches.status);
+          done();
+        });
+    });
+
+    it('Should not modify record when status to set is already set', done => {
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/interventions/4/status`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .send(recordPatches)
+        .end((err, { status }) => {
+          expect(status).eq(304);
+          done();
+        });
     });
   });
 };

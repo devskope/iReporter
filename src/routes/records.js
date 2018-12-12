@@ -8,6 +8,7 @@ import {
 } from '../middlewares/sanitizeRequest';
 import loadRecordByID from '../middlewares/loadRecordByID';
 import validUser from '../middlewares/validUser';
+import onlyAdmin from '../middlewares/onlyAdmin';
 
 const router = new Router();
 
@@ -19,13 +20,16 @@ router.post(
   verifyRequestTypes,
   redFlagController.createRecord
 );
+
 router.get('/red-flags', validUser, redFlagController.fetchAllRecords);
+
 router.get(
   '/red-flags/:id',
   validUser,
   loadRecordByID('red-flag'),
   redFlagController.fetchRecordByID
 );
+
 router.patch(
   '/red-flags/:id/comment',
   validUser,
@@ -34,6 +38,17 @@ router.patch(
   loadRecordByID('red-flag'),
   redFlagController.updateComment
 );
+
+router.patch(
+  '/red-flags/:id/status',
+  validUser,
+  onlyAdmin,
+  checkRequired('status'),
+  verifyRequestTypes,
+  loadRecordByID('red-flag'),
+  redFlagController.updateStatus
+);
+
 router.patch(
   '/red-flags/:id/location',
   validUser,
@@ -42,6 +57,7 @@ router.patch(
   loadRecordByID('red-flag'),
   redFlagController.updateLocation
 );
+
 router.delete(
   '/red-flags/:id',
   validUser,
@@ -85,6 +101,16 @@ router.patch(
   verifyRequestTypes,
   loadRecordByID('intervention'),
   interventionController.updateLocation
+);
+
+router.patch(
+  '/interventions/:id/status',
+  validUser,
+  onlyAdmin,
+  checkRequired('status'),
+  verifyRequestTypes,
+  loadRecordByID('intervention'),
+  interventionController.updateStatus
 );
 
 router.delete(
