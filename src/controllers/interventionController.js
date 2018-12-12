@@ -47,6 +47,17 @@ const updateLocation = ({ body, record }, res) =>
         message: 'Location unchanged, nothing to update',
       });
 
+const updateStatus = ({ body, record }, res) =>
+  record.status !== body.status
+    ? Intervention.patch(record.id, body.status, 'status').then(({ id }) =>
+        successResponse(res, {
+          id,
+          message: 'Updated intervention record’s status',
+          record: { ...record, ...{ status: body.status } },
+        })
+      )
+    : successResponse(res, {}, 304);
+
 const deleteRecordByID = ({ record }, res) =>
   Intervention.delete(record.id).then(() =>
     successResponse(res, {
@@ -61,5 +72,6 @@ export default {
   fetchRecordByID,
   updateComment,
   updateLocation,
+  updateStatus,
   deleteRecordByID,
 };

@@ -10,16 +10,15 @@ export const validTypes = {
   password: String(),
 };
 
-export const checkRequired = checkWhat => (req, res, next) => {
+export const checkRequired = paramToCheck => (req, res, next) => {
   const { body } = req;
   const missingFields = [];
 
-  switch (checkWhat) {
+  switch (paramToCheck) {
     case 'comment':
-      if (!body.comment) missingFields.push('comment');
-      break;
     case 'location':
-      if (!body.location) missingFields.push('location');
+    case 'status':
+      if (!body[paramToCheck]) missingFields.push(paramToCheck);
       break;
     case 'record':
       missingFields.push(
