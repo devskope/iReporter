@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign up | iReporter</title>
-  <link rel="stylesheet" href="../assets/css/nustyle.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
 <body>
@@ -20,30 +20,34 @@
     </div>
   </nav>
   <main class="auth">
-    <form class="auth__form">
+    <form class="auth__form auth__form--signup">
       <div class="auth__title">
         <h2 class="main-text">Signup</h2>
         <p class="sub-text">Start reporting</p>
       </div>
-      <div class="auth__form-field">
-        <label for="reg_fullname">Name</label>
-        <input type="text" id="reg_fullname" placeholder="Ahmed Obi">
+      <div class="form-field">
+        <label for="reg-first-name">First Name</label>
+        <input type="text" id="reg-first-name" placeholder="Ahmed">
       </div>
-      <div class="auth__form-field">
-        <label for="reg_fullname">Username</label>
-        <input type="text" id="reg_fullname" placeholder="Ahmed Obi">
+      <div class="form-field">
+        <label for="reg-last-name">Surname</label>
+        <input type="text" id="reg-last-name" placeholder="Obi">
       </div>
-      <div class="auth__form-field">
-        <label for="reg_email">Email</label>
-        <input type="email" id="reg_email" placeholder="email@example.com">
+      <div class="form-field">
+        <label for="reg-username">Username</label>
+        <input type="text" id="reg-username" placeholder="Ahmed Obi">
       </div>
-      <div class="auth__form-field">
-        <label for="reg_phone">Phone</label>
-        <input type="tel" id="reg_phone" placeholder="0812 345 6789">
+      <div class="form-field">
+        <label for="reg-email">Email</label>
+        <input type="email" id="reg-email" placeholder="email@example.com">
       </div>
-      <div class="auth__form-field">
-        <label for="reg_pass">Password</label>
-        <input type="password" id="reg_pass" placeholder="******">
+      <div class="form-field">
+        <label for="reg-phone">Phone</label>
+        <input type="tel" id="reg-phone" placeholder="0812 345 6789">
+      </div>
+      <div class="form-field">
+        <label for="reg-password">Password</label>
+        <input type="password" id="reg-password" placeholder="******">
       </div>
       <button class="btn btn--submit" type="submit">Create account</button>
       <div class="auth__hint-field">
@@ -59,11 +63,12 @@
       <a class="footer__link" href="login.html" target="_blank">Login</a>
       <a class="footer__link" href="register.html" target="_blank">Register</a>
     </div>
-    <div <p class="copyright">iReporter &copy;2018</p>
+    <div>
+      <p class="copyright">iReporter &copy;2018</p>
     </div>
   </footer>
 
-  <script src="js/app.js"></script>
+  <script src="../assets/js/auth.js"></script>
 </body>
 
 </html>

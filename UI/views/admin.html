@@ -1,228 +1,110 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manage records | iReporter</title>
-    <link rel="stylesheet" href="../assets/css/style.css" />
-  </head>
-  <body>
-    <header>
-      <nav class="top-nav">
-        <span class="top-nav__toggle"></span>
-        <a href="#" class="top-nav__logo"
-          ><img src="../assets/images/logo.svg" alt="logo"
-        /></a>
-        <ul class="top-nav__list">
-          <li class="top-nav__list-item">
-            <a href="../../index.html" class="top-nav__link">Home</a>
-          </li>
-          <li class="top-nav__list-item">
-            <a href="" class="top-nav__link">Logout</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
-    <div class="sidebar-header top-pad">
-      <div class="status__filter-bar">
-        <div class="status__filter-button-holder">
-          <button class="status__filter-button" type="button">
-            <span class="status__filter-text">Unmarked</span>
-          </button>
-          <button class="status__filter-button" type="button">
-            <span class="status__filter-text">Under Investigation</span>
-          </button>
-          <button class="status__filter-button" type="button">
-            <span class="status__filter-text">Resolved</span>
-          </button>
-          <button class="status__filter-button" type="button">
-            <span class="status__filter-text">Rejected</span>
-          </button>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iReporter</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+  <nav class="topbar">
+    <div class="topbar__wrapper">
+      <a href="#" class="topbar__brand">iReporter</a>
+      <ul class="links">
+        <li><a class="topbar__link" href="../../index.html">Home</a></li>
+        <li><a href="../../index.html" class="btn--nav">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+    <div class="dashboard">
+      <aside class="dashboard__sidebar dashboard__sidebar--admin">
+        <div class="dashboard__stat">
+          <p class="dashboard__stat-title">Drafts</p>
+          <p class="dashboard__stat-count">10</p>
         </div>
+        <div class="dashboard__stat">
+          <p class="dashboard__stat-title">Resolved</p>
+          <p class="dashboard__stat-count">20</p>
+        </div>
+        <div class="dashboard__stat">
+          <p class="dashboard__stat-title">Under Investigation</p>
+          <p class="dashboard__stat-count">15</p>
+        </div>
+        <div class="dashboard__stat">
+          <p class="dashboard__stat-title">Rejected</p>
+          <p class="dashboard__stat-count">12</p>
+        </div>
+      </aside>
+      <main class="dashboard__main">
+        <div class="dashboard__filters">
+          <select class="dashboard__filters-report-types">
+            <option disabled>Filter</option>
+            <option value="all" default>All</option>
+            <option value="red-flag">Red Flag</option>
+            <option value="intervention">Intervention</option>
+          </select>
+          <ul class="dashboard__filters-categories">
+            <li class="active">All</li>
+            <li>Draft</li>
+            <li>Resolved</li>
+            <li>Rejected</li>
+          </ul>
+        </div>
+        <section class="dashboard__main-content">
+          <div class="record">
+            <img class="record__image" src="../assets/images/crashSite.jpeg" alt="crash site" >
+            <div class="record__details">
+              <h4 class="record__title">Title of Report</h4>
+              <p class="record__comment">A platform to report corrupt acts and issues affecting the community while
+                also seeking government's quick intervention</p>
+            </div>
+            <button class="record__more-btn" data-triger="dashboard-detail-modal">View More</button>
+          </div>
+        </section>
+      </main>
+    </div>
+    <footer class="footer">
+      <div class="copyright">
+        <p>iReporter &copy;2018</p>
       </div>
-      <div class="profile__record-div">
-        <div class="feed__header feed__header--profile">
-          <form class="feed-filter feed-filter--profile ">
-            <fieldset>
-              <input
-                checked
-                class="feed-filter__radio"
-                type="radio"
-                name="profile-feed-filter-radio"
-                id="records-all"
-                value="all"
-              />
-              <label class="feed-filter__tag" for="records-all">All </label>
+    </footer>
 
-              <input
-                class="feed-filter__radio"
-                type="radio"
-                name="profile-feed-filter-radio"
-                id="records-draft"
-                value="intervention"
-              />
-              <label class="feed-filter__tag" for="records-draft">
-                Interventions
-              </label>
-
-              <input
-                class="feed-filter__radio"
-                type="radio"
-                name="profile-feed-filter-radio"
-                id="records-red"
-                value="red-flag"
-              />
-              <label class="feed-filter__tag" for="records-red">
-                Red-Flags
-              </label>
-            </fieldset>
-          </form>
-          <h2 class="feed-filter__label">Unmarked</h2>
+    <!-- view detail modal -->
+    <div class="modal-wrapper modal-wrapper--admin ">
+      <div class="detail-modal">
+        <div class="detail-modal__header">
+          <h2 class="detail-modal__title">Record Title</h2>
+          <button class="detail-modal__close">&times;</button>
         </div>
-        <div class="profile__record-list thin-scroll">
-          <div class="profile__record-item">
-            <div class="profile__record-image-div">
-              <img
-                class="profile__record-image"
-                src="../assets/images/234864-1600x1000.jpg"
-                alt=""
-              />
-            </div>
-            <div class="profile__record-details">
-              <h2 class="profile__record-title">
-                some people i'm suspicious of
-              </h2>
-              <p class="profile__record-summary thin-scroll">
-                True story accompanying image At the foothills of the Himalayas
-                lies the rural district of Jhanjharpur. Located on the banks of
-                the River Kamala, this is a fertile region for agriculture. Yet
-                with little money for irrigation or equipment, life remains a
-                daily struggle for the many small-scale farmers. Take Murali*
-                for example. He wanted to expand his business with new seeds and
-                a pond, but lacked the funds to do it. Like many others, he saw
-                no option but to apply for a government agricultural subsidy.
-                Yet instead of granting money, Murali says, the official
-                demanded it – refusing to process the application unless Murali
-                paid a bribe. Unable to pay, Murali left empty-handed. He
-                returned many times, but nothing changed.
-              </p>
-            </div>
+        <div class="detail-modal__content">
+          <div class="detail-modal__map">
+            <img src="http://www.atsrhapsodynoidaextension.in/images/location-map.jpg" alt="location">
           </div>
-          <div class="profile__record-item">
-            <div class="profile__record-image-div">
-              <img
-                class="profile__record-image"
-                src="../assets/images/234864-1600x1000.jpg"
-                alt=""
-              />
-            </div>
-            <div class="profile__record-details">
-              <h2 class="profile__record-title">
-                some people i'm suspicious of
-              </h2>
-              <p class="profile__record-summary thin-scroll">
-                True story accompanying image At the foothills of the Himalayas
-                lies the rural district of Jhanjharpur. Located on the banks of
-                the River Kamala, this is a fertile region for agriculture. Yet
-                with little money for irrigation or equipment, life remains a
-                daily struggle for the many small-scale farmers. Take Murali*
-                for example. He wanted to expand his business with new seeds and
-                a pond, but lacked the funds to do it. Like many others, he saw
-                no option but to apply for a government agricultural subsidy.
-                Yet instead of granting money, Murali says, the official
-                demanded it – refusing to process the application unless Murali
-                paid a bribe. Unable to pay, Murali left empty-handed. He
-                returned many times, but nothing changed.
-              </p>
-            </div>
+          <h3 class="detail-modal__content-title">Record title</h3>
+          <span>by: <a href="#">oguntoye opeyemi</a></span>
+          <p class="detail-modal__comment">A platform to report corrupt acts and issues affecting the community while
+            also seeking government's quick intervention</p>
+          <h4 class="detail-modal__sub">Media</h4>
+          <div class="detail-modal__media">
+            <img src="../assets/images/crashSite.jpeg" alt="">
           </div>
-          <div class="profile__record-item">
-            <div class="profile__record-image-div">
-              <img
-                class="profile__record-image"
-                src="../assets/images/234864-1600x1000.jpg"
-                alt=""
-              />
-            </div>
-            <div class="profile__record-details">
-              <h2 class="profile__record-title">
-                some people i'm suspicious of
-              </h2>
-              <p class="profile__record-summary thin-scroll">
-                True story accompanying image At the foothills of the Himalayas
-                lies the rural district of Jhanjharpur. Located on the banks of
-                the River Kamala, this is a fertile region for agriculture. Yet
-                with little money for irrigation or equipment, life remains a
-                daily struggle for the many small-scale farmers. Take Murali*
-                for example. He wanted to expand his business with new seeds and
-                a pond, but lacked the funds to do it. Like many others, he saw
-                no option but to apply for a government agricultural subsidy.
-                Yet instead of granting money, Murali says, the official
-                demanded it – refusing to process the application unless Murali
-                paid a bribe. Unable to pay, Murali left empty-handed. He
-                returned many times, but nothing changed.
-              </p>
-            </div>
-          </div>
-          <div class="profile__record-item">
-            <div class="profile__record-image-div">
-              <img
-                class="profile__record-image"
-                src="../assets/images/234864-1600x1000.jpg"
-                alt=""
-              />
-            </div>
-            <div class="profile__record-details">
-              <h2 class="profile__record-title">
-                some people i'm suspicious of
-              </h2>
-              <p class="profile__record-summary thin-scroll">
-                True story accompanying image At the foothills of the Himalayas
-                lies the rural district of Jhanjharpur. Located on the banks of
-                the River Kamala, this is a fertile region for agriculture. Yet
-                with little money for irrigation or equipment, life remains a
-                daily struggle for the many small-scale farmers. Take Murali*
-                for example. He wanted to expand his business with new seeds and
-                a pond, but lacked the funds to do it. Like many others, he saw
-                no option but to apply for a government agricultural subsidy.
-                Yet instead of granting money, Murali says, the official
-                demanded it – refusing to process the application unless Murali
-                paid a bribe. Unable to pay, Murali left empty-handed. He
-                returned many times, but nothing changed.
-              </p>
-            </div>
-          </div>
-          <div class="profile__record-item">
-            <div class="profile__record-image-div">
-              <img
-                class="profile__record-image"
-                src="../assets/images/234864-1600x1000.jpg"
-                alt=""
-              />
-            </div>
-            <div class="profile__record-details">
-              <h2 class="profile__record-title">
-                some people i'm suspicious of
-              </h2>
-              <p class="profile__record-summary thin-scroll">
-                True story accompanying image At the foothills of the Himalayas
-                lies the rural district of Jhanjharpur. Located on the banks of
-                the River Kamala, this is a fertile region for agriculture. Yet
-                with little money for irrigation or equipment, life remains a
-                daily struggle for the many small-scale farmers. Take Murali*
-                for example. He wanted to expand his business with new seeds and
-                a pond, but lacked the funds to do it. Like many others, he saw
-                no option but to apply for a government agricultural subsidy.
-                Yet instead of granting money, Murali says, the official
-                demanded it – refusing to process the application unless Murali
-                paid a bribe. Unable to pay, Murali left empty-handed. He
-                returned many times, but nothing changed.
-              </p>
-            </div>
-          </div>
+          <h4 class="detail-modal__sub">Status</h4>
+          <select class="detail-modal__status-toggle">
+            <option value="draft">Draft</option>
+            <option value="under investigation">Under Investigation</option>
+            <option value="rejected">Rejected</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </div>
+        <div class="detail-modal__footer">
+          <button class="detail-modal__close">Close</button>
         </div>
       </div>
     </div>
-    <script src="../assets/js/nav.js"></script>
+
+    <script src="../assets/js/dash.js"></script>
   </body>
-</html>
+
+  </html>
