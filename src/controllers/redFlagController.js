@@ -1,5 +1,6 @@
 import { RedFlag } from '../models/records';
 import successResponse from '../helpers/successResponse';
+import handleError from '../helpers/errorHelper';
 
 const createRecord = (req, res) => {
   const { title, comment, location } = req.body;
@@ -21,31 +22,45 @@ const fetchAllRecords = (req, res) =>
 
 const fetchRecordByID = ({ record }, res) => successResponse(res, record);
 
-const updateComment = ({ body, record }, res) =>
-  record.comment !== body.comment
-    ? RedFlag.patch(record.id, body.comment, 'comment').then(({ id }) =>
-        successResponse(res, {
-          id,
-          message: 'Updated red-flag record’s comment',
-        })
-      )
-    : successResponse(res, {
-        id: record.id,
-        message: 'Comment unchanged, nothing to update',
-      });
+const updateComment = ({ body, editable, record }, res) => {
+  if (editable && record.comment !== body.comment) {
+    RedFlag.patch(record.id, body.comment, 'comment').then(({ id }) =>
+      successResponse(res, {
+        id,
+        message: 'Updated red-flag record’s comment',
+        record: { ...record, ...{ comment: body.comment } },
+      })
+    );
+  } else if (!editable) {
+    handleError(
+      res,
+      `Cannot change comment of red-flag record marked as "${record.status}"`,
+      403
+    );
+  } else {
+    successResponse(res, {}, 304);
+  }
+};
 
-const updateLocation = ({ body, record }, res) =>
-  record.location !== body.location
-    ? RedFlag.patch(record.id, body.location, 'location').then(({ id }) =>
-        successResponse(res, {
-          id,
-          message: 'Updated red-flag record’s location',
-        })
-      )
-    : successResponse(res, {
-        id: record.id,
-        message: 'Location unchanged, nothing to update',
-      });
+const updateLocation = ({ body, editable, record }, res) => {
+  if (editable && record.location !== body.location) {
+    RedFlag.patch(record.id, body.location, 'location').then(({ id }) =>
+      successResponse(res, {
+        id,
+        message: 'Updated red-flag record’s location',
+        record: { ...record, ...{ location: body.location } },
+      })
+    );
+  } else if (!editable) {
+    handleError(
+      res,
+      `Cannot change location of red-flag record marked as "${record.status}"`,
+      403
+    );
+  } else {
+    successResponse(res, {}, 304);
+  }
+};
 
 const updateStatus = ({ body, record }, res) =>
   record.status !== body.status

@@ -8,9 +8,16 @@ export default type => (req, res, next) => {
   Record.getOneByID(jsonParse(id)).then(({ rows }) =>
     rows[0] && rows[0].type === type
       ? (() => {
+          if (
+            !['under investigation', 'resolved', 'rejeted'].includes(
+              rows[0].status
+            )
+          ) {
+            req.editable = true;
+          }
           req.record = { ...rows[0] };
           next();
         })()
-      : handleError(res, `No record exists with id '${id}'`, 404)
+      : handleError(res, `No ${type} record exists with id '${id}'`, 404)
   );
 };
