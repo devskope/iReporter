@@ -2,10 +2,15 @@ import { Intervention } from '../models/records';
 import successResponse from '../helpers/successResponse';
 import handleError from '../helpers/errorHelper';
 
-const createRecord = (req, res) => {
-  const { title, comment, location } = req.body;
+const createRecord = ({ body, user }, res) => {
+  const { title, comment, location } = body;
 
-  const newIntervention = new Intervention({ title, comment, location });
+  const newIntervention = new Intervention({
+    title,
+    comment,
+    location,
+    createdBy: user.id,
+  });
   newIntervention.save().then(({ rows }) => {
     successResponse(
       res,
@@ -22,14 +27,24 @@ const fetchAllRecords = (req, res) =>
 
 const fetchRecordByID = ({ record }, res) => successResponse(res, record);
 
-const updateComment = ({ body, editable, record }, res) => {
-  if (editable && record.comment !== body.comment) {
+const updateComment = ({ body, editable, record, user }, res) => {
+  if (
+    editable &&
+    record.comment !== body.comment &&
+    record.created_by === user.id
+  ) {
     Intervention.patch(record.id, body.comment, 'comment').then(({ id }) =>
       successResponse(res, {
         id,
         message: 'Updated intervention record’s comment',
         record: { ...record, ...{ comment: body.comment } },
       })
+    );
+  } else if (editable && record.created_by !== user.id) {
+    handleError(
+      res,
+      `Cannot change comment of intervention record you did not create`,
+      403
     );
   } else if (!editable) {
     handleError(
@@ -44,14 +59,24 @@ const updateComment = ({ body, editable, record }, res) => {
   }
 };
 
-const updateLocation = ({ body, editable, record }, res) => {
-  if (editable && record.location !== body.location) {
+const updateLocation = ({ body, editable, record, user }, res) => {
+  if (
+    editable &&
+    record.location !== body.location &&
+    record.created_by === user.id
+  ) {
     Intervention.patch(record.id, body.location, 'location').then(({ id }) =>
       successResponse(res, {
         id,
         message: 'Updated intervention record’s location',
         record: { ...record, ...{ location: body.location } },
       })
+    );
+  } else if (editable && record.created_by !== user.id) {
+    handleError(
+      res,
+      `Cannot change location of intervention record you did not create`,
+      403
     );
   } else if (!editable) {
     handleError(
@@ -77,19 +102,28 @@ const updateStatus = ({ body, record }, res) =>
       )
     : successResponse(res, {}, 304);
 
-const deleteRecordByID = ({ editable, record }, res) =>
-  editable
-    ? Intervention.delete(record.id).then(() =>
-        successResponse(res, {
-          id: record.id,
-          message: 'Intervention record has been deleted',
-        })
-      )
-    : handleError(
-        res,
-        `Cannot delete intervention record marked as "${record.status}"`,
-        403
-      );
+const deleteRecordByID = ({ editable, record, user }, res) => {
+  if (editable && record.created_by === user.id) {
+    Intervention.delete(record.id).then(() =>
+      successResponse(res, {
+        id: record.id,
+        message: 'Intervention record has been deleted',
+      })
+    );
+  } else if (editable) {
+    handleError(
+      res,
+      `Cannot delete an intervention record you did not create"`,
+      403
+    );
+  } else {
+    handleError(
+      res,
+      `Cannot delete intervention record marked as "${record.status}"`,
+      403
+    );
+  }
+};
 
 export default {
   createRecord,
