@@ -12,9 +12,9 @@
   <nav class="topbar">
     <div class="topbar__wrapper">
       <a href="../../index.html" class="topbar__brand">iReporter</a>
+      <p class="username btn--nav">Hi Skope</p>
       <ul class="links">
-        <li><a class="topbar__link" href="../../index.html">Home</a></li>
-        <li><a class="topbar__link" href="./profile.html" >Profile</a></li>
+        <li><a class="topbar__link" href="./user.html">Dashboard</a></li>
         <li><a href="../../index.html" class="btn--nav">Logout</a></li>
       </ul>
     </div>
@@ -24,19 +24,19 @@
         <button class="dashboard__sidebar-btn new">NEW RECORD</button>
         <div class="dashboard__stat">
           <p class="dashboard__stat-title">Drafts</p>
-          <p class="dashboard__stat-count">10</p>
+          <p class="dashboard__stat-count">2</p>
         </div>
         <div class="dashboard__stat">
           <p class="dashboard__stat-title">Resolved</p>
-          <p class="dashboard__stat-count">20</p>
+          <p class="dashboard__stat-count">5</p>
         </div>
         <div class="dashboard__stat">
           <p class="dashboard__stat-title">Under Investigation</p>
-          <p class="dashboard__stat-count">15</p>
+          <p class="dashboard__stat-count">1</p>
         </div>
         <div class="dashboard__stat">
           <p class="dashboard__stat-title">Rejected</p>
-          <p class="dashboard__stat-count">12</p>
+          <p class="dashboard__stat-count">8</p>
         </div>
       </aside>
       <main class="dashboard__main">
@@ -44,8 +44,8 @@
           <select class="dashboard__filters-report-types">
             <option disabled>Filter</option>
             <option value="all" default>All</option>
-            <option value="red-flag">Red Flag</option>
-            <option value="intervention">Intervention</option>
+            <option value="red-flag">Red Flags</option>
+            <option value="intervention">Interventions</option>
           </select>
           <ul class="dashboard__filters-categories">
             <li class="active">All</li>
@@ -74,7 +74,7 @@
     </footer>
 
     <!-- view detail modal -->
-    <div class="modal-wrapper modal-wrapper--dash ">
+    <div class="modal-wrapper modal-wrapper--user ">
       <div class="detail-modal">
         <div class="detail-modal__header">
           <h2 class="detail-modal__title">Record Title</h2>
@@ -85,7 +85,7 @@
             <img src="http://www.atsrhapsodynoidaextension.in/images/location-map.jpg" alt="location">
           </div>
           <h3 class="detail-modal__content-title">Record title</h3>
-          <span>by: <a href="#">oguntoye opeyemi</a></span>
+          <span>by: <a href="#">oguntoye opeyemi</a>
           <p class="detail-modal__comment">A platform to report corrupt acts and issues affecting the community while
             also seeking government's quick intervention</p>
           <h4 class="detail-modal__sub">Media</h4>
@@ -95,6 +95,7 @@
         </div>
         <div class="detail-modal__footer">
           <button class="detail-modal__close">Close</button>
+          <img src="../assets/images/edit-interface-symbol-of-pencil-outline.svg" alt="" class="detail-modal__edit">
         </div>
       </div>
     </div>

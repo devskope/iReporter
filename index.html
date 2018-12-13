@@ -1,97 +1,95 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | iReporter</title>
-    <link rel="stylesheet" href="./UI/assets/css/style.css" />
-  </head>
-  <body>
-    <header>
-      <nav class="top-nav">
-        <span class="top-nav__toggle"></span>
-        <a href="#" class="top-nav__logo"
-          ><img src="./UI/assets/images/logo.svg" alt="logo"
-        /></a>
-        <ul class="top-nav__list">
-          <li class="top-nav__list-item">
-            <a href="./UI/views/add-edit.html" class="top-nav__link">Create Record</a>
-          </li>
-          <li class="top-nav__list-item">
-            <a href="#" class="top-nav__link">About Us</a>
-          </li>
-          <li class="top-nav__list-item">
-            <a href="./UI/views/login.html" class="top-nav__link">Login</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
+<html lang="en">
 
-    <section class="hero top-pad">
-      <div class="hero-slider">
-        <div class="hero-item">
-          <div class="hero-item__image-div">
-            <img class="hero-item__image" src="./UI/assets/images/234864-1600x1000.jpg" />
-          </div>
-          <div class="hero-item__details">
-            <h2 class="hero-item__title">Title</h2>
-            <p class="hero-item__summary">
-              Description Description Description Description Description
-              Description Description Description Description Description
-              Description DescriptionDescription Description Description
-              Description Description Description Description Description
-              Description Description
-            </p>
-          </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | iReporter</title>
+  <link rel="stylesheet" href="./UI//assets/css/style.css">
+</head>
+
+<body>
+  <nav class="topbar">
+    <div class="topbar__wrapper">
+      <a href="#" class="topbar__brand">iReporter</a>
+      <ul class="links">
+        <li><a class="topbar__link active" href="#">Home</a></li>
+        <li><a class="topbar__link" href="./UI/views/user.html">Dashboard</a></li>
+        <li><a class="topbar__link" href="">About us</a></li>
+        <li><a href="./UI/views/signup.html" class="btn--nav">Get started</a></li>
+      </ul>
+    </div>
+  </nav>
+  <section class="banner">
+    <div class="banner__message">
+      <h1 class="banner__main-text">Reporting Corruption &amp;<br />seeking intervention</h1>
+      <p class="banner__sub-text">A platform to report corrupt acts and issues <br /> affecting the community while
+        also
+        seeking <br /> government's quick intervention</p>
+      <button class="btn access">Start Reporting</button>
+    </div>
+    <div class="banner__image">
+      <img src="./UI/assets/images/selfie.svg" alt="capture">
+    </div>
+  </section>
+  <section class="join-us">
+    <div class="wrapper">
+      <h1 class="join-us__text">How you can Help &quest;</h1>
+      <p class="join-us__text-sub">A platform to report corrupt acts and issues <br /> affecting the community while
+        also
+        seeking <br /> government's quick intervention</p>
+      <button class="btn access">Get started</button>
+    </div>
+    <div class="info-block-wrapper">
+      <div class="info-block__first">
+        <div class="card">
+          <img src="./UI/assets/images/reliability.svg" class="info-block__icon">
+          <h4 class="info-block__text">Be Truthful</h4>
+          <p class="info-block__sub-text">A platform to report corrupt acts and issues affecting the community while
+            also seeking government's quick intervention</p>
+        </div>
+        <div class="card">
+          <img src="./UI/assets/images/eye-closed.svg" class="info-block__icon">
+          <h4 class="info-block__text">No Illicit Content</h4>
+          <p class=" info-block__sub-text">A platform
+            to report corrupt acts and issues affecting the community while also seeking government's quick
+            intervention</p>
         </div>
       </div>
-    </section>
-    <div class="content">
-      <section class="feed">
-        <div class="feed__header">
-          <form class="feed-filter">
-            <fieldset>
-              <input
-                checked
-                class="feed-filter__radio"
-                type="radio"
-                name="feed-filter-radio"
-                id="records-all"
-                value="all"
-              />
-              <label class="feed-filter__tag" for="records-all">All </label>
-
-              <input
-                class="feed-filter__radio"
-                type="radio"
-                name="feed-filter-radio"
-                id="records-interventions"
-                value="intervention"
-              />
-              <label class="feed-filter__tag" for="records-interventions">
-                Interventions
-              </label>
-
-              <input
-                class="feed-filter__radio"
-                type="radio"
-                name="feed-filter-radio"
-                id="records-red"
-                value="red-flag"
-              />
-              <label class="feed-filter__tag" for="records-red">
-                Red-Flags
-              </label>
-            </fieldset>
-          </form>
-          <h2 class="feed-filter__label">Newest Records</h2>
+      <div class="info-block__second">
+        <div class="card">
+          <img src="./UI/assets/images/bullseye.svg" alt="word-image" class="info-block__icon">
+          <h4 class="info-block__text">Be Concise</h4>
+          <p class="info-block__sub-text">A platform to report corrupt acts and issues affecting the community while
+            also seeking government's quick intervention</p>
         </div>
-        <div class="record-list">
+        <div class="card">
+          <img src="./UI/assets/images/reliability.svg" alt="word-image" class="info-block__icon">
+          <h4 class="info-block__text">Be Truthful</h4>
+          <p class="info-block__sub-text">A platform to report corrupt acts and issues affecting the community while
+            also seeking government's quick intervention</p>
         </div>
-      </section>
+      </div>
     </div>
-    <script src="./UI/assets/js/nav.js"></script>
-    <script src="./UI/assets/js/feed.js"></script>
-    <script src="./UI/assets/js/index.js"></script>
-  </body>
+  </section>
+  <section class="quotes">
+    <blockquote class="quotes__block">
+      <p class="quote__text">A platform to report corrupt acts and issues affecting the community while also seeking
+        for government's quick intervention.</p>
+    </blockquote>
+  </section>
+  <footer class="footer">
+    <div class="links-wrapper ">
+      <a class="footer__link" href="." target="_blank">Home</a>
+      <a class="footer__link" href="./about.html" target="_blank">About</a>
+      <a class="footer__link" href="./UI/views/login.html" target="_blank">Login</a>
+      <a class="footer__link" href="./UI/views/signup.html" target="_blank">Register</a>
+    </div>
+    <div>
+      <p class="copyright">iReporter &copy;2018</p>
+    </div>
+  </footer>
+  <script src="./UI/assets/js/index.js"></script>
+</body>
+
 </html>

@@ -1,53 +1,58 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Log In | iReporter</title>
-    <link rel="stylesheet" href="../assets/css/style.css" />
-  </head>
-  <body>
-    <header>
-      <nav class="top-nav">
-        <span class="top-nav__toggle"></span>
-        <a href="#" class="top-nav__logo"
-          ><img src="../assets/images/logo.svg" alt="logo"
-        /></a>
-        <ul class="top-nav__list">
-          <li class="top-nav__list-item">
-            <a href="../../index.html" class="top-nav__link">Home</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
-    <section class="wrapper wrapper--spaced">
-      <div class="auth">
-        <h2 class="auth__mode">Log in</h2>
+<html lang="en">
 
-        <form class="auth__form" id="login-form" action="POST">
-          <label class="form__label" for="login-username">username</label>
-          <input
-            class="auth__username"
-            type="text"
-            name="login-username"
-            id="login-username"
-            required
-          />
-          <label class="form__label" for="login-password">login</label>
-          <input
-            class="auth__password"
-            type="password"
-            name="login-password"
-            id="login-password"
-            required
-          />
-          <input class="auth__submit" type="submit" value="Log In" />
-          <small class="form__link"
-            >No account? <a href="./signup.html">Sign Up!</a></small
-          >
-        </form>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in | iReporter</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+  <nav class="topbar">
+    <div class="topbar__wrapper">
+      <a href="#" class="topbar__brand">iReporter</a>
+      <ul class="links">
+        <li><a class="topbar__link" href="../../index.html">Home</a></li>
+        <li><a class="topbar__link" href="#">About</a></li>
+        <li><a href="./signup.html" class="btn--nav">SIgn Up</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class="auth">
+    <form class="auth__form auth__form--login">
+      <div class="auth__title">
+        <h2 class="main-text">Login to</h2>
+        <p class="sub-text">Start reporting</p>
       </div>
-    </section>
-    <script src="../assets/js/nav.js"></script>
-  </body>
+      <div class="form-field">
+        <label for="login-username">Username</label>
+        <input class="form-field__login-username" type="text" id="login-username" placeholder="Ahmed Obi">
+      </div>
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input  class="form-field__login-password" type="password" id="login-password" placeholder="*******">
+      </div>
+      <button class="btn btn--submit" type="submit">Login</button>
+      <div class="auth__hint-field">
+        <p>Forgot Password? <a href="#">We can help</a></p>
+        <p>Need an account? <a href="./signup.html">Create one for free</a></p>
+      </div>
+    </form>
+  </main>
+  <footer class="footer">
+    <div class="links-wrapper ">
+      <a class="footer__link" href="home.html" target="_blank">Home</a>
+      <a class="footer__link" href="about.html" target="_blank">About</a>
+      <a class="footer__link" href="login.html" target="_blank">Login</a>
+      <a class="footer__link" href="register.html" target="_blank">Register</a>
+    </div>
+    <div>
+      <p class="copyright">iReporter &copy;2018</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/auth.js"></script>
+</body>
+
 </html>
