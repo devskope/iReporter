@@ -477,5 +477,26 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           done();
         });
     });
+
+    it('Should not delete record when record status has been mutated', done => {
+      chai
+        .request(server)
+        .delete(`${ROOT_URL}/red-flags/2`)
+        .set('authorization', `Bearer ${authToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(403);
+          expect(body.errors).is.an.instanceof(Array);
+        });
+
+      chai
+        .request(server)
+        .delete(`${ROOT_URL}/interventions/4`)
+        .set('authorization', `Bearer ${authToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(403);
+          expect(body.errors).is.an.instanceof(Array);
+          done();
+        });
+    });
   });
 };
