@@ -1,11 +1,18 @@
-import { RedFlag, Intervention } from '../src/models/records';
 import { recordPatches, records, user } from './helpers';
 import env from '../src/config/envConf';
 
 export default ({ server, chai, expect, ROOT_URL }) => {
   let authToken;
+  let adminToken;
   describe('Red-flag records', () => {
     before(done => {
+      chai
+        .request(server)
+        .post(`${ROOT_URL}/auth/login`)
+        .send(env.ADMIN)
+        .end((err, { body }) => {
+          [{ token: adminToken }] = body.data;
+        });
       chai
         .request(server)
         .post(`${ROOT_URL}/auth/login`)
@@ -15,7 +22,8 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           done();
         });
     });
-    describe('Fetching', () => {
+
+    describe('Fetching before creation', () => {
       it('Returns an empty array when no records exist', done => {
         chai
           .request(server)
@@ -28,19 +36,6 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
 
-      it('Should fetch all available red-flag records', async () => {
-        await new RedFlag(records.sampleValidRedFlag).save();
-        chai
-          .request(server)
-          .get(`${ROOT_URL}/red-flags/`)
-          .set('authorization', `Bearer ${authToken}`)
-          .end((err, { body, status }) => {
-            expect(status).eq(200);
-            expect(body.data).to.be.an.instanceof(Array);
-            expect(body.data[0]).to.be.an('object');
-          });
-      });
-
       it('Returns a not found response when specific record ID does not exist', done => {
         chai
           .request(server)
@@ -49,19 +44,6 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .end((err, { body, status }) => {
             expect(status).eq(404);
             expect(body.errors[0]).eq(`No red-flag record exists with id '10'`);
-            done();
-          });
-      });
-
-      it('Should fetch a specific red-flag record by ID', done => {
-        chai
-          .request(server)
-          .get(`${ROOT_URL}/red-flags/1`)
-          .set('authorization', `Bearer ${authToken}`)
-          .end((err, { body, status }) => {
-            expect(status).eq(200);
-            expect(body.data).to.be.an.instanceof(Array);
-            expect(body.data[0]).to.be.an('object');
             done();
           });
       });
@@ -130,7 +112,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
 
-      it('Creates a valid red-flag record', done => {
+      it('Creates a valid red-flag records', done => {
         chai
           .request(server)
           .post(`${ROOT_URL}/red-flags`)
@@ -139,6 +121,61 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .end((err, { body, status }) => {
             expect(status).eq(201);
             expect(body.data[0].message).eq('Created red-flag record');
+          });
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/red-flags`)
+          .set('authorization', `Bearer ${authToken}`)
+          .send(records.sampleValidRedFlag)
+          .end((err, { body, status }) => {
+            expect(status).eq(201);
+            expect(body.data[0].message).eq('Created red-flag record');
+          });
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/red-flags`)
+          .set('authorization', `Bearer ${authToken}`)
+          .send(records.sampleValidRedFlag)
+          .end((err, { body, status }) => {
+            expect(status).eq(201);
+            expect(body.data[0].message).eq('Created red-flag record');
+          });
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/red-flags`)
+          .set('authorization', `Bearer ${authToken}`)
+          .send(records.sampleValidRedFlag)
+          .end((err, { body, status }) => {
+            expect(status).eq(201);
+            expect(body.data[0].message).eq('Created red-flag record');
+            done();
+          });
+      });
+    });
+
+    describe('Fetching after creation', () => {
+      it('Should fetch all available red-flag records', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/red-flags/`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.an('object');
+            done();
+          });
+      });
+
+      it('Should fetch a specific red-flag record by ID', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/red-flags/1`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.an('object');
             done();
           });
       });
@@ -159,6 +196,32 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
 
+      it("Should not update comment of other's records", done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/red-flags/1/comment`)
+          .set('authorization', `Bearer ${adminToken}`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(403);
+            expect(body).to.have.property('errors');
+            done();
+          });
+      });
+
+      it("Should not update location of other's records", done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/red-flags/1/location`)
+          .set('authorization', `Bearer ${adminToken}`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(403);
+            expect(body).to.have.property('errors');
+            done();
+          });
+      });
+
       it('Should succesfully update location of record with valid id', done => {
         chai
           .request(server)
@@ -173,7 +236,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
 
-      it('Should return success when location patch equals original', () => {
+      it('Should return success when location patch equals original', done => {
         chai
           .request(server)
           .patch(`${ROOT_URL}/red-flags/1/location`)
@@ -181,10 +244,11 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .send(recordPatches)
           .end((err, { status }) => {
             expect(status).eq(304);
+            done();
           });
       });
 
-      it('Should succesfully update comment of record with valid id', () => {
+      it('Should succesfully update comment of record with valid id', done => {
         chai
           .request(server)
           .patch(`${ROOT_URL}/red-flags/1/comment`)
@@ -194,10 +258,11 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(status).eq(200);
             expect(body).to.have.property('data');
             expect(body.data[0]).to.have.property('message');
+            done();
           });
       });
 
-      it('Should return success when comment patch equals original', () => {
+      it('Should return success when comment patch equals original', done => {
         chai
           .request(server)
           .patch(`${ROOT_URL}/red-flags/1/comment`)
@@ -205,11 +270,23 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .send(recordPatches)
           .end((err, { status }) => {
             expect(status).eq(304);
+            done();
           });
       });
     });
     describe('Deletion', () => {
-      it('Should delete a record found by id', () => {
+      it("Should not delete other's records", done => {
+        chai
+          .request(server)
+          .delete(`${ROOT_URL}/red-flags/1`)
+          .set('authorization', `Bearer ${adminToken}`)
+          .end((err, { status }) => {
+            expect(status).eq(403);
+            done();
+          });
+      });
+
+      it('Should delete a record found by id', done => {
         chai
           .request(server)
           .delete(`${ROOT_URL}/red-flags/1`)
@@ -218,6 +295,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(status).eq(200);
             expect(body.data).is.an.instanceof(Array);
             expect(body.data[0]).to.have.property('message');
+            done();
           });
       });
     });
@@ -247,14 +325,31 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .end((err, { body, status }) => {
             expect(status).eq(201);
             expect(body.data[0].message).eq('Created Intervention record');
+          });
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/interventions`)
+          .set('authorization', `Bearer ${authToken}`)
+          .send(records.sampleIntervention)
+          .end((err, { body, status }) => {
+            expect(status).eq(201);
+            expect(body.data[0].message).eq('Created Intervention record');
+          });
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/interventions`)
+          .set('authorization', `Bearer ${authToken}`)
+          .send(records.sampleIntervention)
+          .end((err, { body, status }) => {
+            expect(status).eq(201);
+            expect(body.data[0].message).eq('Created Intervention record');
             done();
           });
       });
     });
 
     describe('Fetching', () => {
-      it('Should fetch all available intervention records', async () => {
-        await new Intervention(records.sampleIntervention).save();
+      it('Should fetch all available intervention records', done => {
         chai
           .request(server)
           .get(`${ROOT_URL}/interventions/`)
@@ -263,13 +358,14 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             expect(status).eq(200);
             expect(body.data).to.be.an.instanceof(Array);
             expect(body.data[0]).to.be.an('object');
+            done();
           });
       });
 
       it('Should fetch a specific intervention record by ID', done => {
         chai
           .request(server)
-          .get(`${ROOT_URL}/interventions/3`)
+          .get(`${ROOT_URL}/interventions/6`)
           .set('authorization', `Bearer ${authToken}`)
           .end((err, { body, status }) => {
             expect(status).eq(200);
@@ -281,10 +377,36 @@ export default ({ server, chai, expect, ROOT_URL }) => {
     });
 
     describe('Updating', () => {
+      it("Should not update comment of other's records", done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/interventions/6/comment`)
+          .set('authorization', `Bearer ${adminToken}`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(403);
+            expect(body).to.have.property('errors');
+            done();
+          });
+      });
+
+      it("Should not update location of other's records", done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/interventions/6/location`)
+          .set('authorization', `Bearer ${adminToken}`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(403);
+            expect(body).to.have.property('errors');
+            done();
+          });
+      });
+
       it('Should succesfully update comment of record with valid id', done => {
         chai
           .request(server)
-          .patch(`${ROOT_URL}/interventions/3/comment`)
+          .patch(`${ROOT_URL}/interventions/6/comment`)
           .set('authorization', `Bearer ${authToken}`)
           .send(recordPatches)
           .end((err, { body, status }) => {
@@ -298,7 +420,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
       it('Should return success when comment patch equals original', done => {
         chai
           .request(server)
-          .patch(`${ROOT_URL}/interventions/3/comment`)
+          .patch(`${ROOT_URL}/interventions/6/comment`)
           .set('authorization', `Bearer ${authToken}`)
           .send(recordPatches)
           .end((err, { status }) => {
@@ -310,7 +432,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
       it('Should succesfully update location of record with valid id', done => {
         chai
           .request(server)
-          .patch(`${ROOT_URL}/interventions/3/location`)
+          .patch(`${ROOT_URL}/interventions/6/location`)
           .set('authorization', `Bearer ${authToken}`)
           .send(recordPatches)
           .end((err, { body, status }) => {
@@ -324,7 +446,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
       it('Should return success when location patch equals original', done => {
         chai
           .request(server)
-          .patch(`${ROOT_URL}/interventions/3/location`)
+          .patch(`${ROOT_URL}/interventions/6/location`)
           .set('authorization', `Bearer ${authToken}`)
           .send(recordPatches)
           .end((err, { status }) => {
@@ -335,10 +457,21 @@ export default ({ server, chai, expect, ROOT_URL }) => {
     });
 
     describe('Deletion', () => {
+      it("Should not delete other's records", done => {
+        chai
+          .request(server)
+          .delete(`${ROOT_URL}/interventions/6`)
+          .set('authorization', `Bearer ${adminToken}`)
+          .end((err, { status }) => {
+            expect(status).eq(403);
+            done();
+          });
+      });
+
       it('Should delete a record found by id', done => {
         chai
           .request(server)
-          .delete(`${ROOT_URL}/interventions/3`)
+          .delete(`${ROOT_URL}/interventions/6`)
           .set('authorization', `Bearer ${authToken}`)
           .end((err, { body, status }) => {
             expect(status).eq(200);
@@ -351,22 +484,10 @@ export default ({ server, chai, expect, ROOT_URL }) => {
   });
 
   describe('Order Status mutations', () => {
-    let adminToken;
-    before(done => {
-      chai
-        .request(server)
-        .post(`${ROOT_URL}/auth/login`)
-        .send(env.ADMIN)
-        .end((err, { body }) => {
-          [{ token: adminToken }] = body.data;
-          done();
-        });
-    });
-
     it('Non-admin should not mutate record status', done => {
       chai
         .request(server)
-        .patch(`${ROOT_URL}/interventions/4/status`)
+        .patch(`${ROOT_URL}/interventions/5/status`)
         .set('authorization', `Bearer ${authToken}`)
         .send(recordPatches)
         .end((err, { body, status }) => {
@@ -412,7 +533,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
     it('Updated record should be sent along with response body on successful update', done => {
       chai
         .request(server)
-        .patch(`${ROOT_URL}/interventions/4/status`)
+        .patch(`${ROOT_URL}/interventions/5/status`)
         .set('authorization', `Bearer ${adminToken}`)
         .send(recordPatches)
         .end((err, { body, status }) => {
@@ -426,7 +547,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
     it('Should not modify record when status to set is already set', done => {
       chai
         .request(server)
-        .patch(`${ROOT_URL}/interventions/4/status`)
+        .patch(`${ROOT_URL}/interventions/5/status`)
         .set('authorization', `Bearer ${adminToken}`)
         .send(recordPatches)
         .end((err, { status }) => {
@@ -458,7 +579,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
 
       chai
         .request(server)
-        .patch(`${ROOT_URL}/interventions/4/location`)
+        .patch(`${ROOT_URL}/interventions/5/location`)
         .set('authorization', `Bearer ${authToken}`)
         .send(records.sampleIntervention)
         .end((err, { body, status }) => {
@@ -468,7 +589,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
 
       chai
         .request(server)
-        .patch(`${ROOT_URL}/interventions/4/comment`)
+        .patch(`${ROOT_URL}/interventions/5/comment`)
         .set('authorization', `Bearer ${authToken}`)
         .send(records.sampleIntervention)
         .end((err, { body, status }) => {
@@ -490,7 +611,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
 
       chai
         .request(server)
-        .delete(`${ROOT_URL}/interventions/4`)
+        .delete(`${ROOT_URL}/interventions/5`)
         .set('authorization', `Bearer ${authToken}`)
         .end((err, { body, status }) => {
           expect(status).eq(403);
