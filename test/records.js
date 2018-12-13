@@ -48,7 +48,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .set('authorization', `Bearer ${authToken}`)
           .end((err, { body, status }) => {
             expect(status).eq(404);
-            expect(body.errors[0]).eq(`No record exists with id '10'`);
+            expect(body.errors[0]).eq(`No red-flag record exists with id '10'`);
             done();
           });
       });
@@ -179,10 +179,8 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .patch(`${ROOT_URL}/red-flags/1/location`)
           .set('authorization', `Bearer ${authToken}`)
           .send(recordPatches)
-          .end((err, { body, status }) => {
-            expect(status).eq(200);
-            expect(body).to.have.property('data');
-            expect(body.data[0]).to.have.property('message');
+          .end((err, { status }) => {
+            expect(status).eq(304);
           });
       });
 
@@ -205,10 +203,8 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .patch(`${ROOT_URL}/red-flags/1/comment`)
           .set('authorization', `Bearer ${authToken}`)
           .send(recordPatches)
-          .end((err, { body, status }) => {
-            expect(status).eq(200);
-            expect(body).to.have.property('data');
-            expect(body.data[0]).to.have.property('message');
+          .end((err, { status }) => {
+            expect(status).eq(304);
           });
       });
     });
@@ -305,10 +301,8 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .patch(`${ROOT_URL}/interventions/3/comment`)
           .set('authorization', `Bearer ${authToken}`)
           .send(recordPatches)
-          .end((err, { body, status }) => {
-            expect(status).eq(200);
-            expect(body).to.have.property('data');
-            expect(body.data[0]).to.have.property('message');
+          .end((err, { status }) => {
+            expect(status).eq(304);
             done();
           });
       });
@@ -333,10 +327,8 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .patch(`${ROOT_URL}/interventions/3/location`)
           .set('authorization', `Bearer ${authToken}`)
           .send(recordPatches)
-          .end((err, { body, status }) => {
-            expect(status).eq(200);
-            expect(body).to.have.property('data');
-            expect(body.data[0]).to.have.property('message');
+          .end((err, { status }) => {
+            expect(status).eq(304);
             done();
           });
       });
@@ -439,6 +431,49 @@ export default ({ server, chai, expect, ROOT_URL }) => {
         .send(recordPatches)
         .end((err, { status }) => {
           expect(status).eq(304);
+          done();
+        });
+    });
+
+    it('Should not modify record location/comment when record status has been mutated', done => {
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/red-flags/2/location`)
+        .set('authorization', `Bearer ${authToken}`)
+        .send(records.sampleValidRedFlag)
+        .end((err, { body, status }) => {
+          expect(status).eq(403);
+          expect(body.errors).is.an.instanceof(Array);
+        });
+
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/red-flags/2/comment`)
+        .set('authorization', `Bearer ${authToken}`)
+        .send(records.sampleValidRedFlag)
+        .end((err, { body, status }) => {
+          expect(status).eq(403);
+          expect(body.errors).is.an.instanceof(Array);
+        });
+
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/interventions/4/location`)
+        .set('authorization', `Bearer ${authToken}`)
+        .send(records.sampleIntervention)
+        .end((err, { body, status }) => {
+          expect(status).eq(403);
+          expect(body.errors).is.an.instanceof(Array);
+        });
+
+      chai
+        .request(server)
+        .patch(`${ROOT_URL}/interventions/4/comment`)
+        .set('authorization', `Bearer ${authToken}`)
+        .send(records.sampleIntervention)
+        .end((err, { body, status }) => {
+          expect(status).eq(403);
+          expect(body.errors).is.an.instanceof(Array);
           done();
         });
     });
