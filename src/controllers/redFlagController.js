@@ -73,13 +73,19 @@ const updateStatus = ({ body, record }, res) =>
       )
     : successResponse(res, {}, 304);
 
-const deleteRecordByID = ({ record }, res) =>
-  RedFlag.delete(record.id).then(() =>
-    successResponse(res, {
-      id: record.id,
-      message: 'red-flag record has been deleted',
-    })
-  );
+const deleteRecordByID = ({ editable, record }, res) =>
+  editable
+    ? RedFlag.delete(record.id).then(() =>
+        successResponse(res, {
+          id: record.id,
+          message: 'Red-flag record has been deleted',
+        })
+      )
+    : handleError(
+        res,
+        `Cannot delete red-flag record marked as "${record.status}"`,
+        403
+      );
 
 export default {
   createRecord,
