@@ -53,6 +53,18 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
 
+      it('should not login unregistered user', done => {
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/auth/login`)
+          .send({ ...user.valid, ...{ username: 'rougue' } })
+          .end((err, { body, status }) => {
+            expect(status).eq(401);
+            expect(body.errors).to.be.an.instanceof(Array);
+            done();
+          });
+      });
+
       it('Should log valid User in', done => {
         chai
           .request(server)
