@@ -14,30 +14,34 @@ export const checkRequired = paramToCheck => (req, res, next) => {
   const { body } = req;
   const missingFields = [];
 
+  const errorIfMissing = fieldNameArray => {
+    missingFields.push(
+      ...fieldNameArray.filter(
+        field => body[field] === undefined || body[field] === null
+      )
+    );
+  };
+
   switch (paramToCheck) {
     case 'comment':
     case 'location':
     case 'status':
-      if (!body[paramToCheck]) missingFields.push(paramToCheck);
+      errorIfMissing([paramToCheck]);
       break;
     case 'record':
-      missingFields.push(
-        ...['type', 'title', 'comment'].filter(
-          param => body[param] === undefined
-        )
-      );
+      errorIfMissing(['type', 'title', 'comment']);
       break;
     case 'user':
-      missingFields.push(
-        ...['email', 'username', 'password', 'firstname', 'lastname'].filter(
-          param => body[param] === undefined
-        )
-      );
+      errorIfMissing([
+        'email',
+        'username',
+        'password',
+        'firstname',
+        'lastname',
+      ]);
       break;
     case 'login':
-      missingFields.push(
-        ...['username', 'password'].filter(param => body[param] === undefined)
-      );
+      errorIfMissing(['username', 'password']);
       break;
     /* istanbul ignore next */
     default:
@@ -60,7 +64,6 @@ export const strictRecordType = type => (req, res, next) => {
       } else {
         next();
       }
-
       break;
     /* istanbul ignore next */
     default:
@@ -79,12 +82,11 @@ export const verifyRequestTypes = (req, res, next) => {
   Object.keys(body).forEach(param => {
     if (body[param] !== undefined && typeof body[param] === 'string') {
       body[param] = body[param].trim();
-      switch (param) {
+      switch (param.trim()) {
         case 'email':
           if (isEmpty(body[param]) || !/^.+@.+\..+$/.test(body[param])) {
             errors.push(`cannot parse invalid email "${body[param]}".`);
           }
-
           break;
         case 'status':
           if (
@@ -93,31 +95,26 @@ export const verifyRequestTypes = (req, res, next) => {
           ) {
             errors.push(`cannot parse invalid status "${body[param]}".`);
           }
-
           break;
         case 'location':
-          if (isEmpty(body[param])) {
+          [long, lat] = body[param].split(',');
+          if (
+            isEmpty(body[param]) ||
+            (typeof long === 'undefined' ||
+              typeof jsonParse(long.trim()) !== 'number' ||
+              jsonParse(long.trim()) < -180 ||
+              jsonParse(long.trim()) > 180) ||
+            (typeof lat === 'undefined' ||
+              typeof jsonParse(lat.trim()) !== 'number' ||
+              jsonParse(lat.trim()) < -90 ||
+              jsonParse(lat.trim()) > 90)
+          ) {
             errors.push(
               `cannot parse invalid Location "${
                 body[param]
-              }" - location must be a comma separated string of numeric latitude and longitude coodinates.`
+              }" - location must be a valid comma separated string of numeric longitude and latitude coordinates.`
             );
-          } else {
-            [long, lat] = body[param].split(',');
-            if (
-              typeof long === 'undefined' ||
-              typeof jsonParse(long.trim()) !== 'number' ||
-              (typeof lat === 'undefined' ||
-                typeof jsonParse(lat.trim()) !== 'number')
-            ) {
-              errors.push(
-                `cannot parse invalid Location "${
-                  body[param]
-                }" - location must be a comma separated string of numeric longitude and latitude`
-              );
-            }
           }
-
           break;
         default:
           if (isEmpty(body[param])) {
@@ -129,6 +126,12 @@ export const verifyRequestTypes = (req, res, next) => {
           }
           break;
       }
+    } else {
+      errors.push(
+        `invalid ${param} - ${param} should be a valid non-empty ${typeof validTypes[
+          param
+        ]}.`
+      );
     }
   });
 

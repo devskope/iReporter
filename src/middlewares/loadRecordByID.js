@@ -4,7 +4,7 @@ import handleError from '../helpers/errorHelper';
 
 export default type => (req, res, next) => {
   const { id } = req.params;
-  return id > 999999999
+  return id > 2147483647
     ? handleError(res, `No record exists with id '${id}'`, 404)
     : Record.getOneByID(jsonParse(id)).then(({ rows }) =>
         rows[0] && rows[0].type === type
