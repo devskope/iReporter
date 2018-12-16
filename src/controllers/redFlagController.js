@@ -2,27 +2,26 @@ import { RedFlag } from '../models/records';
 import successResponse from '../helpers/successResponse';
 import handleError from '../helpers/errorHelper';
 
-const createRecord = ({ body, user }, res) => {
-  const { title, comment, location } = body;
-
-  const newRedFlag = new RedFlag({
-    title,
-    comment,
-    location,
-    createdBy: user.id,
-  });
-  newRedFlag.save().then(({ rows }) => {
-    successResponse(
-      res,
-      { ...rows[0], message: `Created red-flag record` },
-      201
+const createRecord = ({ body, user }, res) =>
+  new RedFlag({
+    ...body,
+    ...{ createdBy: user.id },
+  })
+    .save()
+    .then(({ rows }) =>
+      successResponse(
+        res,
+        {
+          id: rows[0].id,
+          message: `Created red-flag record`,
+        },
+        201
+      )
     );
-  });
-};
 
 const fetchAllRecords = (req, res) =>
-  RedFlag.getAll().then(({ rows }) =>
-    rows.length > 0 ? successResponse(res, rows) : successResponse(res)
+  RedFlag.getAll().then(({ rowCount, rows: records }) =>
+    rowCount > 0 ? successResponse(res, records) : successResponse(res)
   );
 
 const fetchRecordByID = ({ record }, res) => successResponse(res, record);
@@ -33,11 +32,11 @@ const updateComment = ({ body, editable, record, user }, res) => {
     record.comment !== body.comment &&
     record.created_by === user.id
   ) {
-    RedFlag.patch(record.id, body.comment, 'comment').then(({ id }) =>
+    RedFlag.patch(record.id, body.comment, 'comment').then(({ rows }) =>
       successResponse(res, {
-        id,
+        id: rows[0].id,
         message: 'Updated red-flag record’s comment',
-        record: { ...record, ...{ comment: body.comment } },
+        record: rows[0],
       })
     );
   } else if (editable && record.created_by !== user.id) {
@@ -63,11 +62,11 @@ const updateLocation = ({ body, editable, record, user }, res) => {
     record.location !== body.location &&
     record.created_by === user.id
   ) {
-    RedFlag.patch(record.id, body.location, 'location').then(({ id }) =>
+    RedFlag.patch(record.id, body.location, 'location').then(({ rows }) =>
       successResponse(res, {
-        id,
+        id: rows[0].id,
         message: 'Updated red-flag record’s location',
-        record: { ...record, ...{ location: body.location } },
+        record: rows[0],
       })
     );
   } else if (editable && record.created_by !== user.id) {
@@ -89,11 +88,11 @@ const updateLocation = ({ body, editable, record, user }, res) => {
 
 const updateStatus = ({ body, record }, res) =>
   record.status !== body.status
-    ? RedFlag.patch(record.id, body.status, 'status').then(({ id }) =>
+    ? RedFlag.patch(record.id, body.status, 'status').then(({ rows }) =>
         successResponse(res, {
-          id,
+          id: rows[0].id,
           message: 'Updated red-flag record’s status',
-          record: { ...record, ...{ status: body.status } },
+          record: rows[0],
         })
       )
     : successResponse(res, {}, 304);

@@ -1,5 +1,5 @@
 import { User } from '../models/users';
-import { hashPass, passMatch } from '../helpers/password_helpers';
+import { passMatch } from '../helpers/password_helpers';
 import successResponse from '../helpers/successResponse';
 import handleError from '../helpers/errorHelper';
 import tokenGen from '../helpers/tokenGen';
@@ -9,7 +9,6 @@ const createUser = (req, res) => {
     handleError(res, `User ${req.foundUser.username} already registered`, 409);
   else {
     const newUser = new User(req.body);
-    newUser.password = hashPass(newUser.password);
     newUser.save().then(({ rows }) => {
       const { password, ...user } = rows[0];
       successResponse(res, { token: tokenGen(user), user }, 201);

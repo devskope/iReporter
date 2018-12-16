@@ -90,7 +90,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .set('authorization', `Bearer ${authToken}`)
           .send({
             ...records.sampleValidRedFlag,
-            ...{ location: '', title: '' },
+            ...{ email: 'rover.io@', location: '', title: '', comment: {} },
           })
           .end((err, { body, status }) => {
             expect(status).eq(422);

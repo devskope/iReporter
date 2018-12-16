@@ -2,27 +2,26 @@ import { Intervention } from '../models/records';
 import successResponse from '../helpers/successResponse';
 import handleError from '../helpers/errorHelper';
 
-const createRecord = ({ body, user }, res) => {
-  const { title, comment, location } = body;
-
-  const newIntervention = new Intervention({
-    title,
-    comment,
-    location,
-    createdBy: user.id,
-  });
-  newIntervention.save().then(({ rows }) => {
-    successResponse(
-      res,
-      { ...rows[0], message: `Created Intervention record` },
-      201
+const createRecord = ({ body, user }, res) =>
+  new Intervention({
+    ...body,
+    ...{ createdBy: user.id },
+  })
+    .save()
+    .then(({ rows }) =>
+      successResponse(
+        res,
+        {
+          id: rows[0].id,
+          message: `Created Intervention record`,
+        },
+        201
+      )
     );
-  });
-};
 
 const fetchAllRecords = (req, res) =>
-  Intervention.getAll().then(({ rows }) =>
-    rows.length > 0 ? successResponse(res, rows) : successResponse(res)
+  Intervention.getAll().then(({ rowCount, rows: records }) =>
+    rowCount > 0 ? successResponse(res, records) : successResponse(res)
   );
 
 const fetchRecordByID = ({ record }, res) => successResponse(res, record);
@@ -33,13 +32,13 @@ const updateComment = ({ body, editable, record, user }, res) => {
     record.comment !== body.comment &&
     record.created_by === user.id
   ) {
-    Intervention.patch(record.id, body.comment, 'comment').then(({ id }) =>
+    Intervention.patch(record.id, body.comment, 'comment').then(({ rows }) => {
       successResponse(res, {
-        id,
+        id: rows[0].id,
         message: 'Updated intervention record’s comment',
-        record: { ...record, ...{ comment: body.comment } },
-      })
-    );
+        record: rows[0],
+      });
+    });
   } else if (editable && record.created_by !== user.id) {
     handleError(
       res,
@@ -65,11 +64,11 @@ const updateLocation = ({ body, editable, record, user }, res) => {
     record.location !== body.location &&
     record.created_by === user.id
   ) {
-    Intervention.patch(record.id, body.location, 'location').then(({ id }) =>
+    Intervention.patch(record.id, body.location, 'location').then(({ rows }) =>
       successResponse(res, {
-        id,
+        id: rows[0].id,
         message: 'Updated intervention record’s location',
-        record: { ...record, ...{ location: body.location } },
+        record: rows[0],
       })
     );
   } else if (editable && record.created_by !== user.id) {
@@ -93,11 +92,11 @@ const updateLocation = ({ body, editable, record, user }, res) => {
 
 const updateStatus = ({ body, record }, res) =>
   record.status !== body.status
-    ? Intervention.patch(record.id, body.status, 'status').then(({ id }) =>
+    ? Intervention.patch(record.id, body.status, 'status').then(({ rows }) =>
         successResponse(res, {
-          id,
+          id: rows[0].id,
           message: 'Updated intervention record’s status',
-          record: { ...record, ...{ status: body.status } },
+          record: rows[0],
         })
       )
     : successResponse(res, {}, 304);

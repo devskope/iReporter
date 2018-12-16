@@ -1,7 +1,7 @@
 import debug from 'debug';
 import db from './db';
 
-const logger = debug('iReporter::initdb:');
+const logger = debug('iReporter::dbOps:');
 const Models = {
   userSchema: `
     CREATE TABLE IF NOT EXISTS users
@@ -40,13 +40,15 @@ const dbInit = async () => {
   logger('Created DB Tables');
 };
 
-const blowAway = () => {
-  Promise.all([
-    db.query(dropTable('records')),
-    db.query(dropTable('users')),
-  ]).then(() => logger(`Drop DB Tables`));
+const blowAway = async () => {
+  await db.query(dropTable('records'));
+  await db.query(dropTable('users'));
+  logger(`Drop DB Tables`);
 };
 
-dbInit();
+process.argv.forEach(arg => {
+  if (arg === 'init') dbInit();
+  else if (arg === 'drop') blowAway();
+});
 
 export default { dbInit, blowAway };
