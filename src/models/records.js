@@ -31,7 +31,7 @@ export class Record {
 
   static patch(id, patch, prop) {
     const queryString = [
-      `UPDATE records SET ${prop} = ($1) WHERE id =($2)`,
+      `UPDATE records SET ${prop} = ($1) WHERE id =($2) returning *`,
       [patch, id],
     ];
 
@@ -45,7 +45,7 @@ export class Record {
 
   save() {
     const queryString = [
-      'INSERT INTO records(title, type, location, comment, status, created_by) VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
+      'INSERT INTO records(title, type, location, comment, status, created_by) VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
       [
         this.title,
         this.type,

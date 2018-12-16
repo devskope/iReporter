@@ -18,7 +18,7 @@ export class User {
     this.lastname = lastname;
     this.othernames = othernames;
     this.username = username;
-    this.password = password;
+    this.password = hashPass(password);
     this.email = email;
     this.phone = phone;
     this.isAdmin = false;
@@ -58,7 +58,6 @@ export class Admin extends User {
   constructor({ ...args }) {
     super(args);
     this.isAdmin = true;
-    this.password = hashPass(this.password);
   }
 
   static init() {
