@@ -54,7 +54,8 @@
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
     "morgan": "^1.9.1",
-    "pg": "^7.7.1"
+    "pg": "^7.7.1",
+    "swagger-ui-express": "^4.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.5",
