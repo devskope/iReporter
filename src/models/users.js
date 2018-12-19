@@ -13,6 +13,7 @@ export class User {
     password,
     email,
     phone,
+    emailNotify,
   }) {
     this.firstname = firstname;
     this.lastname = lastname;
@@ -21,7 +22,13 @@ export class User {
     this.password = hashPass(password);
     this.email = email;
     this.phone = phone;
+    this.emailNotify = emailNotify || false;
     this.isAdmin = false;
+  }
+
+  static findByID(id) {
+    const queryString = [`SELECT * FROM users WHERE id = $1`, [id]];
+    return db.query(...queryString);
   }
 
   static findByUsername(username) {
@@ -37,8 +44,10 @@ export class User {
           username,
           password,
           email,
-          phone)
-         VALUES($1, $2, $3, $4, $5, $6, $7)
+          phone,
+          email_notify
+          )
+         VALUES($1, $2, $3, $4, $5, $6, $7, $8)
          RETURNING *`,
       [
         this.firstname,
@@ -48,6 +57,7 @@ export class User {
         this.password,
         this.email,
         this.phone,
+        this.emailNotify,
       ],
     ];
     return db.query(...queryString);

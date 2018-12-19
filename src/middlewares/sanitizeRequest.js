@@ -8,6 +8,7 @@ export const validTypes = {
   status: ['under investigation', 'resolved', 'rejected', 'draft'],
   location: String(),
   password: String(),
+  emailNotify: Boolean(),
 };
 
 export const checkRequired = paramToCheck => (req, res, next) => {
@@ -86,6 +87,14 @@ export const verifyRequestTypes = (req, res, next) => {
         case 'email':
           if (isEmpty(body[param]) || !/^.+@.+\..+$/.test(body[param])) {
             errors.push(`cannot parse invalid email "${body[param]}".`);
+          }
+          break;
+        case 'emailNotify':
+          if (
+            isEmpty(body[param]) ||
+            typeof jsonParse(body[param]) !== typeof validTypes[param]
+          ) {
+            errors.push(`emailNotify must be a boolean`);
           }
           break;
         case 'status':

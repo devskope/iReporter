@@ -10,6 +10,8 @@
     "initdb": "DEBUG=iReporter* babel-node src/db/dbrc.js init",
     "db-drop": "DEBUG=iReporter* babel-node src/db/dbrc.js drop",
     "heroku-postbuild": " npm run build",
+    "live:initdb": "DEBUG=iReporter* node src/db/dbrc.js init",
+    "live:db-drop": "DEBUG=iReporter* node src/db/dbrc.js drop",
     "start": "node dist/server",
     "test": "DEBUG=iReporter* nyc mocha test/index.js --exit"
   },
@@ -47,6 +49,7 @@
   },
   "homepage": "https://ope-oguntoye.github.io/iReporter",
   "dependencies": {
+    "@sendgrid/mail": "^6.3.1",
     "bcryptjs": "^2.4.3",
     "debug": "^4.1.0",
     "dotenv": "^6.1.0",

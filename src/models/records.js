@@ -1,7 +1,16 @@
 import db from '../db/db';
 
 export class Record {
-  constructor({ title, type, createdBy, comment, location, images, videos }) {
+  constructor({
+    title,
+    type,
+    createdBy,
+    comment,
+    location,
+    images,
+    videos,
+    emailNotify,
+  }) {
     this.title = title;
     this.type = type;
     this.createdBy = createdBy;
@@ -9,6 +18,7 @@ export class Record {
     this.location = location;
     this.images = images;
     this.videos = videos;
+    this.emailNotify = emailNotify || false;
     this.status = 'draft';
   }
 
@@ -45,7 +55,7 @@ export class Record {
 
   save() {
     const queryString = [
-      'INSERT INTO records(title, type, location, comment, status, created_by) VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
+      'INSERT INTO records(title, type, location, comment, status, created_by, email_notify) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *',
       [
         this.title,
         this.type,
@@ -53,6 +63,7 @@ export class Record {
         this.comment,
         this.status,
         this.createdBy,
+        this.emailNotify,
       ],
     ];
     return db.query(...queryString);

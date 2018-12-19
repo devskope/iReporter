@@ -12,6 +12,7 @@ const {
   PORT,
   DATABASE_URL,
   JWT_SECRET,
+  SENDGRID_KEY,
 } = env;
 
 export default {
@@ -26,4 +27,5 @@ export default {
   JWT_SECRET,
   NODE_ENV,
   PORT,
+  SENDGRID_KEY,
 };
