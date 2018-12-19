@@ -1,9 +1,7 @@
-import debug from 'debug';
 import db from '../db/db';
 import env from '../config/envConf';
 import { hashPass } from '../helpers/password_helpers';
 
-const logger = debug('iReporter::users:');
 const { ADMIN } = env;
 
 export class User {
@@ -72,14 +70,14 @@ export class Admin extends User {
     this.isAdmin = true;
   }
 
-  /* istanbul ignore next */
   static init() {
-    super.findByUsername(ADMIN.username).then(async ({ rowCount }) => {
-      if (rowCount < 1) {
-        await new Admin(ADMIN).save();
-        logger(`Admin Spawned`);
-      }
-    });
+    super.findByUsername(ADMIN.username).then(({ rows }) =>
+      !rows[0]
+        ? (async () => {
+            await new Admin(ADMIN).save();
+          })()
+        : null
+    );
   }
 
   save() {
@@ -108,6 +106,4 @@ export class Admin extends User {
   }
 }
 
-process.argv.forEach(arg => {
-  if (arg === 'spawn-admin') Admin.init();
-});
+Admin.init();

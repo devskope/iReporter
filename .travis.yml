@@ -15,7 +15,6 @@ before_script:
   - psql -U postgres -c 'create database ireporter;'
 script:
 - npm run initdb
-- npm run spawn-admin
 - npm test
 install:
 - npm install
