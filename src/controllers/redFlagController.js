@@ -98,7 +98,7 @@ const updateStatus = ({ body, record }, res) =>
           message: 'Updated red-flag record’s status',
           record: rows[0],
         });
-        mailHelper.statusNotify(rows[0]).then(x => console.log(x));
+        mailHelper.statusNotify(rows[0]);
       })
     : successResponse(res, {}, 304);
 
