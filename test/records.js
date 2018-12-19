@@ -79,18 +79,15 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .request(server)
           .post(`${ROOT_URL}/red-flags`)
           .set('authorization', `Bearer ${authToken}`)
-          .send({ ...records.sampleValidRedFlag, ...{ location: 'knowhere' } })
-          .end((err, { body, status }) => {
-            expect(status).eq(422);
-            expect(body.errors[0]).to.be.a('string');
-          });
-        chai
-          .request(server)
-          .post(`${ROOT_URL}/red-flags`)
-          .set('authorization', `Bearer ${authToken}`)
           .send({
             ...records.sampleValidRedFlag,
-            ...{ email: 'rover.io@', location: '', title: '', comment: {} },
+            ...{
+              email: 'rover.io@',
+              location: '',
+              title: '',
+              comment: {},
+              emailNotify: 'nonBool',
+            },
           })
           .end((err, { body, status }) => {
             expect(status).eq(422);

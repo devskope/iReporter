@@ -15,6 +15,7 @@ const Models = {
        email  VARCHAR NOT NULL,
        phone  VARCHAR,
        registered TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+       email_notify BOOLEAN DEFAULT 'false',
        is_admin BOOLEAN DEFAULT 'false'
       )`,
 
@@ -29,6 +30,7 @@ const Models = {
        comment VARCHAR NOT NULL,
        location VARCHAR,
        status VARCHAR NOT NULL,
+       email_notify BOOLEAN DEFAULT 'false',
        FOREIGN KEY (created_by) REFERENCES users (id) ON DELETE CASCADE
       )`,
 };
