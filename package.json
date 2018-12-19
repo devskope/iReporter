@@ -11,8 +11,8 @@
     "db-drop": "DEBUG=iReporter* babel-node src/db/dbrc.js drop",
     "spawn-admin": "DEBUG=iReporter* babel-node src/models/users.js spawn-admin",
     "heroku-postbuild": "npm run build && npm run live:spawn-admin",
-    "live:initdb": "DEBUG=iReporter* node src/db/dbrc.js init",
-    "live:db-drop": "DEBUG=iReporter* node src/db/dbrc.js drop",
+    "live:initdb": "DEBUG=iReporter* node dist/db/dbrc.js init",
+    "live:db-drop": "DEBUG=iReporter* node dist/db/dbrc.js drop",
     "live:spawn-admin": "DEBUG=iReporter* node dist/models/users.js spawn-admin",
     "start": "node dist/server",
     "test": "DEBUG=iReporter* nyc mocha test/index.js --exit"
