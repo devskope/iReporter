@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import interventionController from '../controllers/interventionController';
 import redFlagController from '../controllers/redFlagController';
+import recordController from '../controllers/recordController';
 import {
   checkRequired,
   strictRecordType,
@@ -11,6 +12,8 @@ import validUser from '../middlewares/validUser';
 import onlyAdmin from '../middlewares/onlyAdmin';
 
 const router = new Router();
+
+router.get('/records/stats', validUser, recordController.fetchStats);
 
 router.post(
   '/red-flags',
