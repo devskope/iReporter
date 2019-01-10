@@ -617,4 +617,20 @@ export default ({ server, chai, expect, ROOT_URL }) => {
         });
     });
   });
+
+  describe('Record Stats', () => {
+    it('User can get all record stats', done => {
+      chai
+        .request(server)
+        .get(`${ROOT_URL}/records/stats`)
+        .set('authorization', `Bearer ${authToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(200);
+          expect(body.data).to.be.an.instanceof(Array);
+          expect(body.data[0]).to.be.an('object');
+          console.log(body.data);
+          done();
+        });
+    });
+  });
 };
