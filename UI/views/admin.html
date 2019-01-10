@@ -11,85 +11,100 @@
 <body>
   <nav class="topbar">
     <div class="topbar__wrapper">
-      <a href="#" class="topbar__brand">iReporter</a>
-      <ul class="links">
-        <li><a class="topbar__link" href="../../index.html">Home</a></li>
-        <li><a href="../../index.html" class="btn--nav">Logout</a></li>
+      <a href="../../index.html" class="topbar__brand">iReporter</a>
+      <ul class="topbar__links">
+        <button class="topbar__toggle" type="button">Menu</button>
+        <li class="topbar__list-item"><a class="topbar__link" href="../../index.html">Home</a></li>
+        <li class="topbar__list-item"><a href="../../index.html" class="btn--nav btn--logout">Logout</a></li>
       </ul>
     </div>
   </nav>
-    <div class="dashboard">
-      <aside class="dashboard__sidebar dashboard__sidebar--admin">
-        <div class="dashboard__stat">
-          <p class="dashboard__stat-title">Drafts</p>
-          <p class="dashboard__stat-count">10</p>
-        </div>
-        <div class="dashboard__stat">
-          <p class="dashboard__stat-title">Resolved</p>
-          <p class="dashboard__stat-count">20</p>
-        </div>
-        <div class="dashboard__stat">
-          <p class="dashboard__stat-title">Under Investigation</p>
-          <p class="dashboard__stat-count">15</p>
-        </div>
-        <div class="dashboard__stat">
-          <p class="dashboard__stat-title">Rejected</p>
-          <p class="dashboard__stat-count">12</p>
-        </div>
-      </aside>
-      <main class="dashboard__main">
-        <div class="dashboard__filters">
-          <select class="dashboard__filters-report-types">
-            <option disabled>Filter</option>
-            <option value="all" default>All</option>
-            <option value="red-flag">Red Flag</option>
-            <option value="intervention">Intervention</option>
-          </select>
-          <ul class="dashboard__filters-categories">
-            <li class="active">All</li>
-            <li>Draft</li>
-            <li>Resolved</li>
-            <li>Rejected</li>
-          </ul>
-        </div>
-        <section class="dashboard__main-content">
-          <div class="record">
-            <img class="record__image" src="../assets/images/crashSite.jpeg" alt="crash site" >
-            <div class="record__details">
-              <h4 class="record__title">Title of Report</h4>
-              <p class="record__comment">A platform to report corrupt acts and issues affecting the community while
-                also seeking government's quick intervention</p>
-            </div>
-            <button class="record__more-btn" data-triger="dashboard-detail-modal">View More</button>
-          </div>
-        </section>
-      </main>
-    </div>
-    <footer class="footer">
-      <div class="copyright">
-        <p>iReporter &copy;2018</p>
+  <div class="dashboard dashboard--admin">
+    <aside class="dashboard__sidebar">
+      <p class="dashboard__sidebar-toggle">SIDEBAR</p>
+      <button class="dashboard__sidebar-btn new">New Record</button>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Drafts</p>
+        <p class="dashboard__stat-count">0</p>
       </div>
-    </footer>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Resolved</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Under Investigation</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Rejected</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+    </aside>
+    <main class="dashboard__main">
+      <div class="dashboard__filters">
+        <select class="dashboard__filter-report-types">
+          <option value="all" default>All</option>
+          <option value="red-flag">Red Flag</option>
+          <option value="intervention">Intervention</option>
+        </select>
+        <button class="dashboard__filter-toggle" type="button">Status</button>
+        <ul class="dashboard__filter-categories">
+          <li class="dashboard__filter-category active" value="all">All</li>
+          <li class="dashboard__filter-category" value="draft">Draft</li>
+          <li class="dashboard__filter-category" value="under investigation">Under Investigation</li>
+          <li class="dashboard__filter-category" value="resolved">Resolved</li>
+          <li class="dashboard__filter-category" value="rejected">Rejected</li>
+        </ul>
+      </div>
+      <section class="dashboard__main-content">
+          <div class="record">
+              <img class="record__image" src="../assets/images/crashSite.jpeg" alt="crash site">
+              <div class="record__details">
+                <h4 class="record__title">Title of Report</h4>
+                <p class="record__comment">A platform to report corrupt acts and issues affecting the community while
+                  also seeking government's quick intervention</p>
+              </div>
+              <button class="record__more-btn">View More</button>
+            </div>
+            <div class="record">
+              <img class="record__image" src="../assets/images/crashSite.jpeg" alt="crash site">
+              <div class="record__details">
+                <h4 class="record__title">Title of Report</h4>
+                <p class="record__comment">A platform to report corrupt acts and issues affecting the community while
+                  also seeking government's quick intervention</p>
+              </div>
+              <button class="record__more-btn">View More</button>
+            </div>
+      </section>
+    </main>
+  </div>
+  <footer class="footer">
+    <div class="copyright">
+      <p>iReporter &copy;2018</p>
+    </div>
+  </footer>
 
-    <!-- view detail modal -->
-    <div class="modal-wrapper modal-wrapper--admin ">
-      <div class="detail-modal">
-        <div class="detail-modal__header">
-          <h2 class="detail-modal__title">Record Title</h2>
-          <button class="detail-modal__close">&times;</button>
+  <!-- view detail modal -->
+  <div class="modal-wrapper modal-wrapper--admin ">
+    <div class="detail-modal">
+      <div class="detail-modal__header">
+        <h2 class="detail-modal__type-id"></h2>
+        <button class="detail-modal__close">&times;</button>
+      </div>
+      <div class="detail-modal__content">
+        <div class="detail-modal__map">
         </div>
-        <div class="detail-modal__content">
-          <div class="detail-modal__map">
-            <img src="http://www.atsrhapsodynoidaextension.in/images/location-map.jpg" alt="location">
-          </div>
-          <h3 class="detail-modal__content-title">Record title</h3>
-          <span>by: <a href="#">oguntoye opeyemi</a></span>
-          <p class="detail-modal__comment">A platform to report corrupt acts and issues affecting the community while
-            also seeking government's quick intervention</p>
+        <div class="detail-modal__title-block">
+          <h3 class="detail-modal__title"></h3>
+          <span class="detail-modal__byline"></span>
+        </div>
+        <p class="detail-modal__comment"></p>
+        <div class="detail-modal__media-block">
           <h4 class="detail-modal__sub">Media</h4>
           <div class="detail-modal__media">
-            <img src="../assets/images/crashSite.jpeg" alt="">
           </div>
+        </div>
+        <div class="detail-modal__toggle-block">
           <h4 class="detail-modal__sub">Status</h4>
           <select class="detail-modal__status-toggle">
             <option value="draft">Draft</option>
@@ -98,13 +113,16 @@
             <option value="resolved">Resolved</option>
           </select>
         </div>
-        <div class="detail-modal__footer">
-          <button class="detail-modal__close">Close</button>
-        </div>
+      </div>
+      <div class="detail-modal__footer">
+        <button class="detail-modal__close">Close</button>
       </div>
     </div>
+  </div>
 
-    <script src="../assets/js/dash.js"></script>
-  </body>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApBXNZ8DfcSajnuuNOEMWNNH0eIZdBtws&libraries=places"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/dash.js"></script>
+</body>
 
-  </html>
+</html>
