@@ -24,6 +24,29 @@ export default ({ server, chai, expect, ROOT_URL }) => {
     });
 
     describe('Fetching before creation', () => {
+      it('Returns error response when getting record stats', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records/stats`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(body.errors[0]).to.be.an('string');
+          });
+
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/user/recordstats`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(body.errors[0]).to.be.an('string');
+            done();
+          });
+      });
+
       it('Returns an empty array when no records exist', done => {
         chai
           .request(server)
@@ -628,7 +651,32 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           expect(status).eq(200);
           expect(body.data).to.be.an.instanceof(Array);
           expect(body.data[0]).to.be.an('object');
-          console.log(body.data);
+          done();
+        });
+    });
+
+    it('User can get own record stats', done => {
+      chai
+        .request(server)
+        .get(`${ROOT_URL}/user/recordstats`)
+        .set('authorization', `Bearer ${authToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(200);
+          expect(body.data).to.be.an.instanceof(Array);
+          expect(body.data[0]).to.be.an('object');
+          done();
+        });
+    });
+
+    it('Return error if user has no records created', done => {
+      chai
+        .request(server)
+        .get(`${ROOT_URL}/user/recordstats`)
+        .set('authorization', `Bearer ${adminToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(404);
+          expect(body.errors).to.be.an.instanceof(Array);
+          expect(body.errors[0]).to.be.a('string');
           done();
         });
     });
