@@ -11,11 +11,12 @@
 <body>
   <nav class="topbar">
     <div class="topbar__wrapper">
-      <a href="#" class="topbar__brand">iReporter</a>
-      <ul class="links">
-        <li><a class="topbar__link" href="../../index.html">Home</a></li>
-        <li><a class="topbar__link" href="#">About</a></li>
-        <li><a href="./signup.html" class="btn--nav">SIgn Up</a></li>
+      <a href="../../index.html" class="topbar__brand">iReporter</a>
+      <ul class="topbar__links">
+        <button class="topbar__toggle" type="button">Menu</button>
+        <li class="topbar__list-item"><a class="topbar__link" href="../../index.html">Home</a></li>
+        <li class="topbar__list-item"><a class="topbar__link" href="#">About</a></li>
+        <li class="topbar__list-item"><a href="./signup.html" class="btn--nav btn--logout">SIgn Up</a></li>
       </ul>
     </div>
   </nav>
@@ -25,16 +26,18 @@
         <h2 class="main-text">Login to</h2>
         <p class="sub-text">Start reporting</p>
       </div>
+      <div class="form-fields">
       <div class="form-field">
         <label for="login-username">Username</label>
-        <input class="form-field__login-username" type="text" id="login-username" placeholder="Ahmed Obi">
+        <input class="form-field__username" type="text" id="login-username" placeholder="Ahmed Obi">
       </div>
       <div class="form-field">
         <label for="password">Password</label>
-        <input  class="form-field__login-password" type="password" id="login-password" placeholder="*******">
+        <input  class="form-field__password" type="password" id="login-password" placeholder="*******">
       </div>
       <button class="btn btn--submit" type="submit">Login</button>
-      <div class="auth__hint-field">
+      </div>
+      <div class="auth__links">
         <p>Forgot Password? <a href="#">We can help</a></p>
         <p>Need an account? <a href="./signup.html">Create one for free</a></p>
       </div>
@@ -52,6 +55,7 @@
     </div>
   </footer>
 
+  <script src="../assets/js/nav.js"></script>
   <script src="../assets/js/auth.js"></script>
 </body>
 
