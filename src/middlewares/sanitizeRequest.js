@@ -7,7 +7,11 @@ export const validTypes = {
   comment: String(),
   status: ['under investigation', 'resolved', 'rejected', 'draft'],
   location: String(),
+  firstname: String(),
+  lastname: String(),
+  username: String(),
   password: String(),
+  phone: Number(),
   emailNotify: Boolean(),
 };
 

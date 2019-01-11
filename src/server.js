@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import debug from 'debug';
 import morgan from 'morgan';
 import env from './config/envConf';
@@ -16,6 +17,7 @@ if (env.NODE_ENV === `production`) {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 routes(app);
 
