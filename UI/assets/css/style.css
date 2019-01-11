@@ -368,6 +368,61 @@ a {
   padding-bottom: 1rem;
 }
 
+.auth__messages {
+ font-size: 1.4rem;
+ height: 0;
+ opacity: 0;
+ padding: 1rem 5%;
+ border-radius: 0.7rem;
+ transition: opacity 0.3s ease;
+ visibility: hidden;
+ align-self: center;
+ width: 100%;
+ position: relative;
+}
+
+.auth__messages.visible {
+  margin-bottom: 1rem;
+  min-height: 4rem;
+  height: auto;
+  opacity: 0.96;
+  visibility: visible;
+}
+
+.auth__messages--success {
+  background-color: #007e33;
+  color: white;
+}
+
+.auth__messages--error {
+  background-color: #cc0000;
+  color: white;
+}
+
+.auth__messages-dismiss {
+  position: absolute;
+  right: 0.3rem;
+  top: -0.6rem;
+  font-size: 2.8rem;
+  color: #212121;
+  cursor: pointer;
+}
+
+.auth__messages-dismiss:hover {
+  color: #666;
+}
+
+.auth__message-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-weight: 300;
+}
+
+.auth__message:not(:last-of-type) {
+  margin-bottom: .5rem;
+}
+
 .auth__links {
   text-align: center;
   line-height: 170%;
