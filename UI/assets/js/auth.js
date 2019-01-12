@@ -1,8 +1,10 @@
 this.addEventListener('load', () => {
+  const loginForm = document.querySelector('.auth__form--login');
   const signupForm = document.querySelector('.auth__form--signup');
 
   const {
     findMissingFields,
+    login,
     makeAuthFormMessages,
     missingFieldsMessage,
     signUp,
@@ -10,6 +12,25 @@ this.addEventListener('load', () => {
   } = window.IR_HELPERS;
 
   responsiveNav();
+
+  if (loginForm) {
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const { currentTarget: form } = e;
+      const { value: username } = form.querySelector('.form-field__username');
+      const { value: password } = form.querySelector('.form-field__password');
+
+      const missingFields = findMissingFields({ username, password });
+
+      return missingFields.length > 0
+        ? makeAuthFormMessages({
+            type: 'error',
+            messages: [missingFieldsMessage(missingFields)],
+          })
+        : login(username, password);
+    });
+  }
 
   if (signupForm) {
     signupForm.addEventListener('submit', e => {
