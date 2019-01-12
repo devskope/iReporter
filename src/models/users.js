@@ -38,6 +38,11 @@ export class User {
     return db.query(...queryString);
   }
 
+  static getUsernameByID(id) {
+    const queryString = [`SELECT username FROM users WHERE id = $1`, [id]];
+    return db.query(...queryString);
+  }
+
   save() {
     const queryString = [
       `INSERT INTO users(firstname,

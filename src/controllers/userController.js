@@ -1,4 +1,5 @@
 import { Record } from '../models/records';
+import { User } from '../models/users';
 import successResponse from '../helpers/successResponse';
 import handleError from '../helpers/errorHelper';
 
@@ -34,5 +35,18 @@ export default {
         } else handleError(res, 'No records found for user', 404);
       } else handleError(res, 'No records found', 404);
     });
+  },
+
+  getUsernameByID(
+    {
+      params: { id },
+    },
+    res
+  ) {
+    return User.getUsernameByID(id)
+      .then(({ rows: [{ username }] }) =>
+        successResponse(res, { username }, 200)
+      )
+      .catch(() => handleError(res, `Cannot find user with id ${id}.`, 404));
   },
 };
