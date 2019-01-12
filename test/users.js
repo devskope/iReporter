@@ -78,5 +78,46 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
     });
+
+    describe('Get username by ID', () => {
+      let authToken;
+
+      before(done => {
+        chai
+          .request(server)
+          .post(`${ROOT_URL}/auth/login`)
+          .send(user.token)
+          .end((err, { body }) => {
+            [{ token: authToken }] = body.data;
+            done();
+          });
+      });
+
+      it('Should get a username by providing a valid user ID', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/user/id2name/2`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data).to.be.an.instanceof(Array);
+            expect(body.data[0]).to.be.an('object');
+            done();
+          });
+      });
+
+      it('Should get an error response when valid user ID supplied', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/user/id2name/6`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(body.errors[0]).to.be.a('string');
+            done();
+          });
+      });
+    });
   });
 };
