@@ -1,4 +1,5 @@
 const IR_HELPERS = {
+  API_LOGIN_URL: 'https://ireporter-pms.herokuapp.com/api/v1/auth/login',
   API_SIGNUP_URL: 'https://ireporter-pms.herokuapp.com/api/v1/auth/signup',
 
   redirects: {
@@ -23,10 +24,67 @@ const IR_HELPERS = {
     return args.every(param => param === '');
   },
 
+  async login(username, password) {
+    fetch(IR_HELPERS.API_LOGIN_URL, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    })
+      .then(res => res.json())
+      .then(({ errors, data }) => {
+        if (errors) {
+          IR_HELPERS.makeAuthFormMessages({ type: 'error', messages: errors });
+          return;
+        }
+
+        const [{ token, user }] = data;
+
+        localStorage.setItem('iReporter-token', token);
+        localStorage.setItem('iReporter-username', user.username);
+
+        IR_HELPERS.makeAuthFormMessages({
+          type: 'success',
+          messages: [
+            `${
+              user.username
+            } Signed up successfully. <br> Redirecting to dashboard`,
+          ],
+        });
+
+        setTimeout(
+          () =>
+            user.is_admin
+              ? IR_HELPERS.redirects.adminAuthSuccessRedirect()
+              : IR_HELPERS.redirects.authSuccessRedirect(),
+          600
+        );
+      })
+      .catch(() => {
+        IR_HELPERS.makeAuthFormMessages({
+          type: 'error',
+          messages: [
+            'Something went wrong. Please check your internet connection and try again.',
+          ],
+        });
+      });
+  },
+
   makeAuthFormMessages({ type, messages }) {
     const alertDiv = document.querySelector('.auth__messages');
     const dismissButton = document.querySelector('.auth__messages-dismiss');
     const messageList = document.querySelector('.auth__message-list');
+
+    const dismissAlert = () => {
+      alertDiv.classList.remove('visible');
+      messageList.innerHTML = '';
+    };
+
+    if (alertDiv.classList.contains('visible')) {
+      dismissAlert();
+    }
 
     messages.forEach(message => {
       messageList.innerHTML += `<li class="auth__message">${message}</li>\n`;
@@ -39,10 +97,7 @@ const IR_HELPERS = {
       'visible'
     );
 
-    dismissButton.addEventListener('click', () => {
-      alertDiv.classList.remove('visible');
-      messageList.innerHTML = '';
-    });
+    dismissButton.addEventListener('click', dismissAlert);
   },
 
   missingFieldsMessage(fields) {
