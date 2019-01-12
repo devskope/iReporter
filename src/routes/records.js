@@ -10,10 +10,18 @@ import {
 import loadRecordByID from '../middlewares/loadRecordByID';
 import validUser from '../middlewares/validUser';
 import onlyAdmin from '../middlewares/onlyAdmin';
+import loadAllRecords from '../middlewares/loadAllRecords';
 
 const router = new Router();
 
 router.get('/records/stats', validUser, recordController.fetchStats);
+
+router.get(
+  /\/records\/?(intervention|red-flag)?\/?(under%20investigation|resolved|rejected|draft)?\/?$/,
+  validUser,
+  loadAllRecords,
+  recordController.fetchRecords
+);
 
 router.post(
   '/red-flags',
