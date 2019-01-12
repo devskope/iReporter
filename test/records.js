@@ -47,6 +47,39 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
 
+      it('Returns error response when no records match filters', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records/red-flag`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(typeof body.errors[0]).eq('string');
+          });
+
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records/resolved`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(typeof body.errors[0]).eq('string');
+          });
+
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records/red-flag/draft`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(typeof body.errors[0]).eq('string');
+            done();
+          });
+      });
+
       it('Returns an empty array when no records exist', done => {
         chai
           .request(server)
@@ -673,6 +706,99 @@ export default ({ server, chai, expect, ROOT_URL }) => {
         .request(server)
         .get(`${ROOT_URL}/user/recordstats`)
         .set('authorization', `Bearer ${adminToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(404);
+          expect(body.errors).to.be.an.instanceof(Array);
+          expect(body.errors[0]).to.be.a('string');
+          done();
+        });
+    });
+  });
+
+  describe('Filter Records', () => {
+    it('Should get all records when no filters are applied', done => {
+      chai
+        .request(server)
+        .get(`${ROOT_URL}/records`)
+        .set('authorization', `Bearer ${authToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(200);
+          expect(body.data[0]).to.be.an('object');
+
+          done();
+        });
+    });
+
+    it('Should get all intervention records', done => {
+      chai
+        .request(server)
+        .get(`${ROOT_URL}/records/intervention`)
+        .set('authorization', `Bearer ${authToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(200);
+          expect(body.data[0]).to.be.an('object');
+
+          done();
+        });
+    });
+
+    it('Should get all resolved records', done => {
+      chai
+        .request(server)
+        .get(`${ROOT_URL}/records/resolved`)
+        .set('authorization', `Bearer ${authToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(200);
+          expect(body.data[0]).to.be.an('object');
+
+          done();
+        });
+    });
+
+    it('Should get all resolved red-flag records', done => {
+      chai
+        .request(server)
+        .get(`${ROOT_URL}/records/red-flag/resolved`)
+        .set('authorization', `Bearer ${authToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(200);
+          expect(body.data[0]).to.be.an('object');
+
+          done();
+        });
+    });
+
+    it('Should return error message for invalid status', done => {
+      chai
+        .request(server)
+        .get(`${ROOT_URL}/records/rejected`)
+        .set('authorization', `Bearer ${authToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(404);
+          expect(body.errors).to.be.an.instanceof(Array);
+          expect(body.errors[0]).to.be.a('string');
+          done();
+        });
+    });
+
+    it('Should return error message for invalid status', done => {
+      chai
+        .request(server)
+        .get(`${ROOT_URL}/records/resolving`)
+        .set('authorization', `Bearer ${authToken}`)
+        .end((err, { body, status }) => {
+          expect(status).eq(404);
+          expect(body.errors).to.be.an.instanceof(Array);
+          expect(body.errors[0]).to.be.a('string');
+          done();
+        });
+    });
+
+    it('Should return error message for invalid type', done => {
+      chai
+        .request(server)
+        .get(`${ROOT_URL}/records/white-flag/`)
+        .set('authorization', `Bearer ${authToken}`)
         .end((err, { body, status }) => {
           expect(status).eq(404);
           expect(body.errors).to.be.an.instanceof(Array);
