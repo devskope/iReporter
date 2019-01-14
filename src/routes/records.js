@@ -17,7 +17,7 @@ const router = new Router();
 router.get('/records/stats', validUser, recordController.fetchStats);
 
 router.get(
-  /\/records\/?(intervention|red-flag)?\/?(under%20investigation|resolved|rejected|draft)?\/?$/,
+  /^\/records\/?(intervention|red-flag)?\/?(under%20investigation|resolved|rejected|draft)?\/?$/,
   validUser,
   loadAllRecords,
   recordController.fetchRecords
