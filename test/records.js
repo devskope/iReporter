@@ -716,95 +716,190 @@ export default ({ server, chai, expect, ROOT_URL }) => {
   });
 
   describe('Filter Records', () => {
-    it('Should get all records when no filters are applied', done => {
-      chai
-        .request(server)
-        .get(`${ROOT_URL}/records`)
-        .set('authorization', `Bearer ${authToken}`)
-        .end((err, { body, status }) => {
-          expect(status).eq(200);
-          expect(body.data[0]).to.be.an('object');
+    describe('All users', () => {
+      it('Should get all records when no filters are applied', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data[0]).to.be.an('object');
 
-          done();
-        });
+            done();
+          });
+      });
+
+      it('Should get all intervention records', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records/intervention`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data[0]).to.be.an('object');
+
+            done();
+          });
+      });
+
+      it('Should get all resolved records', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records/resolved`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data[0]).to.be.an('object');
+
+            done();
+          });
+      });
+
+      it('Should get all resolved red-flag records', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records/red-flag/resolved`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data[0]).to.be.an('object');
+
+            done();
+          });
+      });
+
+      it('Should return error message for status with no records', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records/rejected`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(body.errors[0]).to.be.a('string');
+            done();
+          });
+      });
+
+      it('Should return error message for invalid status', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records/resolving`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(body.errors[0]).to.be.a('string');
+            done();
+          });
+      });
+
+      it('Should return error message for invalid type', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/records/white-flag/`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(body.errors[0]).to.be.a('string');
+            done();
+          });
+      });
     });
 
-    it('Should get all intervention records', done => {
-      chai
-        .request(server)
-        .get(`${ROOT_URL}/records/intervention`)
-        .set('authorization', `Bearer ${authToken}`)
-        .end((err, { body, status }) => {
-          expect(status).eq(200);
-          expect(body.data[0]).to.be.an('object');
+    describe('Own profile', () => {
+      it('Should get all records when no filters are applied', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/user/records`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data[0]).to.be.an('object');
 
-          done();
-        });
-    });
+            done();
+          });
+      });
 
-    it('Should get all resolved records', done => {
-      chai
-        .request(server)
-        .get(`${ROOT_URL}/records/resolved`)
-        .set('authorization', `Bearer ${authToken}`)
-        .end((err, { body, status }) => {
-          expect(status).eq(200);
-          expect(body.data[0]).to.be.an('object');
+      it('Should get all intervention records', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/user/records/intervention`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data[0]).to.be.an('object');
 
-          done();
-        });
-    });
+            done();
+          });
+      });
 
-    it('Should get all resolved red-flag records', done => {
-      chai
-        .request(server)
-        .get(`${ROOT_URL}/records/red-flag/resolved`)
-        .set('authorization', `Bearer ${authToken}`)
-        .end((err, { body, status }) => {
-          expect(status).eq(200);
-          expect(body.data[0]).to.be.an('object');
+      it('Should get all resolved records', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/user/records/resolved`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data[0]).to.be.an('object');
 
-          done();
-        });
-    });
+            done();
+          });
+      });
 
-    it('Should return error message for invalid status', done => {
-      chai
-        .request(server)
-        .get(`${ROOT_URL}/records/rejected`)
-        .set('authorization', `Bearer ${authToken}`)
-        .end((err, { body, status }) => {
-          expect(status).eq(404);
-          expect(body.errors).to.be.an.instanceof(Array);
-          expect(body.errors[0]).to.be.a('string');
-          done();
-        });
-    });
+      it('Should get all resolved red-flag records', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/user/records/red-flag/resolved`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body.data[0]).to.be.an('object');
 
-    it('Should return error message for invalid status', done => {
-      chai
-        .request(server)
-        .get(`${ROOT_URL}/records/resolving`)
-        .set('authorization', `Bearer ${authToken}`)
-        .end((err, { body, status }) => {
-          expect(status).eq(404);
-          expect(body.errors).to.be.an.instanceof(Array);
-          expect(body.errors[0]).to.be.a('string');
-          done();
-        });
-    });
+            done();
+          });
+      });
 
-    it('Should return error message for invalid type', done => {
-      chai
-        .request(server)
-        .get(`${ROOT_URL}/records/white-flag/`)
-        .set('authorization', `Bearer ${authToken}`)
-        .end((err, { body, status }) => {
-          expect(status).eq(404);
-          expect(body.errors).to.be.an.instanceof(Array);
-          expect(body.errors[0]).to.be.a('string');
-          done();
-        });
+      it('Should return error message for status with no records', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/user/records/rejected`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(body.errors[0]).to.be.a('string');
+            done();
+          });
+      });
+
+      it('Should return error message for invalid status', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/user/records/resolving`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(body.errors[0]).to.be.a('string');
+            done();
+          });
+      });
+
+      it('Should return error message for invalid type', done => {
+        chai
+          .request(server)
+          .get(`${ROOT_URL}/user/records/white-flag/`)
+          .set('authorization', `Bearer ${authToken}`)
+          .end((err, { body, status }) => {
+            expect(status).eq(404);
+            expect(body.errors).to.be.an.instanceof(Array);
+            expect(body.errors[0]).to.be.a('string');
+            done();
+          });
+      });
     });
   });
 };
