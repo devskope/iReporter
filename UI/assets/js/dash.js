@@ -1,93 +1,69 @@
-const modals = document.querySelectorAll(
-  '.modal-wrapper--admin, .modal-wrapper--dash, .modal-wrapper--user'
-);
-const openModal = document.querySelectorAll('.record__more-btn');
-const closeModal = document.querySelectorAll('.detail-modal__close');
-const btnsEditRecord = document.querySelectorAll('.detail-modal__edit');
-const btnsCreateRecord = document.querySelectorAll(
-  '.dashboard__sidebar-btn.new'
-);
-const btnsTodash = document.querySelectorAll('.dashboard__sidebar-btn.dash');
-const locationInput = document.querySelector('.create-edit-form__location');
-const coordDisplay = document.querySelector('.create-edit-form__geocodes');
-const locationReset = document.querySelector(
-  '.create-edit-form__location-reset'
-);
-const statusFilterContainer = document.querySelector(
-  '.dashboard__filter-categories'
-);
-const mobileFilterToggle = document.querySelector('.dashboard__filter-toggle');
+this.addEventListener('load', async () => {
+  const dashboard = document.querySelector('.dashboard');
 
-const toggleMobileFilter = () => {
-  statusFilterContainer.classList.toggle('active');
-  mobileFilterToggle.classList.toggle('active');
-};
+  const {
+    authCheck,
+    getFeedNode,
+    getStatCounters,
+    initAsideListeners,
+    initFilterListeners,
+    loadingAnimation,
+    logoutListener,
+    notify,
+    populateDashboardStats,
+    populateDashboardFeed,
+    responsiveNav,
+  } = window.IR_HELPERS;
 
-const fieldsBelow = document.querySelectorAll(
-  '.form-field--media, .btn--submit'
-);
+  authCheck('login.html');
+  responsiveNav();
+  logoutListener();
 
-if (mobileFilterToggle)
-  mobileFilterToggle.addEventListener('click', toggleMobileFilter);
+  const { classList } = dashboard;
 
-/* Bind listeners to all modal toggles */
-[...openModal, ...closeModal].forEach(element =>
-  element.addEventListener('click', () =>
-    modals.forEach(modal => (modal ? modal.classList.toggle('visible') : null))
-  )
-);
+  const generalDash = dashboard && classList.contains('dashboard--users');
 
-btnsCreateRecord.forEach(element =>
-  element.addEventListener('click', () =>
-    window.location.assign('new-record.html')
-  )
-);
+  const state = {
+    detailmodalOpened: false,
+    feedLoading: false,
+    feedLoadSuccess: false,
+    statusFilter: null,
+    typeFilter: null,
 
-btnsTodash.forEach(element =>
-  element.addEventListener('click', () => window.location.assign('user.html'))
-);
+    set loadingFeed(setTo) {
+      if (setTo) {
+        this.feedLoading = true;
+        loadingAnimation({ show: true });
+      } else {
+        this.feedLoading = false;
+        loadingAnimation({ show: false });
+      }
+    },
+    set feedLoaded(setTo) {
+      if (setTo) {
+        this.feedLoadSuccess = true;
+        this.feedLoading = false;
+        loadingAnimation({ show: false });
+      } else {
+        this.feedLoadSuccess = false;
+        loadingAnimation({ show: true });
+      }
+    },
+  };
 
-btnsEditRecord.forEach(element =>
-  element.addEventListener('click', () =>
-    window.location.assign('edit-record.html')
-  )
-);
+  if (generalDash) {
+    notify();
+    initAsideListeners(dashboard);
 
-const getCoords = ({ lng, lat }) => `${lng()},${lat()}`;
+    await populateDashboardStats({
+      widgetList: getStatCounters(dashboard),
+    });
 
-const displayCoords = coordinateString => {
-  coordDisplay.hidden = false;
-  coordDisplay.textContent = coordinateString;
+    await populateDashboardFeed({
+      feedNode: getFeedNode(dashboard),
+      state,
+    });
 
-  fieldsBelow.forEach(field => field.classList.add('pushdown'));
-
-  coordDisplay.classList.remove('hidden');
-};
-
-if (window.google && locationInput) {
-  const liveUpdate = new window.google.maps.places.Autocomplete(locationInput);
-  liveUpdate.addListener('place_changed', () => {
-    const geoLocation = liveUpdate.getPlace();
-    if (geoLocation.geometry) {
-      const coordinateString = getCoords(geoLocation.geometry.location);
-      displayCoords(coordinateString);
-    } else {
-      alert(
-        `Error: no geospatial coordinates availabe for "${geoLocation.name}"`
-      );
-    }
-  });
-}
-
-const resetLocationFields = () => {
-  coordDisplay.hidden = true;
-  coordDisplay.classList.add('hidden');
-
-  fieldsBelow.forEach(field => field.classList.remove('pushdown'));
-
-  coordDisplay.value = '';
-  locationInput.value = '';
-};
-
-if (locationReset)
-  locationReset.addEventListener('click', () => resetLocationFields());
+    initFilterListeners(dashboard, state);
+  }
+});
