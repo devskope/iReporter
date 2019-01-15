@@ -93,23 +93,66 @@ a {
 }
 
 .topbar__profile-widget {
+  position: relative;
   font-weight: 500;
   font-size: 1.2rem;
   position: absolute;
   border-color: #2a5583;
   color: #2a5583;
+  min-width: 6rem;
   top: 1.7rem;
-  left: 42%;
+  left: 50%;
+  transform: translateX(calc(-50% + 1rem));
 }
 
-.topbar__profile-widget::after {
+.topbar__profile-widget:hover, 
+.topbar__profile-widget:active {
+  background: white;
+  color: #2a5583;
+}
+
+.topbar__profile-indicator {
   background-color: rgb(60, 245, 60);
   content: "";
-  width: 0.5rem;
-  height: 0.5rem;
-  margin-left: 0.5rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  top: 0.3rem;
+  right: 0.4rem;
   position: absolute;
   border-radius: 50%;
+}
+
+.topbar__profile-dropdown::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  border: 0.8rem solid transparent;
+  border-top: none;
+  border-bottom: 1rem solid #9c9c9caa;
+  transform: translateX(-50%) translateY(-100%);
+  transition: opacity .35s ease-in;
+}
+.topbar__profile-dropdown {
+  position: absolute;
+  background: linear-gradient(130deg, #212121bf 0%, #212121e6 100%);
+  width: 180%;
+  height: 15rem;
+  left: 50%;
+  opacity: 0;
+  min-width: 20rem;
+  transform: translateX(-50%);
+  transition: transform .3s ease, opacity .35s ease-in;
+}
+
+.topbar__profile-dropdown.hidden {
+  visibility: hidden;
+}
+
+.topbar__profile-dropdown.visible {
+  transform: translateX(-50%) translateY(2rem);
+  opacity: 1;
+  visibility: visible;
 }
 
 .btn--nav {
@@ -879,7 +922,7 @@ a {
 }
 .detail-modal__edit {
   object-fit: contain;
-  width: 2rem;
+  width: 2.5rem;
   justify-self: flex-end;
 }
 
@@ -1035,6 +1078,7 @@ a {
     left: 48%;
     border-radius: 50%;
   }
+
   .btn--nav {
     border: 0.08rem solid #2a5583;
     border-radius: 0.4rem;
@@ -1051,6 +1095,12 @@ a {
     color: #2a5583;
     top: initial;
   }
+  .topbar__profile-widget:hover, 
+  .topbar__profile-widget:active {
+    background: white;
+    color: #2a5583;
+  }
+
   .banner {
     grid-template-columns: 3fr 2fr;
   }

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>iReporter</title>
+  <title> Profile | iReporter</title>
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
@@ -12,7 +12,12 @@
   <nav class="topbar">
     <div class="topbar__wrapper">
       <a href="../../index.html" class="topbar__brand">iReporter</a>
-      <p class="topbar__profile-widget btn--nav">Hi Skope</p>
+      <div class="topbar__profile-widget btn--nav">
+        <div class="topbar__profile-widget-text"></div>
+        <div class="topbar__profile-indicator"></div>
+        <div class="topbar__profile-dropdown hidden">
+        </div>
+      </div>
       <ul class="topbar__links">
         <button class="topbar__toggle" type="button">Menu</button>
         <li class="topbar__list-item"></li><a class="topbar__link" href="./user.html">Dashboard</a></li>
@@ -42,6 +47,7 @@
       </div>
     </aside>
     <main class="dashboard__main">
+        <div class="loader"></div>
       <div class="dashboard__filters">
         <select class="dashboard__filter-report-types">
           <option value="all" default>All</option>
@@ -58,33 +64,6 @@
         </ul>
       </div>
       <section class="dashboard__main-content">
-          <div class="record">
-              <img class="record__image" src="../assets/images/crashSite.jpeg" alt="crash site">
-              <div class="record__details">
-                <h4 class="record__title">Title of Report</h4>
-                <p class="record__comment">A platform to report corrupt acts and issues affecting the community while
-                  also seeking government's quick intervention</p>
-              </div>
-              <button class="record__more-btn">View More</button>
-            </div>
-            <div class="record">
-              <img class="record__image" src="../assets/images/crashSite.jpeg" alt="crash site">
-              <div class="record__details">
-                <h4 class="record__title">Title of Report</h4>
-                <p class="record__comment">A platform to report corrupt acts and issues affecting the community while
-                  also seeking government's quick intervention</p>
-              </div>
-              <button class="record__more-btn">View More</button>
-            </div>
-            <div class="record">
-              <img class="record__image" src="../assets/images/crashSite.jpeg" alt="crash site">
-              <div class="record__details">
-                <h4 class="record__title">Title of Report</h4>
-                <p class="record__comment">A platform to report corrupt acts and issues affecting the community while
-                  also seeking government's quick intervention</p>
-              </div>
-              <button class="record__more-btn">View More</button>
-            </div>
       </section>
     </main>
   </div>
@@ -94,7 +73,9 @@
     </div>
   </footer>
 
-  <div class="modal-wrapper modal-wrapper--user">
+  <div class="notification-wrapper"></div>
+
+  <div class="modal-wrapper modal-wrapper--profile">
     <div class="detail-modal">
       <div class="detail-modal__header">
         <h2 class="detail-modal__type-id"></h2>
@@ -116,14 +97,14 @@
       </div>
       <div class="detail-modal__footer">
         <button class="detail-modal__close">Close</button>
-        <img src="../assets/images/edit-interface-symbol-of-pencil-outline.svg" alt="" class="detail-modal__edit">
+        <img src="../assets/images/note-interface-symbol.svg" alt="Edit" class="detail-modal__edit">
       </div>
     </div>
   </div>
   </div>
 
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApBXNZ8DfcSajnuuNOEMWNNH0eIZdBtws&libraries=places"></script>
-  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/helpers.js"></script>
   <script src="../assets/js/dash.js"></script>
 </body>
 
