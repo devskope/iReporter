@@ -23,7 +23,7 @@ const IR_HELPERS = {
 
   redirects: {
     adminAuthSuccessRedirect: () => window.location.assign('admin.html'),
-    authSuccessRedirect: ({ first }) =>
+    authSuccessRedirect: ({ first = false } = {}) =>
       !first
         ? window.location.assign('user.html')
         : window.location.assign(
@@ -37,21 +37,21 @@ const IR_HELPERS = {
     return !IR_HELPERS.getToken() ? window.location.assign(redirectUrl) : null;
   },
 
-  buildFetchPath({ singleRecordPath, status, type, user }) {
-    return IR_HELPERS.nonExistent(singleRecordPath, status, type, user)
+  buildFetchPath({ singleRecordPath, status, type, profile }) {
+    return IR_HELPERS.nonExistent(singleRecordPath, status, type, profile)
       ? `${IR_HELPERS.API_ROOT_URL}/records/`
       : IR_HELPERS.exists(singleRecordPath)
       ? `${IR_HELPERS.API_ROOT_URL}/${singleRecordPath}`
-      : IR_HELPERS.exists(type, status, user)
-      ? `${IR_HELPERS.API_ROOT_URL}/${user}/records/${type}/${status}`
-      : IR_HELPERS.exists(type, user)
-      ? `${IR_HELPERS.API_ROOT_URL}/${user}/records/${type}`
+      : IR_HELPERS.exists(type, status, profile)
+      ? `${IR_HELPERS.API_ROOT_URL}/user/records/${type}/${status}`
+      : IR_HELPERS.exists(type, profile)
+      ? `${IR_HELPERS.API_ROOT_URL}/user/records/${type}`
       : IR_HELPERS.exists(type, status)
       ? `${IR_HELPERS.API_ROOT_URL}/records/${type}/${status}`
-      : IR_HELPERS.exists(status, user)
-      ? `${IR_HELPERS.API_ROOT_URL}/${user}/records/${status}`
-      : IR_HELPERS.exists(user)
-      ? `${IR_HELPERS.API_ROOT_URL}/${user}/records`
+      : IR_HELPERS.exists(status, profile)
+      ? `${IR_HELPERS.API_ROOT_URL}/user/records/${status}`
+      : IR_HELPERS.exists(profile)
+      ? `${IR_HELPERS.API_ROOT_URL}/user/records`
       : IR_HELPERS.exists(status)
       ? `${IR_HELPERS.API_ROOT_URL}/records/${status}`
       : IR_HELPERS.exists(type)
@@ -74,10 +74,14 @@ const IR_HELPERS = {
       let messageList = '';
       let notification;
 
-      if (title && message instanceof Array) {
-        message.forEach(msg => {
-          messageList += `<p class="notification__text">${msg}</p>\n`;
-        });
+      if (title) {
+        if (message instanceof Array) {
+          message.forEach(msg => {
+            messageList += `<p class="notification__text">${msg}</p>\n`;
+          });
+        } else {
+          messageList += `<p class="notification__text">${message}</p>`;
+        }
         notification = IR_HELPERS.spawnElement({
           element: 'div',
           attrs: {
@@ -160,11 +164,11 @@ const IR_HELPERS = {
     return args.every(param => param !== null && typeof param !== 'undefined');
   },
 
-  async fetchRecords({ type, status, user } = {}) {
+  async fetchRecords({ type, status, profile } = {}) {
     const requestUrl = IR_HELPERS.buildFetchPath({
       type,
       status,
-      user,
+      profile,
     });
     let records;
 
@@ -178,15 +182,15 @@ const IR_HELPERS = {
       });
       const { status: resStatus, errors, data } = await res.json();
 
-      if (resStatus === 404) {
-        throw IR_HELPERS.errors.noRecords;
-      }
       if (errors) {
         errors.forEach(error => {
           if (error === `Ooops something happened, can't find User`) {
             IR_HELPERS.redirects.redirectTo('login.html');
           }
         });
+      }
+      if (resStatus === 404 || !data.length) {
+        throw IR_HELPERS.errors.noRecords;
       }
       records = data;
     } catch (err) {
@@ -241,12 +245,14 @@ const IR_HELPERS = {
 
   filterStateSync(filters, state) {
     const { statusFilter, typeFilter } = filters;
+
     const status =
       state.statusFilter && statusFilter === null
         ? null
         : statusFilter === null
         ? null
         : statusFilter || state.statusFilter;
+
     const type =
       state.typeFilter && typeFilter === null
         ? null
@@ -254,10 +260,7 @@ const IR_HELPERS = {
         ? null
         : typeFilter || state.typeFilter;
 
-    return {
-      status,
-      type,
-    };
+    return { status, type };
   },
 
   findMissingFields(fields) {
@@ -290,6 +293,10 @@ const IR_HELPERS = {
 
   getToken() {
     return localStorage.getItem('iReporter-token');
+  },
+
+  getUsername() {
+    return localStorage.getItem('iReporter-username');
   },
 
   async getUsernameByID(creatorID) {
@@ -453,6 +460,24 @@ const IR_HELPERS = {
     }
   },
 
+  initUserWidget() {
+    const userWidget = document.querySelector('.topbar__profile-widget');
+    const userWidgetDropdown = document.querySelector(
+      '.topbar__profile-dropdown'
+    );
+    const userWidgetText = document.querySelector(
+      '.topbar__profile-widget-text'
+    );
+    const username = IR_HELPERS.getUsername();
+
+    userWidget.addEventListener('click', () => {
+      userWidgetDropdown.classList.toggle('hidden');
+      userWidgetDropdown.classList.toggle('visible');
+    });
+
+    userWidgetText.textContent = `Hi ${IR_HELPERS.capitalize(username)}`;
+  },
+
   isEmpty(...args) {
     return args.every(param => param === '');
   },
@@ -532,9 +557,11 @@ const IR_HELPERS = {
     const alertDiv = document.querySelector('.auth__messages');
     const dismissButton = document.querySelector('.auth__messages-dismiss');
     const messageList = document.querySelector('.auth__message-list');
+
     const dismissAlert = () => {
       alertDiv.classList.remove('visible');
       messageList.innerHTML = '';
+      alertDiv.className = 'auth__messages';
     };
     if (alertDiv.classList.contains('visible')) {
       dismissAlert();
@@ -677,7 +704,7 @@ const IR_HELPERS = {
   } = {}) {
     const filtersToSync = { statusFilter, typeFilter };
     const { status, type } = IR_HELPERS.filterStateSync(filtersToSync, state);
-    const filter =
+    let filter =
       type && status
         ? (() => ({ type, status }))()
         : type
@@ -686,10 +713,18 @@ const IR_HELPERS = {
         ? (() => ({ status }))()
         : undefined;
 
+    if (filter && state.profileFeed) {
+      Object.assign(filter, { profile: true });
+    } else if (state.profileFeed) {
+      filter = { profile: true };
+    }
+
     IR_HELPERS.syncState(state, {
       loadingFeed: true,
     });
+
     if (clear) IR_HELPERS.clearNode(feedNode);
+
     try {
       await IR_HELPERS.loadFeed(
         await IR_HELPERS.recordsToFeedComponents(
@@ -698,17 +733,15 @@ const IR_HELPERS = {
         ),
         feedNode
       );
+
       IR_HELPERS.modalBinds(state, admin);
+
       IR_HELPERS.syncState(state, {
         feedLoaded: true,
         statusFilter: status,
         typeFilter: type,
       });
     } catch ({ name, message }) {
-      IR_HELPERS.syncState(state, {
-        feedLoaded: false,
-      });
-
       if (message === 'No records found') {
         IR_HELPERS.syncState(state, {
           loadingFeed: false,
@@ -726,6 +759,10 @@ const IR_HELPERS = {
             ? 10000
             : undefined;
 
+        IR_HELPERS.syncState(state, {
+          feedLoaded: false,
+        });
+
         if (retries > 0 && retries <= 3) {
           IR_HELPERS.displayNotification({
             type: 'error',
@@ -733,6 +770,7 @@ const IR_HELPERS = {
             title: name,
           });
         }
+
         setTimeout(() => {
           IR_HELPERS.populateDashboardFeed({
             feedNode,
@@ -748,7 +786,7 @@ const IR_HELPERS = {
   },
 
   async populateDashboardStats({ widgetList, scope }) {
-    const statPath = scope ? `${scope}/stats` : 'records/stats';
+    const statPath = scope ? `${scope}/recordstats` : 'records/stats';
 
     try {
       const res = await fetch(`${IR_HELPERS.API_ROOT_URL}/${statPath}`, {
