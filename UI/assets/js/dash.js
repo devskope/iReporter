@@ -3,15 +3,22 @@ this.addEventListener('load', async () => {
 
   const {
     authCheck,
+    autoCompleteHook,
+    createRecord,
+    displayNotification,
+    findMissingFields,
     getFeedNode,
+    getLocationString,
     getStatCounters,
     initAsideListeners,
     initFilterListeners,
     loadingAnimation,
     logoutListener,
+    missingFieldsMessage,
     notify,
     populateDashboardStats,
     populateDashboardFeed,
+    resetLocationFields,
     responsiveNav,
     initUserWidget,
     syncState,
@@ -19,6 +26,7 @@ this.addEventListener('load', async () => {
 
   authCheck('login.html');
   responsiveNav();
+  notify();
   logoutListener();
 
   const { classList } = dashboard;
@@ -26,6 +34,8 @@ this.addEventListener('load', async () => {
   const generalDash = dashboard && classList.contains('dashboard--users');
   const profileDash =
     dashboard && classList.contains('dashboard--user-profile');
+  const recordCreationDash =
+    dashboard && dashboard.querySelector('.create-edit-form--create');
 
   const state = {
     detailmodalOpened: false,
@@ -57,7 +67,6 @@ this.addEventListener('load', async () => {
   };
 
   if (generalDash) {
-    notify();
     initAsideListeners(dashboard);
 
     await populateDashboardStats({
@@ -89,5 +98,52 @@ this.addEventListener('load', async () => {
     });
 
     initFilterListeners(dashboard, state);
+  }
+
+  if (recordCreationDash) {
+    const newRecordForm = document.querySelector('.create-edit-form--create');
+    const locationInput = document.querySelector('.create-edit-form__location');
+    const locationReset = document.querySelector(
+      '.create-edit-form__location-reset'
+    );
+
+    await populateDashboardStats({
+      widgetList: getStatCounters(dashboard),
+      scope: 'user',
+    });
+
+    initAsideListeners(dashboard);
+
+    autoCompleteHook(locationInput);
+
+    locationReset.addEventListener('click', () => resetLocationFields());
+
+    newRecordForm.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const { currentTarget: form } = e;
+      const { value: type } = form.querySelector('.create-edit-form__type');
+      const { value: title } = form.querySelector(
+        '.create-edit-form__record-title'
+      );
+      const { value: comment } = form.querySelector(
+        '.create-edit-form__comment'
+      );
+      const emailNotify = form.querySelector(
+        '.create-edit-form__email-notification'
+      );
+
+      const missingFields = findMissingFields({ type, title, comment });
+
+      return missingFields.length > 0
+        ? displayNotification({ message: missingFieldsMessage(missingFields) })
+        : createRecord({
+            type,
+            title,
+            comment,
+            location: getLocationString(),
+            emailNotify: emailNotify.checked,
+          });
+    });
   }
 });

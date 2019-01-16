@@ -29,12 +29,46 @@ const IR_HELPERS = {
         : window.location.assign(
             'user.html?type=success&title=First+login&message=Welcome+to+iReporter'
           ),
-    back: () => window.history.back(),
+    back: ({ queryString = '' } = {}) =>
+      document.referrer &&
+      new URL(document.referrer).hostname === window.location.hostname
+        ? window.location.assign(document.referrer + queryString)
+        : window.location.assign(`profile.html${queryString}`),
     redirectTo: url => window.location.assign(url),
   },
 
   authCheck(redirectUrl) {
     return !IR_HELPERS.getToken() ? window.location.assign(redirectUrl) : null;
+  },
+
+  autoCompleteHook(locationInput) {
+    try {
+      const Hook = window.google.maps.places.Autocomplete;
+
+      if (Hook) {
+        const liveUpdate = new Hook(locationInput);
+        liveUpdate.addListener('place_changed', () => {
+          const { geometry, name } = liveUpdate.getPlace();
+
+          if (geometry) {
+            const coordinateString = IR_HELPERS.getCoords(geometry.location);
+
+            IR_HELPERS.displayCoords(coordinateString);
+          } else {
+            IR_HELPERS.displayNotification({
+              type: 'error',
+              message: [
+                `Error: no geospatial coordinates availabe for "${name}"`,
+              ],
+            });
+          }
+        });
+      }
+    } catch (error) {
+      IR_HELPERS.displayNotification({
+        message: 'Please check your internet connection',
+      });
+    }
   },
 
   buildFetchPath({ singleRecordPath, status, type, profile }) {
@@ -67,7 +101,64 @@ const IR_HELPERS = {
     node.innerHTML = '';
   },
 
-  displayNotification({ type, title, message, timeout }) {
+  createRecord({ type, title, comment, location, emailNotify }) {
+    fetch(`${IR_HELPERS.API_ROOT_URL}/${type}s`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${IR_HELPERS.getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type,
+        title,
+        comment,
+        location,
+        ...(emailNotify ? { emailNotify } : {}),
+      }),
+    })
+      .then(res => res.json())
+      .then(({ errors, data }) => {
+        if (errors) {
+          IR_HELPERS.displayNotification({
+            message: errors,
+            title: 'Error creating record',
+          });
+          return;
+        }
+        const [{ message }] = data;
+        IR_HELPERS.redirects.back({
+          queryString: `?title=success&type=success&message=${message.replace(
+            /\s/g,
+            '+'
+          )}`,
+        });
+      })
+      .catch(() =>
+        IR_HELPERS.displayNotification({ message: 'Something went wrong' })
+      );
+  },
+
+  displayCoords(coordinateString) {
+    const coordDisplay = document.querySelector('.create-edit-form__geocodes');
+    const fieldsBelow = document.querySelectorAll(
+      '.form-field--media, .btn--submit'
+    );
+
+    coordDisplay.hidden = false;
+    coordDisplay.textContent = coordinateString;
+    fieldsBelow.forEach(field => field.classList.add('pushdown'));
+
+    coordDisplay.classList.remove('hidden');
+    IR_HELPERS.setLocationString(coordinateString);
+  },
+
+  displayNotification({
+    type,
+    title = type === 'success' ? 'Success' : 'Error',
+    message,
+    timeout,
+  }) {
     const notificationWrapper = document.querySelector('.notification-wrapper');
 
     const createNotification = () => {
@@ -143,18 +234,21 @@ const IR_HELPERS = {
     if (!notificationWrapper.classList.contains('visible')) {
       notificationWrapper.classList.add('visible');
     }
-    notificationWrapper.appendChild(notification);
-    if (notificationWrapper.childElementCount > 3) {
-      notificationWrapper.removeChild(notificationWrapper.firstChild);
+    if (notificationWrapper.childElementCount >= 3) {
+      const { firstChild } = notificationWrapper;
+      notificationWrapper.removeChild(firstChild);
     }
+    notificationWrapper.appendChild(notification);
     notification.classList.add(
       `${type === 'success' ? 'notification--success' : 'notification--error'}`,
       'visible'
     );
+
     const dismissButton = notification.querySelector('.dismiss__notification');
     dismissButton.addEventListener('click', () => {
       dismissNotification(notification);
     });
+
     setTimeout(() => {
       dismissNotification(notification);
     }, timeout || 5000);
@@ -281,6 +375,14 @@ const IR_HELPERS = {
       .split(',')
       .reverse()
       .join(',');
+  },
+
+  getCoords({ lng, lat }) {
+    return `${lng()},${lat()}`;
+  },
+
+  getLocationString() {
+    return IR_HELPERS.locationString;
   },
 
   getStatCounters(dashboard) {
@@ -641,11 +743,12 @@ const IR_HELPERS = {
   notify() {
     const { search: queryString } = window.location;
 
-    window.history.pushState(
-      {},
-      document.title,
-      window.location.href.split('?')[0]
-    );
+    if (queryString)
+      window.history.pushState(
+        {},
+        document.title,
+        window.location.href.split('?')[0]
+      );
     if (
       queryString &&
       ((new URLSearchParams(queryString).has('type') &&
@@ -939,6 +1042,22 @@ const IR_HELPERS = {
     );
   },
 
+  resetLocationFields() {
+    const coordDisplay = document.querySelector('.create-edit-form__geocodes');
+    const locationInput = document.querySelector('.create-edit-form__location');
+    const fieldsBelow = document.querySelectorAll(
+      '.form-field--media, .btn--submit'
+    );
+
+    coordDisplay.hidden = true;
+    coordDisplay.classList.add('hidden');
+    coordDisplay.value = '';
+    locationInput.value = '';
+
+    fieldsBelow.forEach(field => field.classList.remove('pushdown'));
+    IR_HELPERS.setLocationString('');
+  },
+
   responsiveNav() {
     const menu = document.querySelector('.topbar__links');
     const navToggle = document.querySelector('.topbar__toggle');
@@ -949,6 +1068,14 @@ const IR_HELPERS = {
         ? 'Close'
         : 'Menu';
     });
+  },
+
+  setLocationString(coordinateString) {
+    IR_HELPERS.locationString = coordinateString;
+  },
+
+  setText(node, text) {
+    node.textContent = text;
   },
 
   signUp(firstname, lastname, username, email, password) {
