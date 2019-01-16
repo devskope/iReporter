@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Edit Record | iReporter</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+  <nav class="topbar">
+    <div class="topbar__wrapper">
+      <a href="../../index.html" class="topbar__brand">iReporter</a>
+      <ul class="topbar__links">
+        <button class="topbar__toggle" type="button">Menu</button>
+        <li class="topbar__list-item"><a class="topbar__link" href="./profile.html">Profile</a></li>
+        <li class="topbar__list-item"><a href="../../index.html" class="btn--nav btn--logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="dashboard">
+    <aside class="dashboard__sidebar">
+      <p class="dashboard__sidebar-toggle">SIDEBAR</p>
+      <button class="dashboard__sidebar-btn dash">Dashboard</button>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Drafts</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Resolved</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Under Investigation</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Rejected</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+    </aside>
+    <main class="dashboard__main">
+      <section class="create-edit-form-wrapper">
+        <form class="create-edit-form create-edit-form--edit">
+          <div class="create-edit-form__header">
+            <h2 class="create-edit-form__title">Edit Record</h2>
+          </div>
+          <div class="form-fields">
+            <div class="form-field disabled">
+              <label for="edit-type">Report Type</label>
+              <select class="create-edit-form__type" id="edit-type" disabled>
+                <option value="" default>-----</option>
+                <option value="red-flag">Red-Flag</option>
+                <option value="intervention">Intervention</option>
+              </select>
+            </div>
+            <div class="form-field disabled">
+              <label for="edit-title">Report Title</label>
+              <input class="create-edit-form__record-title" type="text" id="edit-title" disabled>
+            </div>
+            <div class="form-field form-field--comment">
+              <label for="edit-comment">Report Comment</label>
+              <textarea class="create-edit-form__comment" rows="4" id="edit-comment"></textarea>
+            </div>
+            <div class="form-field form-field--location">
+              <label for="edit-location">Location of Event</label>
+              <input class="create-edit-form__location" type="text" id="edit-location">
+              <button type="button" class="create-edit-form__location-reset btn">Clear</button>
+              <p class="create-edit-form__geocodes  hidden">
+              </p>
+            </div>
+            <div class="form-field form-field--media">
+              <label for="edit-media">Media:
+                <br>
+                <small class="create-edit-form__media-hint">You can add multiple videos & images</small>
+              </label>
+              <input class="create-edit-form__media" type="file" id="edit-media" multiple disabled>
+            </div>
+            <button class="btn btn--submit" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+  <footer class="footer">
+    <div class="copyright">
+      <p>iReporter &copy;2018</p>
+    </div>
+  </footer>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApBXNZ8DfcSajnuuNOEMWNNH0eIZdBtws&libraries=places"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/dash.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iReporter</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+  <nav class="topbar">
+    <div class="topbar__wrapper">
+      <a href="../../index.html" class="topbar__brand">iReporter</a>
+      <ul class="topbar__links">
+        <button class="topbar__toggle" type="button">Menu</button>
+        <li class="topbar__list-item"><a class="topbar__link" href="../../index.html">Home</a></li>
+        <li class="topbar__list-item"><a class="topbar__link" href="./profile.html">Profile</a></li>
+        <li class="topbar__list-item"><a href="../../index.html" class="btn--nav btn--logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="dashboard dashboard--users">
+    <aside class="dashboard__sidebar">
+      <p class="dashboard__sidebar-toggle">SIDEBAR</p>
+      <button class="dashboard__sidebar-btn new">New Record</button>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Drafts</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Resolved</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Under Investigation</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+      <div class="dashboard__stat">
+        <p class="dashboard__stat-title">Rejected</p>
+        <p class="dashboard__stat-count">0</p>
+      </div>
+    </aside>
+    <main class="dashboard__main">
+        <div class="loader"></div>
+      <div class="dashboard__filters">
+        <select class="dashboard__filter-report-types">
+          <option value="all" default>All</option>
+          <option value="red-flag">Red Flag</option>
+          <option value="intervention">Intervention</option>
+        </select>
+        <button class="dashboard__filter-toggle" type="button">Status</button>
+        <ul class="dashboard__filter-categories">
+          <li class="dashboard__filter-category active" value="all">All</li>
+          <li class="dashboard__filter-category" value="draft">Draft</li>
+          <li class="dashboard__filter-category" value="under investigation">Under Investigation</li>
+          <li class="dashboard__filter-category" value="resolved">Resolved</li>
+          <li class="dashboard__filter-category" value="rejected">Rejected</li>
+        </ul>
+      </div>
+      <section class="dashboard__main-content">
+      </section>
+    </main>
+  </div>
+  <footer class="footer">
+    <div class="copyright">
+      <p>iReporter &copy;2018</p>
+    </div>
+  </footer>
+
+  <div class="notification-wrapper"></div>
+
+  <div class="modal-wrapper modal-wrapper--users">
+    <div class="detail-modal">
+      <div class="detail-modal__header">
+        <h2 class="detail-modal__type-id"></h2>
+        <button class="detail-modal__close">&times;</button>
+      </div>
+      <div class="detail-modal__content">
+        <div class="detail-modal__map">
+        </div>
+        <div class="detail-modal__title-block">
+          <h3 class="detail-modal__title"></h3>
+          <span class="detail-modal__byline"></span>
+        </div>
+        <p class="detail-modal__comment"></p>
+        <div class="detail-modal__media-block">
+          <h4 class="detail-modal__sub">Media</h4>
+          <div class="detail-modal__media">
+          </div>
+        </div>
+      </div>
+      <div class="detail-modal__footer">
+        <button class="detail-modal__close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApBXNZ8DfcSajnuuNOEMWNNH0eIZdBtws&libraries=places"></script>
+  <script src="../assets/js/helpers.js"></script>
+  <script src="../assets/js/dash.js"></script>
+</body>
+
+</html>

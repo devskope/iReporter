@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in | iReporter</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+  <nav class="topbar">
+    <div class="topbar__wrapper">
+      <a href="../../index.html" class="topbar__brand">iReporter</a>
+      <ul class="topbar__links">
+        <button class="topbar__toggle" type="button">Menu</button>
+        <li class="topbar__list-item"><a class="topbar__link" href="../../index.html">Home</a></li>
+        <li class="topbar__list-item"><a class="topbar__link" href="#">About</a></li>
+        <li class="topbar__list-item"><a href="./signup.html" class="btn--nav btn--logout">SIgn Up</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main class="auth">
+    <form class="auth__form auth__form--login">
+      <div class="auth__title">
+        <h2 class="main-text">Login to</h2>
+        <p class="sub-text">Start reporting</p>
+      </div>
+      <div class="auth__messages">
+        <span class="auth__messages-dismiss">&rotimes;</span>
+        <ul class="auth__message-list"></ul>
+      </div>
+      <div class="form-fields">
+      <div class="form-field">
+        <label for="login-username">Username</label>
+        <input class="form-field__username" type="text" id="login-username" placeholder="Ahmed Obi">
+      </div>
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input  class="form-field__password" type="password" id="login-password" placeholder="*******">
+      </div>
+      <button class="btn btn--submit" type="submit">Login</button>
+      </div>
+      <div class="auth__links">
+        <p>Forgot Password? <a href="#">We can help</a></p>
+        <p>Need an account? <a href="./signup.html">Create one for free</a></p>
+      </div>
+    </form>
+  </main>
+  <footer class="footer">
+    <div class="links-wrapper ">
+      <a class="footer__link" href="home.html">Home</a>
+      <a class="footer__link" href="#">About</a>
+      <a class="footer__link" href="signup.html">Sign Up</a>
+    </div>
+    <div>
+      <p class="copyright">iReporter &copy;2018</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/helpers.js"></script>
+  <script src="../assets/js/auth.js"></script>
+</body>
+
+</html>
