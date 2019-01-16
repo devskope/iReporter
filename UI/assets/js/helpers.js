@@ -114,7 +114,7 @@ const IR_HELPERS = {
         title,
         comment,
         location,
-        ...(emailNotify ? { emailNotify } : {}),
+        emailNotify: JSON.stringify(emailNotify),
       }),
     })
       .then(res => res.json())

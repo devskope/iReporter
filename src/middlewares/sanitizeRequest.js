@@ -85,9 +85,14 @@ export const verifyRequestTypes = (req, res, next) => {
   const isEmpty = stringParam => stringParam === '';
 
   Object.keys(body).forEach(param => {
-    if (body[param] !== undefined && typeof body[param] === 'string') {
-      body[param] = body[param].trim();
-      switch (param.trim()) {
+    if (
+      body[param] !== undefined &&
+      (typeof body[param] === 'string' || typeof body[param] === 'boolean')
+    ) {
+      body[param] =
+        typeof body[param] === 'string' ? body[param].trim() : body[param];
+
+      switch (param) {
         case 'email':
           if (isEmpty(body[param]) || !/^.+@.+\..+$/.test(body[param])) {
             errors.push(`cannot parse invalid email "${body[param]}".`);
@@ -98,7 +103,9 @@ export const verifyRequestTypes = (req, res, next) => {
             isEmpty(body[param]) ||
             typeof jsonParse(body[param]) !== typeof validTypes[param]
           ) {
-            errors.push(`emailNotify must be a boolean`);
+            errors.push(
+              `Invalid value for ${param}: Expected ${typeof validTypes[param]}`
+            );
           }
           break;
         case 'status':
