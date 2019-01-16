@@ -575,6 +575,12 @@ a {
   text-align: center;
 }
 
+.form-field .create-edit-form__email-notification {
+  justify-self: center;
+  position: relative;
+  visibility: hidden;
+}
+
 .create-edit-form__record-title:disabled {
   background-color: #fff;
   color: #818181;
@@ -589,6 +595,39 @@ a {
   padding: 1rem;
   margin-top: 0;
   font-size: 1rem;
+}
+
+.create-edit-form__email-notification::before {
+  content: '';
+  background: url(../images/cross.svg);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  padding: 0 48%;
+  top: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  visibility: visible;
+  transition: all .25s ease;
+}
+
+.create-edit-form__email-notification:checked::before {
+  content: '';
+  background: url(../images/checked.svg);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  padding: 0 48%;
+  top: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  visibility: visible;
 }
 
 /* dash */

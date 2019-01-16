@@ -76,6 +76,11 @@
               </label>
               <input class="create-edit-form__media" type="file" id="create-media" multiple>
             </div>
+            <div title="Check to recieve notifications when an admin changes the status of this record" class="form-field">
+              <label for="create-email-notification"> Email notifications?
+              </label>
+              <input class="create-edit-form__email-notification" type="checkbox" id="create-email-notification">
+            </div>
             <button class="btn btn--submit" type="submit">Save Changes</button>
           </div>
         </form>
@@ -88,8 +93,10 @@
     </div>
   </footer>
 
+  <div class="notification-wrapper"></div>
+
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApBXNZ8DfcSajnuuNOEMWNNH0eIZdBtws&libraries=places"></script>
-  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/helpers.js"></script>
   <script src="../assets/js/dash.js"></script>
 </body>
 
