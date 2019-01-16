@@ -6,10 +6,7 @@ import mailHelper from '../helpers/mailHelper';
 const createRecord = ({ body, user }, res) =>
   new RedFlag({
     ...body,
-    ...{
-      createdBy: user.id,
-      emailNotify: body.emailNotify || user.emailNotify,
-    },
+    ...{ createdBy: user.id },
   })
     .save()
     .then(({ rows }) =>
