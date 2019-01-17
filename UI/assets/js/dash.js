@@ -18,6 +18,7 @@ this.addEventListener('load', async () => {
     notify,
     populateDashboardStats,
     populateDashboardFeed,
+    populateEditForm,
     resetLocationFields,
     responsiveNav,
     initUserWidget,
@@ -36,6 +37,8 @@ this.addEventListener('load', async () => {
     dashboard && classList.contains('dashboard--user-profile');
   const recordCreationDash =
     dashboard && dashboard.querySelector('.create-edit-form--create');
+  const recordEditDash =
+    dashboard && dashboard.querySelector('.create-edit-form--edit');
 
   const state = {
     detailmodalOpened: false,
@@ -145,5 +148,55 @@ this.addEventListener('load', async () => {
             emailNotify: emailNotify.checked,
           });
     });
+  }
+  
+  if (recordEditDash) {
+    await populateDashboardStats({
+      widgetList: getStatCounters(dashboard),
+      scope: 'user',
+    });
+
+    initAsideListeners(dashboard);
+
+    const { search: queryString } = window.location;
+    try {
+      if (
+        queryString &&
+        ((new URLSearchParams(queryString).has('type') &&
+          new URLSearchParams(queryString).has('id')) ||
+          (queryString
+            .substring(1)
+            .split('&')[0]
+            .split('=')[0] === 'type' &&
+            queryString
+              .substring(1)
+              .split('&')[1]
+              .split('=')[0] === 'id'))
+      ) {
+        const recordID =
+          new URLSearchParams(queryString).get('id') ||
+          queryString
+            .substring(1)
+            .split('&')[1]
+            .split('=')[1];
+
+        const recordType =
+          new URLSearchParams(queryString).get('type') ||
+          queryString
+            .substring(1)
+            .split('&')[0]
+            .split('=')[1];
+
+        if (recordType && typeof JSON.parse(recordID) === 'number')
+          populateEditForm(recordType, recordID);
+        else throw Error('invalid record path');
+      }
+    } catch (error) {
+      displayNotification({
+        type: 'Error',
+        title: 'Error',
+        message: 'No record to edit',
+      });
+    }
   }
 });

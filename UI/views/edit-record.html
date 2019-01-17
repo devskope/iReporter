@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Edit Record | iReporter</title>
   <link rel="stylesheet" href="../assets/css/style.css">
 </head>
@@ -68,8 +67,7 @@
               <label for="edit-location">Location of Event</label>
               <input class="create-edit-form__location" type="text" id="edit-location">
               <button type="button" class="create-edit-form__location-reset btn">Clear</button>
-              <p class="create-edit-form__geocodes  hidden">
-              </p>
+              <p class="create-edit-form__geocodes  hidden"></p>
             </div>
             <div class="form-field form-field--media">
               <label for="edit-media">Media:
@@ -77,6 +75,11 @@
                 <small class="create-edit-form__media-hint">You can add multiple videos & images</small>
               </label>
               <input class="create-edit-form__media" type="file" id="edit-media" multiple disabled>
+            </div>
+            <div title="Check to recieve notifications when an admin changes the status of this record" class="form-field form-field--notification">
+              <label for="edit-email-notification"> Email notifications?
+              </label>
+              <input class="create-edit-form__email-notification" type="checkbox" id="create-email-notification">
             </div>
             <button class="btn btn--submit" type="submit">Save Changes</button>
           </div>
@@ -90,8 +93,10 @@
     </div>
   </footer>
 
+  <div class="notification-wrapper"></div>
+
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApBXNZ8DfcSajnuuNOEMWNNH0eIZdBtws&libraries=places"></script>
-  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/helpers.js"></script>
   <script src="../assets/js/dash.js"></script>
 </body>
 

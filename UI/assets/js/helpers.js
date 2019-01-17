@@ -19,6 +19,11 @@ const IR_HELPERS = {
       name: 'Error',
       message: 'No records found',
     },
+    mapLoad: {
+      name: 'Error loading location Information',
+      message:
+        'There was a problem loading the address/map. Please check your internet connection',
+    },
   },
 
   redirects: {
@@ -31,7 +36,8 @@ const IR_HELPERS = {
           ),
     back: ({ queryString = '' } = {}) =>
       document.referrer &&
-      new URL(document.referrer).hostname === window.location.hostname
+      new URL(document.referrer).hostname === window.location.hostname &&
+      document.referrer.split('?')[0] !== window.location.href.split('?')[0]
         ? window.location.assign(document.referrer + queryString)
         : window.location.assign(`profile.html${queryString}`),
     redirectTo: url => window.location.assign(url),
@@ -114,7 +120,7 @@ const IR_HELPERS = {
         title,
         comment,
         location,
-        ...(emailNotify ? { emailNotify } : {}),
+        emailNotify: JSON.stringify(emailNotify),
       }),
     })
       .then(res => res.json())
@@ -142,7 +148,7 @@ const IR_HELPERS = {
   displayCoords(coordinateString) {
     const coordDisplay = document.querySelector('.create-edit-form__geocodes');
     const fieldsBelow = document.querySelectorAll(
-      '.form-field--media, .btn--submit'
+      '.form-field--media, .form-field--notification, .btn--submit'
     );
 
     coordDisplay.hidden = false;
@@ -221,7 +227,11 @@ const IR_HELPERS = {
     const dismissNotification = notificationElement => {
       notificationElement.classList.remove('visible');
       setTimeout(() => {
-        notificationWrapper.removeChild(notificationElement);
+        if (
+          notificationElement &&
+          notificationWrapper.contains(notificationElement)
+        )
+          notificationWrapper.removeChild(notificationElement);
       }, 200);
 
       return !notificationWrapper.hasChildNodes()
@@ -252,6 +262,47 @@ const IR_HELPERS = {
     setTimeout(() => {
       dismissNotification(notification);
     }, timeout || 5000);
+  },
+
+  async editRecord(path, fields) {
+    const responsePromises = await Promise.all(
+      Object.keys(fields).map(field =>
+        IR_HELPERS.patchRecord(path, field, fields[field])
+      )
+    ).then(res => res.map(each => each.json()));
+
+    const { errors, messages } = await responsePromises.reduce(
+      async (parsedObjectPromise, response) => {
+        const parsedObject = await parsedObjectPromise;
+        const { data, errors: responseErrors } = await response;
+        let message;
+
+        if (data) [{ message }] = data;
+
+        return responseErrors
+          ? Object.assign(parsedObject, {
+              errors: [...parsedObject.errors, ...responseErrors],
+            })
+          : Object.assign(parsedObject, {
+              messages: [...parsedObject.messages, message],
+            });
+      },
+      { errors: [], messages: [] }
+    );
+
+    return errors.length
+      ? IR_HELPERS.displayNotification({
+          message: errors,
+          title: 'Error Updating record',
+        })
+      : messages.length
+      ? IR_HELPERS.redirects.back({
+          queryString: `?title=success&type=success&message=${messages
+            .join('<br>')
+            .replace(/\s/g, '+')
+            .replace(/#/, '%23')}`,
+        })
+      : null;
   },
 
   exists(...args) {
@@ -355,6 +406,19 @@ const IR_HELPERS = {
         : typeFilter || state.typeFilter;
 
     return { status, type };
+  },
+
+  findChangedFields(fieldPairs) {
+    const changedFields = [];
+
+    Object.keys(fieldPairs).forEach(field =>
+      fieldPairs[field][0] !== fieldPairs[field][1] &&
+      fieldPairs[field][1] !== ''
+        ? changedFields.push({ [field]: fieldPairs[field][1] })
+        : null
+    );
+
+    return changedFields;
   },
 
   findMissingFields(fields) {
@@ -555,9 +619,8 @@ const IR_HELPERS = {
     } catch (error) {
       IR_HELPERS.displayNotification({
         type: 'error',
-        title: 'Error loading map',
-        message:
-          'There was a problem loading the map. Please check your internet connection',
+        title: IR_HELPERS.errors.mapLoad.name,
+        message: IR_HELPERS.errors.mapLoad.message,
       });
     }
   },
@@ -697,7 +760,7 @@ const IR_HELPERS = {
         modals.forEach(modal => {
           if (modal) {
             IR_HELPERS.fetchRecordByid(recordPath.value).then(
-              async ({ errors, record }) => {
+              ({ errors, record }) => {
                 if (errors) {
                   IR_HELPERS.displayNotification({
                     type: 'error',
@@ -706,7 +769,7 @@ const IR_HELPERS = {
                     timeout: 1000,
                   });
                 } else if (record) {
-                  await IR_HELPERS.populateModal({
+                  IR_HELPERS.populateModal({
                     modal,
                     record,
                     state,
@@ -743,57 +806,79 @@ const IR_HELPERS = {
   notify() {
     const { search: queryString } = window.location;
 
-    if (queryString)
-      window.history.pushState(
-        {},
-        document.title,
-        window.location.href.split('?')[0]
-      );
-    if (
-      queryString &&
-      ((new URLSearchParams(queryString).has('type') &&
-        new URLSearchParams(queryString).has('title') &&
-        new URLSearchParams(queryString).has('message')) ||
-        (queryString
-          .substring(1)
-          .split('&')[0]
-          .split('=')[0] === 'type' &&
+    try {
+      if (
+        queryString &&
+        ((new URLSearchParams(queryString).has('type') &&
+          new URLSearchParams(queryString).has('title') &&
+          new URLSearchParams(queryString).has('message')) ||
+          (queryString
+            .substring(1)
+            .split('&')[0]
+            .split('=')[0] === 'type' &&
+            queryString
+              .substring(1)
+              .split('&')[1]
+              .split('=')[0] === 'title' &&
+            queryString
+              .substring(1)
+              .split('&')[1]
+              .split('=')[0] === 'message'))
+      ) {
+        const type =
+          new URLSearchParams(queryString).get('type') ||
+          queryString
+            .substring(1)
+            .split('&')[0]
+            .split('=')[1];
+        const title =
+          new URLSearchParams(queryString).get('title').replace(/\+/g, ' ') ||
           queryString
             .substring(1)
             .split('&')[1]
-            .split('=')[0] === 'title' &&
+            .split('=')[1]
+            .replace(/\+/g, ' ');
+        const message =
+          new URLSearchParams(queryString).get('message').replace(/\+/g, ' ') ||
           queryString
             .substring(1)
-            .split('&')[1]
-            .split('=')[0] === 'message'))
-    ) {
-      const type =
-        new URLSearchParams(queryString).get('type') ||
-        queryString
-          .substring(1)
-          .split('&')[0]
-          .split('=')[1];
-      const title =
-        new URLSearchParams(queryString).get('title').replace(/\+/g, ' ') ||
-        queryString
-          .substring(1)
-          .split('&')[1]
-          .split('=')[1]
-          .replace(/\+/g, ' ');
-      const message =
-        new URLSearchParams(queryString).get('message').replace(/\+/g, ' ') ||
-        queryString
-          .substring(1)
-          .split('&')[2]
-          .split('=')[1]
-          .replace(/\+/g, ' ');
+            .split('&')[2]
+            .split('=')[1]
+            .replace(/\+/g, ' ');
 
-      IR_HELPERS.displayNotification({
-        message,
-        type,
-        title,
-      });
+        if (type && title && message)
+          window.history.pushState(
+            {},
+            document.title,
+            window.location.href.split('?')[0]
+          );
+
+        IR_HELPERS.displayNotification({
+          message,
+          type,
+          title,
+        });
+      }
+    } catch ({ name }) {
+      // pass
     }
+  },
+
+  patchRecord(recordPath, field, value) {
+    let requestUrl = IR_HELPERS.buildFetchPath({
+      singleRecordPath: recordPath,
+    });
+    requestUrl += `/${field.toLowerCase()}`;
+
+    return fetch(requestUrl, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${IR_HELPERS.getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ [field]: value }),
+    });
   },
 
   async populateDashboardFeed({
@@ -941,7 +1026,93 @@ const IR_HELPERS = {
     }
   },
 
-  async populateModal({ modal, record, state }) {
+  async populateEditForm(recordType, id) {
+    const form = document.querySelector('.create-edit-form--edit');
+    const titleField = form.querySelector('.create-edit-form__record-title');
+    const commentField = form.querySelector('.create-edit-form__comment');
+    const locationField = form.querySelector('.create-edit-form__location');
+    const typeSelector = form.querySelector('.create-edit-form__type');
+    const locationReset = document.querySelector(
+      '.create-edit-form__location-reset'
+    );
+    const emailNotify = form.querySelector(
+      '.create-edit-form__email-notification'
+    );
+    form.addEventListener('submit', e => e.preventDefault());
+
+    try {
+      const { errors, record } = await IR_HELPERS.fetchRecordByid(
+        `${recordType}s/${id}`
+      );
+
+      if (errors) {
+        IR_HELPERS.displayNotification({
+          type: 'error',
+          message: errors,
+        });
+        return;
+      }
+
+      if (record) {
+        const {
+          title,
+          comment,
+          location,
+          type,
+          email_notify: emailUpdates,
+        } = record;
+
+        titleField.value = title;
+        commentField.value = comment;
+        emailNotify.checked = emailUpdates;
+        typeSelector.value = type;
+
+        if (location) {
+          locationField.value = await IR_HELPERS.reverseGeocode(
+            IR_HELPERS.flipLocationString(location)
+          );
+
+          IR_HELPERS.displayCoords(location);
+        }
+
+        IR_HELPERS.autoCompleteHook(locationField);
+        locationReset.addEventListener('click', () =>
+          IR_HELPERS.resetLocationFields()
+        );
+      }
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const { comment, location, email_notify: emailUpdates } = record;
+        const recordPath = `${record.type}s/${record.id}`;
+
+        const changedFields = IR_HELPERS.findChangedFields({
+          comment: [comment, commentField.value],
+          location: [location, IR_HELPERS.getLocationString()],
+          emailNotify: [emailUpdates, emailNotify.checked],
+        });
+
+        return changedFields.length
+          ? IR_HELPERS.editRecord(
+              recordPath,
+              changedFields.reduce((acc, curr) => ({ ...acc, ...curr }), {})
+            )
+          : IR_HELPERS.displayNotification({
+              type: 'success',
+              title: `Editing ${recordType} #${id}`,
+              message: 'No edits made.',
+            });
+      });
+    } catch ({ name, message }) {
+      IR_HELPERS.displayNotification({
+        type: 'error',
+        title: name,
+        message,
+      });
+    }
+  },
+
+  populateModal({ modal, record, state }) {
     const modalHeader = modal.querySelector('.detail-modal__type-id');
     const locationMap = modal.querySelector('.detail-modal__map');
     const recordTitle = modal.querySelector('.detail-modal__title');
@@ -1046,7 +1217,7 @@ const IR_HELPERS = {
     const coordDisplay = document.querySelector('.create-edit-form__geocodes');
     const locationInput = document.querySelector('.create-edit-form__location');
     const fieldsBelow = document.querySelectorAll(
-      '.form-field--media, .btn--submit'
+      '.form-field--media, .form-field--notification, .btn--submit'
     );
 
     coordDisplay.hidden = true;
@@ -1068,6 +1239,20 @@ const IR_HELPERS = {
         ? 'Close'
         : 'Menu';
     });
+  },
+
+  async reverseGeocode(locationString) {
+    try {
+      const apiRes = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${locationString}&key=AIzaSyApBXNZ8DfcSajnuuNOEMWNNH0eIZdBtws`
+      );
+      const { results } = await apiRes.json();
+      const [{ formatted_address: mostApproximateLocation }] = results;
+
+      return mostApproximateLocation;
+    } catch (error) {
+      throw IR_HELPERS.errors.mapLoad;
+    }
   },
 
   setLocationString(coordinateString) {
