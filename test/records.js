@@ -275,6 +275,19 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
 
+      it("Should not change notification setting on other's records", done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/red-flags/1/emailnotify`)
+          .set('authorization', `Bearer ${adminToken}`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(403);
+            expect(body).to.have.property('errors');
+            done();
+          });
+      });
+
       it('Should succesfully update location of record with valid id', done => {
         chai
           .request(server)
@@ -326,7 +339,34 @@ export default ({ server, chai, expect, ROOT_URL }) => {
             done();
           });
       });
+
+      it('Should return success when notification setting patch equals original', done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/red-flags/1/emailnotify`)
+          .set('authorization', `Bearer ${authToken}`)
+          .send({ emailNotify: false })
+          .end((err, { status }) => {
+            expect(status).eq(304);
+            done();
+          });
+      });
+
+      it('Should succesfully update notification setting of record with valid id', done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/red-flags/1/emailnotify`)
+          .set('authorization', `Bearer ${authToken}`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body).to.have.property('data');
+            expect(body.data[0]).to.have.property('message');
+            done();
+          });
+      });
     });
+
     describe('Deletion', () => {
       it("Should not delete other's records", done => {
         chai
@@ -456,6 +496,19 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           });
       });
 
+      it("Should not change notification setting on other's records", done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/interventions/6/emailnotify`)
+          .set('authorization', `Bearer ${adminToken}`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(403);
+            expect(body).to.have.property('errors');
+            done();
+          });
+      });
+
       it('Should succesfully update comment of record with valid id', done => {
         chai
           .request(server)
@@ -504,6 +557,32 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .send(recordPatches)
           .end((err, { status }) => {
             expect(status).eq(304);
+            done();
+          });
+      });
+
+      it('Should return success when notification setting patch equals original', done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}/interventions/6/emailnotify`)
+          .set('authorization', `Bearer ${authToken}`)
+          .send({ emailNotify: false })
+          .end((err, { status }) => {
+            expect(status).eq(304);
+            done();
+          });
+      });
+
+      it('Should succesfully update notification setting of record with valid id', done => {
+        chai
+          .request(server)
+          .patch(`${ROOT_URL}//interventions/6/emailnotify`)
+          .set('authorization', `Bearer ${authToken}`)
+          .send(recordPatches)
+          .end((err, { body, status }) => {
+            expect(status).eq(200);
+            expect(body).to.have.property('data');
+            expect(body.data[0]).to.have.property('message');
             done();
           });
       });
@@ -609,7 +688,7 @@ export default ({ server, chai, expect, ROOT_URL }) => {
         });
     });
 
-    it('Should not modify record location/comment when record status has been mutated', done => {
+    it('Should not modify record location/comment notification setting when record status has been mutated', done => {
       chai
         .request(server)
         .patch(`${ROOT_URL}/red-flags/2/location`)

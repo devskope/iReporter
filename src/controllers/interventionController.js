@@ -27,6 +27,33 @@ const fetchAllRecords = (req, res) =>
 
 const fetchRecordByID = ({ record }, res) => successResponse(res, record);
 
+const toggleEmailNotifications = ({ body, record, user }, res) => {
+  if (
+    record.email_notify !== body.emailNotify &&
+    record.created_by === user.id
+  ) {
+    Intervention.patch(record.id, body.emailNotify, 'email_notify').then(
+      ({ rows: [patchedRecord] }) => {
+        successResponse(res, {
+          id: patchedRecord.id,
+          message: `Email notifications turned ${
+            patchedRecord.email_notify ? 'on' : 'off'
+          } for Intervention #${patchedRecord.id}`,
+          patchedRecord,
+        });
+      }
+    );
+  } else if (record.created_by !== user.id) {
+    handleError(
+      res,
+      `Cannot toggle Email notifications of intervention record you did not create`,
+      403
+    );
+  } else {
+    successResponse(res, {}, 304);
+  }
+};
+
 const updateComment = ({ body, editable, record, user }, res) => {
   if (
     editable &&
@@ -130,6 +157,7 @@ export default {
   createRecord,
   fetchAllRecords,
   fetchRecordByID,
+  toggleEmailNotifications,
   updateComment,
   updateLocation,
   updateStatus,
