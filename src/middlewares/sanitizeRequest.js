@@ -31,6 +31,7 @@ export const checkRequired = paramToCheck => (req, res, next) => {
     case 'comment':
     case 'location':
     case 'status':
+    case 'emailNotify':
       errorIfMissing([paramToCheck]);
       break;
     case 'record':
@@ -106,7 +107,7 @@ export const verifyRequestTypes = (req, res, next) => {
             errors.push(
               `Invalid value for ${param}: Expected ${typeof validTypes[param]}`
             );
-          }
+          } else body[param] = JSON.parse(body[param]);
           break;
         case 'status':
           if (

@@ -69,6 +69,15 @@ router.patch(
   redFlagController.updateLocation
 );
 
+router.patch(
+  '/red-flags/:id/emailnotify',
+  validUser,
+  checkRequired('emailNotify'),
+  verifyRequestTypes,
+  loadRecordByID('red-flag'),
+  redFlagController.toggleEmailNotifications
+);
+
 router.delete(
   '/red-flags/:id',
   validUser,
@@ -115,6 +124,15 @@ router.patch(
 );
 
 router.patch(
+  '/interventions/:id/emailnotify',
+  validUser,
+  checkRequired('emailNotify'),
+  verifyRequestTypes,
+  loadRecordByID('intervention'),
+  interventionController.toggleEmailNotifications
+);
+
+router.patch(
   '/interventions/:id/status',
   validUser,
   onlyAdmin,
@@ -128,7 +146,7 @@ router.delete(
   '/interventions/:id',
   validUser,
   loadRecordByID('intervention'),
-  redFlagController.deleteRecordByID
+  interventionController.deleteRecordByID
 );
 
 export default router;

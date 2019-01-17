@@ -5,6 +5,7 @@ export const recordPatches = {
   location: '-94.68589980000002, 46.729553',
   status: 'resolved',
   invalidStatus: 'gibberish',
+  emailNotify: true,
 };
 
 export const records = {
@@ -13,6 +14,7 @@ export const records = {
     type: 'red-flag',
     location: '101.68685499999992,3.139003',
     comment: 'I smell something fishy',
+    emailNotify: false,
   },
   sampleInvalidRedFlag: {
     type: 'red-flag',
@@ -24,6 +26,7 @@ export const records = {
     location: '50.68685499999992,3.89',
     title: 'need intervention',
     comment: 'more on the state of the nations roads',
+    emailNotify: false,
   },
 };
 
