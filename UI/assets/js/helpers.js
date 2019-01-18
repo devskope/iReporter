@@ -15,6 +15,10 @@ const IR_HELPERS = {
       name: 'Error',
       message: `Something weird happened... `,
     },
+    invalidAddress: {
+      name: 'noLocation',
+      message: 'No address exists for given coordinates',
+    },
     noRecords: {
       name: 'Error',
       message: 'No records found',
@@ -1067,18 +1071,16 @@ const IR_HELPERS = {
         emailNotify.checked = emailUpdates;
         typeSelector.value = type;
 
-        if (location) {
-          locationField.value = await IR_HELPERS.reverseGeocode(
-            IR_HELPERS.flipLocationString(location)
-          );
-
-          IR_HELPERS.displayCoords(location);
-        }
-
         IR_HELPERS.autoCompleteHook(locationField);
         locationReset.addEventListener('click', () =>
           IR_HELPERS.resetLocationFields()
         );
+        if (location) {
+          locationField.value = await IR_HELPERS.reverseGeocode(
+            IR_HELPERS.flipLocationString(location)
+          );
+          IR_HELPERS.displayCoords(location);
+        }
       }
 
       form.addEventListener('submit', e => {
@@ -1088,8 +1090,12 @@ const IR_HELPERS = {
 
         const changedFields = IR_HELPERS.findChangedFields({
           comment: [comment, commentField.value],
-          location: [location, IR_HELPERS.getLocationString()],
           emailNotify: [emailUpdates, emailNotify.checked],
+          ...(location ||
+          (IR_HELPERS.exists(IR_HELPERS.getLocationString()) &&
+            !IR_HELPERS.isEmpty(IR_HELPERS.getLocationString()))
+            ? { location: [location, IR_HELPERS.getLocationString()] }
+            : {}),
         });
 
         return changedFields.length
@@ -1100,7 +1106,8 @@ const IR_HELPERS = {
           : IR_HELPERS.displayNotification({
               type: 'success',
               title: `Editing ${recordType} #${id}`,
-              message: 'No edits made.',
+              message: `No edits made.<br>
+                        Comment/Location fields can only be updated, not cleared`,
             });
       });
     } catch ({ name, message }) {
@@ -1247,12 +1254,28 @@ const IR_HELPERS = {
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${locationString}&key=AIzaSyApBXNZ8DfcSajnuuNOEMWNNH0eIZdBtws`
       );
       const { results } = await apiRes.json();
-      const [{ formatted_address: mostApproximateLocation }] = results;
 
-      return mostApproximateLocation;
-    } catch (error) {
-      throw IR_HELPERS.errors.mapLoad;
+      if (results.length) {
+        const [{ formatted_address: mostApproximateLocation }] = results;
+        return mostApproximateLocation;
+      }
+      throw IR_HELPERS.errors.invalidAddress;
+    } catch ({ name, message }) {
+      if (name === 'noLocation') {
+        IR_HELPERS.displayNotification({
+          type: 'error',
+          title: name,
+          message,
+        });
+      } else {
+        IR_HELPERS.displayNotification({
+          type: 'error',
+          title: IR_HELPERS.errors.mapLoad.name,
+          message: IR_HELPERS.errors.mapLoad.message,
+        });
+      }
     }
+    return '';
   },
 
   setLocationString(coordinateString) {
