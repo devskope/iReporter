@@ -1075,6 +1075,7 @@ const IR_HELPERS = {
         locationReset.addEventListener('click', () =>
           IR_HELPERS.resetLocationFields()
         );
+
         if (location) {
           locationField.value = await IR_HELPERS.reverseGeocode(
             IR_HELPERS.flipLocationString(location)
