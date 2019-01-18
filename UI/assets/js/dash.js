@@ -149,7 +149,7 @@ this.addEventListener('load', async () => {
           });
     });
   }
-  
+
   if (recordEditDash) {
     await populateDashboardStats({
       widgetList: getStatCounters(dashboard),
