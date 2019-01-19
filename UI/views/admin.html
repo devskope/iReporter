@@ -41,6 +41,7 @@
       </div>
     </aside>
     <main class="dashboard__main">
+      <div class="loader"></div>
       <div class="dashboard__filters">
         <select class="dashboard__filter-report-types">
           <option value="all" default>All</option>
@@ -57,24 +58,6 @@
         </ul>
       </div>
       <section class="dashboard__main-content">
-          <div class="record">
-              <img class="record__image" src="../assets/images/crashSite.jpeg" alt="crash site">
-              <div class="record__details">
-                <h4 class="record__title">Title of Report</h4>
-                <p class="record__comment">A platform to report corrupt acts and issues affecting the community while
-                  also seeking government's quick intervention</p>
-              </div>
-              <button class="record__more-btn">View More</button>
-            </div>
-            <div class="record">
-              <img class="record__image" src="../assets/images/crashSite.jpeg" alt="crash site">
-              <div class="record__details">
-                <h4 class="record__title">Title of Report</h4>
-                <p class="record__comment">A platform to report corrupt acts and issues affecting the community while
-                  also seeking government's quick intervention</p>
-              </div>
-              <button class="record__more-btn">View More</button>
-            </div>
       </section>
     </main>
   </div>
@@ -83,6 +66,8 @@
       <p>iReporter &copy;2018</p>
     </div>
   </footer>
+
+  <div class="notification-wrapper"></div>
 
   <!-- view detail modal -->
   <div class="modal-wrapper modal-wrapper--admin ">
@@ -103,16 +88,6 @@
           <h4 class="detail-modal__sub">Media</h4>
           <div class="detail-modal__media">
           </div>
-          <h4 class="detail-modal__sub">Status</h4>
-          <select class="detail-modal__status-toggle">
-            <option value="draft">Draft</option>
-            <option value="under investigation">Under Investigation</option>
-            <option value="rejected">Rejected</option>
-            <option value="resolved">Resolved</option>
-          </select>
-        </div>
-        <div class="detail-modal__footer">
-          <button class="detail-modal__close">Close</button>
         </div>
         <div class="detail-modal__toggle-block">
           <h4 class="detail-modal__sub">Status</h4>
@@ -131,7 +106,7 @@
   </div>
 
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApBXNZ8DfcSajnuuNOEMWNNH0eIZdBtws&libraries=places"></script>
-  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/helpers.js"></script>
   <script src="../assets/js/dash.js"></script>
 </body>
 

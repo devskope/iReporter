@@ -753,7 +753,7 @@ const IR_HELPERS = {
     } ${fields.length > 1 ? `and ${fields.slice(-1)} fields.` : 'field.'}`;
   },
 
-  modalBinds(state, admin) {
+  modalBinds(state) {
     const modals = document.querySelectorAll('.modal-wrapper');
     const openModal = document.querySelectorAll('.record__more-btn');
     const closeModal = document.querySelectorAll('.detail-modal__close');
@@ -777,7 +777,6 @@ const IR_HELPERS = {
                     modal,
                     record,
                     state,
-                    admin,
                   });
                   modal.classList.add('visible');
                 }
@@ -795,7 +794,6 @@ const IR_HELPERS = {
             IR_HELPERS.purgeModal({
               modal,
               state,
-              admin,
             });
           }
         })
@@ -888,7 +886,6 @@ const IR_HELPERS = {
   async populateDashboardFeed({
     feedNode,
     clear = false,
-    admin = false,
     state,
     statusFilter,
     typeFilter,
@@ -926,7 +923,7 @@ const IR_HELPERS = {
         feedNode
       );
 
-      IR_HELPERS.modalBinds(state, admin);
+      IR_HELPERS.modalBinds(state);
 
       IR_HELPERS.syncState(state, {
         feedLoaded: true,
@@ -1132,6 +1129,7 @@ const IR_HELPERS = {
       created_by: creatorID,
       id,
       location,
+      status,
       title,
       type,
     } = record;
@@ -1159,11 +1157,26 @@ const IR_HELPERS = {
         },
       })
     );
+
     if (recordEditBtn) {
       recordEditBtn.addEventListener('click', () =>
         window.location.assign(`edit-record.html?type=${type}&id=${id}`)
       );
     }
+
+    if (state.isAdmin) {
+      const statusToggle = modal.querySelector('.detail-modal__status-toggle');
+      const recordPath = `${type}s/${id}`;
+
+      IR_HELPERS.syncState(state, {
+        recordStatusUpdateHandler: ({ currentTarget: { value: newStatus } }) =>
+          IR_HELPERS.updateRecordStatus(newStatus, recordPath),
+      });
+
+      statusToggle.value = status;
+      statusToggle.addEventListener('change', state.recordStatusUpdateHandler);
+    }
+
     IR_HELPERS.syncState(state, {
       detailmodalOpened: true,
     });
@@ -1185,6 +1198,13 @@ const IR_HELPERS = {
       recordMedia,
     ].forEach(element => IR_HELPERS.clearNode(element));
     locationMap.style.display = 'block';
+
+    if (state.isAdmin) {
+      const statusToggle = modal.querySelector('.detail-modal__status-toggle');
+      const { recordStatusUpdateHandler } = state;
+
+      statusToggle.removeEventListener('change', recordStatusUpdateHandler);
+    }
     IR_HELPERS.syncState(state, {
       detailmodalOpened: false,
     });
@@ -1350,6 +1370,22 @@ const IR_HELPERS = {
 
   syncState(state, newState) {
     Object.assign(state, newState);
+  },
+
+  async updateRecordStatus(newStatus, recordPath) {
+    const res = await IR_HELPERS.patchRecord(recordPath, 'status', newStatus);
+    const {
+      errors,
+      data: [{ message }],
+    } = await res.json();
+
+    if (errors) {
+      IR_HELPERS.displayNotification({ type: 'error', message: errors });
+    }
+
+    if (message) {
+      IR_HELPERS.displayNotification({ type: 'success', message });
+    }
   },
 };
 
