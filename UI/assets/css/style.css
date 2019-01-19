@@ -942,7 +942,7 @@ a {
 }
 
 .detail-modal__status-toggle {
-  width: 10rem;
+  width: max-content;
   outline: none;
   border: 0.1rem solid #5a93cf;
   background: white;

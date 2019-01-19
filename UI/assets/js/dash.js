@@ -32,6 +32,7 @@ this.addEventListener('load', async () => {
 
   const { classList } = dashboard;
 
+  const adminDash = dashboard && classList.contains('dashboard--admin');
   const generalDash = dashboard && classList.contains('dashboard--users');
   const profileDash =
     dashboard && classList.contains('dashboard--user-profile');
@@ -44,6 +45,7 @@ this.addEventListener('load', async () => {
     detailmodalOpened: false,
     feedLoading: false,
     feedLoadSuccess: false,
+    isAdmin: false,
     profileFeed: false,
     statusFilter: null,
     typeFilter: null,
@@ -68,6 +70,23 @@ this.addEventListener('load', async () => {
       }
     },
   };
+
+  if (adminDash) {
+    initAsideListeners(dashboard);
+
+    await populateDashboardStats({
+      widgetList: getStatCounters(dashboard),
+    });
+
+    syncState(state, { isAdmin: true });
+
+    await populateDashboardFeed({
+      feedNode: getFeedNode(dashboard),
+      state,
+    });
+
+    initFilterListeners(dashboard, state);
+  }
 
   if (generalDash) {
     initAsideListeners(dashboard);
