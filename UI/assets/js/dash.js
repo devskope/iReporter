@@ -32,7 +32,9 @@ this.addEventListener('load', async () => {
 
   const { classList } = dashboard;
 
+
   const adminDash = dashboard && classList.contains('dashboard--admin');
+
   const generalDash = dashboard && classList.contains('dashboard--users');
   const profileDash =
     dashboard && classList.contains('dashboard--user-profile');
