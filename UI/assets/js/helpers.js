@@ -639,10 +639,22 @@ const IR_HELPERS = {
     );
     const username = IR_HELPERS.getUsername();
 
-    userWidget.addEventListener('click', () => {
-      userWidgetDropdown.classList.toggle('hidden');
+    const toggleWidget = () => {
       userWidgetDropdown.classList.toggle('visible');
-    });
+      setTimeout(() => {
+        userWidgetDropdown.classList.toggle('hidden');
+      }, 300);
+      userWidget.classList.toggle('active');
+
+      const clickIgnoreHandler = e => e.stopImmediatePropagation();
+
+      if (userWidgetDropdown.classList.contains('visible')) {
+        userWidgetDropdown.addEventListener('click', clickIgnoreHandler);
+      } else
+        userWidgetDropdown.removeEventListener('click', clickIgnoreHandler);
+    };
+
+    userWidget.addEventListener('click', toggleWidget);
 
     userWidgetText.textContent = `Hi ${IR_HELPERS.capitalize(username)}`;
   },
@@ -695,7 +707,7 @@ const IR_HELPERS = {
           messages: [
             `${
               user.username
-            } Signed up successfully. <br> Redirecting to dashboard`,
+            } logged in successfully. <br> Redirecting to dashboard`,
           ],
         });
         setTimeout(
@@ -1232,7 +1244,7 @@ const IR_HELPERS = {
             .split(' ')
             .filter(word => word !== '')
             .slice(0, 30)
-            .join(' ')}...</p>
+            .join(' ')}${comment.split(' ').length > 30 ? '...' : ''}</p>
         </div>
         <button class="record__more-btn" record-path="${type}s/${id}">View More</button>
         `,
@@ -1262,6 +1274,14 @@ const IR_HELPERS = {
     navToggle.addEventListener('click', () => {
       menu.classList.toggle('active');
       navToggle.classList.toggle('active');
+      navToggle.textContent = navToggle.classList.contains('active')
+        ? 'Close'
+        : 'Menu';
+    });
+
+    menu.addEventListener('mouseleave', () => {
+      menu.classList.remove('active');
+      navToggle.classList.remove('active');
       navToggle.textContent = navToggle.classList.contains('active')
         ? 'Close'
         : 'Menu';
