@@ -13,7 +13,7 @@ const createRecord = ({ body, files, protocol, hostname, user }, res) =>
           .reduce(
             (paths, curr) => [
               ...paths,
-              `${protocol}://${hostname}:5500/${curr.path}`,
+              `${protocol}://${hostname}/${curr.path}`,
             ],
             []
           )
@@ -24,7 +24,7 @@ const createRecord = ({ body, files, protocol, hostname, user }, res) =>
           .reduce(
             (paths, curr) => [
               ...paths,
-              `${protocol}://${hostname}:5500/${curr.path}`,
+              `${protocol}://${hostname}/${curr.path}`,
             ],
             []
           )
