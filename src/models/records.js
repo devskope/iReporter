@@ -16,8 +16,8 @@ export class Record {
     this.createdBy = createdBy;
     this.comment = comment;
     this.location = location;
-    this.images = images;
-    this.videos = videos;
+    this.images = images instanceof Array && images.length ? images : [];
+    this.videos = videos instanceof Array && videos.length ? videos : [];
     this.emailNotify = emailNotify || false;
     this.status = 'draft';
   }
@@ -55,7 +55,7 @@ export class Record {
 
   save() {
     const queryString = [
-      'INSERT INTO records(title, type, location, comment, status, created_by, email_notify) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      'INSERT INTO records(title, type, location, comment, status, created_by, email_notify, images, videos) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
       [
         this.title,
         this.type,
@@ -64,6 +64,8 @@ export class Record {
         this.status,
         this.createdBy,
         this.emailNotify,
+        JSON.stringify(this.images),
+        JSON.stringify(this.videos),
       ],
     ];
     return db.query(...queryString);

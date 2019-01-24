@@ -151,21 +151,64 @@ this.addEventListener('load', async () => {
       const { value: comment } = form.querySelector(
         '.create-edit-form__comment'
       );
+      const { files: media } = form.querySelector('.create-edit-form__media');
       const emailNotify = form.querySelector(
         '.create-edit-form__email-notification'
       );
-
+      const recordDetails = new FormData();
+      const attachmentState = {
+        errors: [],
+        valid: true,
+        setValidity(newState) {
+          this.valid = newState;
+        },
+      };
       const missingFields = findMissingFields({ type, title, comment });
 
-      return missingFields.length > 0
-        ? displayNotification({ message: missingFieldsMessage(missingFields) })
-        : createRecord({
-            type,
-            title,
-            comment,
-            location: getLocationString(),
-            emailNotify: emailNotify.checked,
-          });
+      [
+        ['type', type],
+        ['title', title],
+        ['comment', comment],
+        [
+          ...(getLocationString() !== ''
+            ? ['location', getLocationString()]
+            : []),
+        ],
+        ['emailNotify', emailNotify.checked],
+      ].forEach(([name, value]) =>
+        value || value === false ? recordDetails.append(name, value) : null
+      );
+
+      Array.from(media).forEach(file => {
+        if (['image', 'video'].includes(file.type.split('/')[0])) {
+          recordDetails.append('media', file);
+        } else {
+          if (attachmentState.valid) attachmentState.setValidity(false);
+          attachmentState.errors.push(
+            `<b>"${
+              file.name
+            }"</b> - <i>has an unsupported file format and will be discarded.</i>`
+          );
+        }
+      });
+
+      if (missingFields.length && attachmentState.valid === false) {
+        displayNotification({
+          message: [
+            missingFieldsMessage(missingFields),
+            ...attachmentState.errors,
+          ],
+        });
+      } else if (missingFields.length) {
+        displayNotification({
+          message: [missingFieldsMessage(missingFields)],
+        });
+      } else if (attachmentState.valid === false) {
+        displayNotification({
+          message: attachmentState.errors,
+        });
+        createRecord({ type, recordDetails });
+      } else createRecord({ type, recordDetails });
     });
   }
 

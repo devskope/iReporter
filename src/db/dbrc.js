@@ -31,6 +31,8 @@ const Models = {
        location VARCHAR,
        status VARCHAR NOT NULL,
        email_notify BOOLEAN DEFAULT 'false',
+       images TEXT,
+       videos TEXT,
        FOREIGN KEY (created_by) REFERENCES users (id) ON DELETE CASCADE
       )`,
 };

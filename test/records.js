@@ -197,7 +197,10 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .request(server)
           .post(`${ROOT_URL}/red-flags`)
           .set('authorization', `Bearer ${authToken}`)
-          .send(records.sampleValidRedFlag)
+          .attach('media', './utils/download.png')
+          .field('type', records.sampleValidRedFlag.type)
+          .field('title', records.sampleValidRedFlag.title)
+          .field('comment', records.sampleValidRedFlag.comment)
           .end((err, { body, status }) => {
             expect(status).eq(201);
             expect(body.data[0].message).eq('Created red-flag record');
@@ -432,7 +435,10 @@ export default ({ server, chai, expect, ROOT_URL }) => {
           .request(server)
           .post(`${ROOT_URL}/interventions`)
           .set('authorization', `Bearer ${authToken}`)
-          .send(records.sampleIntervention)
+          .attach('media', './utils/download.png')
+          .field('type', records.sampleIntervention.type)
+          .field('title', records.sampleIntervention.title)
+          .field('comment', records.sampleIntervention.comment)
           .end((err, { body, status }) => {
             expect(status).eq(201);
             expect(body.data[0].message).eq('Created Intervention record');

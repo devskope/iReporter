@@ -40,8 +40,8 @@ const IR_HELPERS = {
           ),
     back: ({ queryString = '' } = {}) =>
       document.referrer &&
-      new URL(document.referrer).hostname === window.location.hostname &&
-      document.referrer.split('?')[0] !== window.location.href.split('?')[0]
+      document.referrer.split('?')[0] !== window.location.href.split('?')[0] &&
+      new URL(document.referrer).hostname === window.location.hostname
         ? window.location.assign(document.referrer + queryString)
         : window.location.assign(`profile.html${queryString}`),
     redirectTo: url => window.location.assign(url),
@@ -111,21 +111,14 @@ const IR_HELPERS = {
     node.innerHTML = '';
   },
 
-  createRecord({ type, title, comment, location, emailNotify }) {
+  createRecord({ type, recordDetails }) {
     fetch(`${IR_HELPERS.API_ROOT_URL}/${type}s`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${IR_HELPERS.getToken()}`,
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        type,
-        title,
-        comment,
-        location,
-        emailNotify: JSON.stringify(emailNotify),
-      }),
+      body: recordDetails,
     })
       .then(res => res.json())
       .then(({ errors, data }) => {
