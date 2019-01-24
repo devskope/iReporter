@@ -11,6 +11,7 @@ import loadRecordByID from '../middlewares/loadRecordByID';
 import validUser from '../middlewares/validUser';
 import onlyAdmin from '../middlewares/onlyAdmin';
 import loadAllRecords from '../middlewares/loadAllRecords';
+import upload from '../middlewares/fileHandler';
 
 const router = new Router();
 
@@ -26,6 +27,7 @@ router.get(
 router.post(
   '/red-flags',
   validUser,
+  upload.array('media'),
   checkRequired('record'),
   strictRecordType('red-flag'),
   verifyRequestTypes,
@@ -90,6 +92,7 @@ router.delete(
 router.post(
   '/interventions',
   validUser,
+  upload.array('media'),
   checkRequired('record'),
   strictRecordType('intervention'),
   verifyRequestTypes,

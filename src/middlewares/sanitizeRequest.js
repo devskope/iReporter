@@ -88,7 +88,8 @@ export const verifyRequestTypes = (req, res, next) => {
   Object.keys(body).forEach(param => {
     if (
       body[param] !== undefined &&
-      (typeof body[param] === 'string' || typeof body[param] === 'boolean')
+      ((typeof body[param] === 'string' && body[param] !== '') ||
+        typeof body[param] === 'boolean')
     ) {
       body[param] =
         typeof body[param] === 'string' ? body[param].trim() : body[param];

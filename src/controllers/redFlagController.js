@@ -3,10 +3,32 @@ import successResponse from '../helpers/successResponse';
 import handleError from '../helpers/errorHelper';
 import mailHelper from '../helpers/mailHelper';
 
-const createRecord = ({ body, user }, res) =>
+const createRecord = ({ body, files, protocol, hostname, user }, res) =>
   new RedFlag({
     ...body,
-    ...{ createdBy: user.id },
+    createdBy: user.id,
+    images: files
+      ? files
+          .filter(file => file.mimetype.startsWith('image'))
+          .reduce(
+            (paths, curr) => [
+              ...paths,
+              `${protocol}://${hostname}:5500/${curr.path}`,
+            ],
+            []
+          )
+      : undefined,
+    videos: files
+      ? files
+          .filter(file => file.mimetype.startsWith('video'))
+          .reduce(
+            (paths, curr) => [
+              ...paths,
+              `${protocol}://${hostname}:5500/${curr.path}`,
+            ],
+            []
+          )
+      : undefined,
   })
     .save()
     .then(({ rows }) =>
