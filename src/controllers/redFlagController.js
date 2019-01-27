@@ -3,31 +3,19 @@ import successResponse from '../helpers/successResponse';
 import handleError from '../helpers/errorHelper';
 import mailHelper from '../helpers/mailHelper';
 
-const createRecord = ({ body, files, protocol, hostname, user }, res) =>
+const createRecord = ({ body, files, user }, res) => {
   new RedFlag({
     ...body,
     createdBy: user.id,
     images: files
       ? files
           .filter(file => file.mimetype.startsWith('image'))
-          .reduce(
-            (paths, curr) => [
-              ...paths,
-              `${protocol}://${hostname}/${curr.path}`,
-            ],
-            []
-          )
+          .reduce((paths, curr) => [...paths, `${curr.url}`], [])
       : undefined,
     videos: files
       ? files
           .filter(file => file.mimetype.startsWith('video'))
-          .reduce(
-            (paths, curr) => [
-              ...paths,
-              `${protocol}://${hostname}/${curr.path}`,
-            ],
-            []
-          )
+          .reduce((paths, curr) => [...paths, `${curr.url}`], [])
       : undefined,
   })
     .save()
@@ -41,6 +29,7 @@ const createRecord = ({ body, files, protocol, hostname, user }, res) =>
         201
       )
     );
+};
 
 const fetchAllRecords = (req, res) =>
   RedFlag.getAll().then(({ rowCount, rows: records }) =>
