@@ -758,11 +758,17 @@ a {
 }
 .record__image-holder {
   flex-grow: 0;
+  height: 20rem;
 }
 .record__image {
   display: block;
+  background-image: url(../images/Infinity-5.3s-200px.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   object-fit: cover;
   width: 100%;
+  height: 100%;
 }
 .record__details {
   flex-grow: 1;
@@ -875,28 +881,40 @@ a {
 .detail-modal__map {
   height: 20rem;
 }
+.detail-modal__title-block {
+  margin-top: auto;
+}
+.detail-modal__title,
 .detail-modal__comment {
   margin-top: 1rem;
 }
-.detail-modal__title,
 .detail-modal__sub {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 .detail-modal__media {
+  overflow-x: hidden;
+}
+.detail-modal__media-images {
+  margin-bottom: 1.5rem;
+}
+.detail-modal__media-images,
+.detail-modal__media-videos {
   display: grid;
-  grid-auto-flow: column;
   overflow-x: auto;
+  grid-auto-columns: 30rem;
+  grid-auto-flow: column;
   width: 100%;
-  overflow-y: hidden;
-  align-items: center;
   height: 18rem;
+  grid-gap: 2rem;
 }
 .detail-modal__media-item {
-  margin: 0.5rem;
   height: 100%;
+  width: 100%;
 }
 .detail-modal__content::-webkit-scrollbar,
-.detail-modal__media::-webkit-scrollbar {
+.detail-modal__media-images::-webkit-scrollbar,
+.detail-modal__media-videos::-webkit-scrollbar {
   display: none;
 }
 .detail-modal__status-toggle {
@@ -1003,8 +1021,13 @@ a {
   opacity: 1;
   visibility: visible;
 }
+
+/* helpers */
 .pushdown {
   margin: 1.5rem auto -1.5rem;
+}
+.remove {
+  display: none;
 }
 
 /* animation */
@@ -1211,9 +1234,6 @@ a {
   }
   .modal-wrapper * {
     font-size: larger;
-  }
-  .detail-modal__media {
-    height: 25rem;
   }
   .notification-wrapper {
     width: 30rem;
