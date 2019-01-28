@@ -1,39 +1,15 @@
+import path from 'path';
 import multer from 'multer';
-import { promises as fs } from 'fs';
+import cloudinary from 'cloudinary';
+import Datauri from 'datauri';
+import dotenv from 'dotenv';
+import handleError from '../helpers/errorHelper';
 
-const storage = multer.diskStorage({
-  destination: (req, currentFile, callback) => {
-    const { mimetype } = currentFile;
-    if (mimetype.startsWith('image/')) {
-      fs.access('./media_upload/images')
-        .then(() => callback(null, './media_upload/images'))
-        .catch(async err => {
-          if (err && err.code === 'ENOENT') {
-            await fs.mkdir('./media_upload/images', { recursive: true });
-            callback(null, './media_upload/images');
-          }
-        });
-    } else if (mimetype.startsWith('video/')) {
-      fs.access('./media_upload/videos')
-        .then(() => callback(null, './media_upload/videos'))
-        .catch(async err => {
-          if (err && err.code === 'ENOENT') {
-            await fs.mkdir('./media_upload/videos', { recursive: true });
-            callback(null, './media_upload/videos');
-          }
-        });
-    }
-  },
-  filename: (req, currentFile, callback) => {
-    callback(
-      null,
-      `ir_${req.user.id}_${Math.floor(
-        Math.random() * Number.MAX_SAFE_INTEGER
-      )}_${currentFile.originalname.replace(/\s+/, '-')}`
-    );
-  },
-});
-const upload = multer({
+dotenv.config();
+
+const dataUri = new Datauri();
+
+export const memoryUpload = multer({
   fileFilter: (req, currentFile, callback) => {
     const { mimetype } = currentFile;
     if (mimetype.startsWith('image') || mimetype.startsWith('video')) {
@@ -41,7 +17,47 @@ const upload = multer({
     }
     return callback(null, false);
   },
-  storage,
+  storage: multer.memoryStorage(),
+  limits: 5 * 1024 ** 2,
 });
 
-export default upload;
+export const cloudUpload = (req, res, next) => {
+  const { files } = req;
+  if (!files) return next();
+
+  Promise.all(
+    files.map(
+      file =>
+        new Promise((resolve, reject) => {
+          const { mimetype } = file;
+          dataUri.format(path.extname(file.originalname), file.buffer);
+
+          cloudinary.v2.uploader.upload(
+            dataUri.content,
+            {
+              public_id: `${file.originalname
+                .split('.')
+                .slice(0, -1)
+                .join('.')}`,
+              resource_type: mimetype.startsWith('image') ? 'image' : 'video',
+            },
+            (err, result) => {
+              if (err) reject(err);
+              else resolve(result.secure_url);
+            }
+          );
+        })
+    )
+  )
+    .then(urls => {
+      urls.forEach((url, index) => {
+        files[index].url = url;
+      });
+      next();
+    })
+    .catch(() =>
+      handleError(res, 'An error occured while attaching uploaded media files')
+    );
+
+  return undefined;
+};

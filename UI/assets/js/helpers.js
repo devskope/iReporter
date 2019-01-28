@@ -1127,7 +1127,8 @@ const IR_HELPERS = {
     const recordTitle = modal.querySelector('.detail-modal__title');
     const recordByLine = modal.querySelector('.detail-modal__byline');
     const recordComment = modal.querySelector('.detail-modal__comment');
-    const recordMedia = modal.querySelector('.detail-modal__media');
+    const recordImages = modal.querySelector('.detail-modal__media-images');
+    const recordVideos = modal.querySelector('.detail-modal__media-videos');
     const recordEditBtn = document.querySelector('.detail-modal__edit');
     const {
       comment,
@@ -1137,11 +1138,15 @@ const IR_HELPERS = {
       status,
       title,
       type,
+      images,
+      videos,
     } = record;
+    const imageUrls = JSON.parse(images);
+    const videoUrls = JSON.parse(videos);
 
     modalHeader.textContent = `${IR_HELPERS.capitalize(type)}  #${id}`;
     if (!location) {
-      locationMap.style.display = 'none';
+      locationMap.classList.add('remove');
     } else {
       IR_HELPERS.initModalMap(
         IR_HELPERS.flipLocationString(location),
@@ -1153,15 +1158,35 @@ const IR_HELPERS = {
       recordByLine.innerHTML = `by: <a href="#">${username}</a>`;
     });
     recordComment.textContent = comment;
-    recordMedia.appendChild(
-      IR_HELPERS.spawnElement({
-        element: 'img',
-        attrs: {
-          src: '../assets/images/crashSite.jpeg',
-          class: 'detail-modal__media-item',
-        },
-      })
-    );
+
+    if (imageUrls.length) {
+      imageUrls.forEach(srcUrl => {
+        recordImages.appendChild(
+          IR_HELPERS.spawnElement({
+            element: 'img',
+            attrs: {
+              src: srcUrl,
+              class: 'detail-modal__media-item',
+            },
+          })
+        );
+      });
+    } else recordImages.classList.add('remove');
+
+    if (videoUrls.length) {
+      videoUrls.forEach(srcUrl => {
+        recordVideos.appendChild(
+          IR_HELPERS.spawnElement({
+            element: 'video',
+            attrs: {
+              src: srcUrl,
+              class: 'detail-modal__media-item',
+              controls: '',
+            },
+          })
+        );
+      });
+    } else recordVideos.classList.add('remove');
 
     if (recordEditBtn) {
       recordEditBtn.addEventListener('click', () =>
@@ -1193,16 +1218,21 @@ const IR_HELPERS = {
     const recordTitle = modal.querySelector('.detail-modal__title');
     const recordByLine = modal.querySelector('.detail-modal__byline');
     const recordComment = modal.querySelector('.detail-modal__comment');
-    const recordMedia = modal.querySelector('.detail-modal__media');
+    const recordImages = modal.querySelector('.detail-modal__media-images');
+    const recordVideos = modal.querySelector('.detail-modal__media-videos');
 
     [
       modalHeader,
       recordTitle,
       recordByLine,
       recordComment,
-      recordMedia,
+      recordImages,
+      recordVideos,
     ].forEach(element => IR_HELPERS.clearNode(element));
-    locationMap.style.display = 'block';
+
+    [locationMap, recordImages, recordVideos].forEach(element =>
+      element.classList.remove('remove')
+    );
 
     if (state.isAdmin) {
       const statusToggle = modal.querySelector('.detail-modal__status-toggle');
@@ -1218,18 +1248,20 @@ const IR_HELPERS = {
   recordsToFeedComponents(recArray, elementCreator) {
     const defaultImage = '../assets/images/crashSite.jpeg';
     if (!recArray) throw IR_HELPERS.errors.internal;
-    return recArray.map(
-      ({ type, id, imgUrl = defaultImage, status, title, comment }) =>
-        elementCreator({
-          element: 'div',
-          attrs: {
-            class: `record record--${type} record--${
-              status === 'under investigation' ? 'investigating' : status
-            }`,
-          },
-          inner: `
+
+    return recArray.map(({ type, id, images, status, title, comment }) =>
+      elementCreator({
+        element: 'div',
+        attrs: {
+          class: `record record--${type} record--${
+            status === 'under investigation' ? 'investigating' : status
+          }`,
+        },
+        inner: `
         <div class="record__image-holder">
-          <img class="record__image" src=${imgUrl} alt="crash site" >
+          <img class="record__image" src=${
+            JSON.parse(images).length ? JSON.parse(images)[0] : defaultImage
+          } alt="Report thumbnail" >
         </div>
         <div class="record__details">
           <h4 class="record__title">${title}</h4>
@@ -1241,7 +1273,7 @@ const IR_HELPERS = {
         </div>
         <button class="record__more-btn" record-path="${type}s/${id}">View More</button>
         `,
-        })
+      })
     );
   },
 
