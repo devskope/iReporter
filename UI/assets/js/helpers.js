@@ -142,6 +142,39 @@ const IR_HELPERS = {
       );
   },
 
+  deleteRecord(recordPath) {
+    const requestUrl = IR_HELPERS.buildFetchPath({
+      singleRecordPath: recordPath,
+    });
+
+    fetch(requestUrl, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${IR_HELPERS.getToken()}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(({ errors, data }) => {
+        if (errors) {
+          IR_HELPERS.displayNotification({
+            message: errors,
+            title: 'Error deleting record',
+          });
+          return;
+        }
+
+        const [{ message }] = data;
+
+        window.location.assign(
+          `${
+            window.location.href
+          }?title=success&type=success&message=${message.replace(/\s/g, '+')}`
+        );
+      });
+  },
+
   displayCoords(coordinateString) {
     const coordDisplay = document.querySelector('.create-edit-form__geocodes');
     const fieldsBelow = document.querySelectorAll(
@@ -1129,7 +1162,8 @@ const IR_HELPERS = {
     const recordComment = modal.querySelector('.detail-modal__comment');
     const recordImages = modal.querySelector('.detail-modal__media-images');
     const recordVideos = modal.querySelector('.detail-modal__media-videos');
-    const recordEditBtn = document.querySelector('.detail-modal__edit');
+    const recordEditBtn = modal.querySelector('.detail-modal__edit');
+    const recordDeleteBtn = modal.querySelector('.detail-modal__delete');
     const {
       comment,
       created_by: creatorID,
@@ -1143,6 +1177,7 @@ const IR_HELPERS = {
     } = record;
     const imageUrls = JSON.parse(images);
     const videoUrls = JSON.parse(videos);
+    const recordPath = `${type}s/${id}`;
 
     modalHeader.textContent = `${IR_HELPERS.capitalize(type)}  #${id}`;
     if (!location) {
@@ -1194,9 +1229,43 @@ const IR_HELPERS = {
       );
     }
 
+    if (recordDeleteBtn) {
+      const detailModal = modal.querySelector('.detail-modal');
+
+      recordDeleteBtn.addEventListener('click', () => {
+        const prompt = IR_HELPERS.spawnElement({
+          element: 'div',
+          attrs: {
+            class: 'detail-modal__delete-prompt-wrapper',
+          },
+          inner: `
+          <div class="detail-modal__delete-prompt">
+            <div class="prompt-text">Really <b>Delete</b> this record?</div>
+            <div class="option-group">
+              <div class="prompt-option confirm">YES</div>
+              <div class="prompt-option cancel">CANCEL</div>
+            </div>
+          </div>`,
+        });
+
+        detailModal.appendChild(prompt);
+
+        const abortDelete = modal.querySelector('.prompt-option.cancel');
+        const confirmDelete = modal.querySelector('.prompt-option.confirm');
+
+        abortDelete.addEventListener('click', () =>
+          detailModal.removeChild(prompt)
+        );
+
+        confirmDelete.addEventListener('click', () => {
+          detailModal.removeChild(prompt);
+          IR_HELPERS.deleteRecord(recordPath);
+        });
+      });
+    }
+
     if (state.isAdmin) {
       const statusToggle = modal.querySelector('.detail-modal__status-toggle');
-      const recordPath = `${type}s/${id}`;
 
       IR_HELPERS.syncState(state, {
         recordStatusUpdateHandler: ({ currentTarget: { value: newStatus } }) =>
