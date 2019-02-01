@@ -695,13 +695,24 @@ const IR_HELPERS = {
     });
   },
 
-  loadingAnimation({ element = document, show = false }) {
-    const animation = element.querySelector('.loader');
-    const { classList } = animation;
-    if (animation && !classList.contains('active') && show) {
-      animation.classList.add('active');
+  loadingAnimation({ element = document, recordFeed = false, show = false }) {
+    let animation;
+
+    if (recordFeed) {
+      animation = element.querySelectorAll(
+        '.dashboard__main > .loader, .user-records > .loader'
+      );
+    } else {
+      animation = element.querySelectorAll('.loader');
     }
-    if (!show) animation.classList.remove('active');
+
+    animation.forEach(loader => {
+      const { classList } = loader;
+      if (loader && !classList.contains('active') && show) {
+        loader.classList.add('active');
+      }
+      if (show === false) loader.classList.remove('active');
+    });
   },
 
   async login(username, password) {
@@ -1190,7 +1201,9 @@ const IR_HELPERS = {
     }
     recordTitle.textContent = IR_HELPERS.capitalize(title);
     IR_HELPERS.getUsernameByID(creatorID).then(username => {
-      recordByLine.innerHTML = `by: <a href="#">${username}</a>`;
+      recordByLine.innerHTML = `by: <a href="${
+        IR_HELPERS.API_ROOT_URL
+      }/users/${creatorID}/profile">${username}</a>`;
     });
     recordComment.textContent = comment;
 
@@ -1480,6 +1493,26 @@ const IR_HELPERS = {
     }
     if (typeof inner === 'string') elem.innerHTML = inner;
     return elem;
+  },
+
+  stickyFilters() {
+    const reference = document.querySelector('.dashboard__main');
+    const filterDiv = document.querySelector('.dashboard__filters');
+    const targetParent = filterDiv.parentNode;
+    const fixedFilterPosition = reference.offsetTop;
+
+    const stickIt = () => {
+      if (
+        !targetParent.classList.contains('remove') &&
+        fixedFilterPosition >= targetParent.getBoundingClientRect().top
+      ) {
+        if (!filterDiv.classList.contains('dashboard__filters--fixed')) {
+          filterDiv.classList.add('dashboard__filters--fixed');
+        }
+      } else filterDiv.classList.remove('dashboard__filters--fixed');
+    };
+    window.addEventListener('scroll', stickIt);
+    reference.addEventListener('scroll', stickIt);
   },
 
   syncState(state, newState) {

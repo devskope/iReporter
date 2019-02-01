@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> User profile | iReporter</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+  <nav class="topbar">
+    <div class="topbar__wrapper">
+      <a href="../../index.html" class="topbar__brand">iReporter</a>
+      <div class="topbar__profile-widget">
+        <div class="topbar__profile-widget-text">Blauayu</div>
+        <div class="topbar__profile-dropdown hidden">
+        </div>
+      </div>
+      <ul class="topbar__links">
+        <button class="topbar__toggle" type="button">Menu</button>
+        <li class="topbar__list-item"><a class="topbar__link" href="./user.html">Dashboard</a></li>
+        <li class="topbar__list-item"><a href="../../index.html" class="btn btn--nav btn--logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="dashboard dashboard--user-public-profile">
+    <aside class="dashboard__sidebar hidden-wide sidebar-forced-height">
+      <p class="dashboard__sidebar-toggle">SIDEBAR</p>
+      <button class="dashboard__sidebar-btn dash">Dashboard</button>
+    </aside>
+    <main class="dashboard__main">
+      <section class="user-profile-wrapper">
+        <div class="loader"></div>
+        <article class="user-profile">
+          <div class="user-profile__block user-profile__avatar-block">
+            <img src="../assets/images/user.svg" alt="avatar" class="user-profile__avatar">
+            <p class="user-profile__username">Someuser</p>
+          </div>
+          <div class="user-profile__block user-profile__info-block">
+            <ul class="user-profile__info-wrapper">
+              <li class="user-profile__item">
+                <p class="user-profile__item-key">First Name</p>
+                <p class="user-profile__item-value user-profile__firstname">tester</p>
+              </li>
+              <li class="user-profile__item">
+                <p class="user-profile__item-key">Last Name</p>
+                <p class="user-profile__item-value user-profile__lastname">tester</p>
+              </li>
+              <li class="user-profile__item">
+                <p class="user-profile__item-key">Email</p>
+                <p class="user-profile__item-value user-profile__email">tester@somedomain.ru</p>
+              </li>
+              <li class="user-profile__item">
+                <p class="user-profile__item-key">Phone Number</p>
+                <p class="user-profile__item-value user-profile__phone">+234457215</p>
+              </li>
+              <li class="user-profile__item">
+                <p class="user-profile__item-key">User ID</p>
+                <p class="user-profile__item-value user-profile__uid">2</p>
+              </li>
+              <li class="user-profile__item">
+                <p class="user-profile__item-key">Registered</p>
+                <p class="user-profile__item-value user-profile__create-date">2019/12/1</p>
+              </li>
+            </ul>
+          </div>
+          <div class="user-profile__block user-profile__stats-block">
+            <h3 class="user-profile__stats-heading">Record Stats</h3>
+            <div class="user-profile__stats-wrapper">
+              <div class="user-profile__record-stat">
+                <div class="user-profile__record-stat-title">Drafts</div>
+                <div class="user-profile__record-stat-count">15</div>
+              </div>
+              <div class="user-profile__record-stat">
+                <div class="user-profile__record-stat-title">Under Investigation</div>
+                <div class="user-profile__record-stat-count">15</div>
+              </div>
+              <div class="user-profile__record-stat">
+                <div class="user-profile__record-stat-title">Resolved</div>
+                <div class="user-profile__record-stat-count">15</div>
+              </div>
+              <div class="user-profile__record-stat">
+                <div class="user-profile__record-stat-title">Rejected</div>
+                <div class="user-profile__record-stat-count">15</div>
+              </div>
+            </div>
+          </div>
+          <div class="user-records__toggle">View Records</div>
+        </article>
+      </section>
+      <div class="user-records remove">
+        <div class="loader"></div>
+        <div class="dashboard__filters">
+          <select class="dashboard__filter-report-types">
+            <option value="all" default>All</option>
+            <option value="red-flag">Red Flag</option>
+            <option value="intervention">Intervention</option>
+          </select>
+          <button class="dashboard__filter-toggle" type="button">Status</button>
+          <ul class="dashboard__filter-categories">
+            <li class="dashboard__filter-category active" value="all">All</li>
+            <li class="dashboard__filter-category" value="draft">Draft</li>
+            <li class="dashboard__filter-category" value="under investigation">Under Investigation</li>
+            <li class="dashboard__filter-category" value="resolved">Resolved</li>
+            <li class="dashboard__filter-category" value="rejected">Rejected</li>
+          </ul>
+        </div>
+        <section class="dashboard__main-content">
+
+        </section>
+      </div>
+    </main>
+  </div>
+  <footer class="footer">
+    <div class="copyright">
+      <p>iReporter &copy;2018</p>
+    </div>
+  </footer>
+
+  <div class="notification-wrapper"></div>
+
+  <script src="../assets/js/helpers.js"></script>
+  <script src="../assets/js/dash.js"></script>
+</body>
+
+</html>
