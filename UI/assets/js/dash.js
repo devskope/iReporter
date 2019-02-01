@@ -21,6 +21,7 @@ this.addEventListener('load', async () => {
     populateEditForm,
     resetLocationFields,
     responsiveNav,
+    stickyFilters,
     initUserWidget,
     syncState,
   } = window.IR_HELPERS;
@@ -36,6 +37,8 @@ this.addEventListener('load', async () => {
   const generalDash = dashboard && classList.contains('dashboard--users');
   const profileDash =
     dashboard && classList.contains('dashboard--user-profile');
+  const publicProfileDash =
+    dashboard && classList.contains('dashboard--user-public-profile');
   const recordCreationDash =
     dashboard && dashboard.querySelector('.create-edit-form--create');
   const recordEditDash =
@@ -53,10 +56,10 @@ this.addEventListener('load', async () => {
     set loadingFeed(setTo) {
       if (setTo) {
         this.feedLoading = true;
-        loadingAnimation({ show: true });
+        loadingAnimation({ recordFeed: true, show: true });
       } else {
         this.feedLoading = false;
-        loadingAnimation({ show: false });
+        loadingAnimation({ recordFeed: true, show: false });
       }
     },
     set feedLoaded(setTo) {
@@ -120,6 +123,19 @@ this.addEventListener('load', async () => {
     });
 
     initFilterListeners(dashboard, state);
+  }
+
+  if (publicProfileDash) {
+    const recordToggle = dashboard.querySelector('.user-records__toggle');
+    const userRecordFeed = dashboard.querySelector('.user-records');
+    recordToggle.addEventListener('click', () => {
+      userRecordFeed.classList.toggle('remove');
+      recordToggle.textContent = userRecordFeed.classList.contains('remove')
+        ? 'View Records'
+        : 'Hide Records';
+    });
+    initAsideListeners(dashboard);
+    stickyFilters();
   }
 
   if (recordCreationDash) {
