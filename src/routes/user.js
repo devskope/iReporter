@@ -8,6 +8,12 @@ const router = new Router();
 router.get('/user/recordstats', validUser, userController.fetchStats);
 router.get('/user/id2name/:id', validUser, userController.getUsernameByID);
 router.get(
+  '/user/:id/profile',
+  validUser,
+  loadAllRecords,
+  userController.getProfileByID
+);
+router.get(
   /^\/user\/records\/?(intervention|red-flag)?\/?(under%20investigation|resolved|rejected|draft)?\/?$/,
   validUser,
   loadAllRecords,
