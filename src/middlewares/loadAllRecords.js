@@ -3,7 +3,7 @@ import handleError from '../helpers/errorHelper';
 
 export default (req, res, next) =>
   Record.getAll().then(({ rowCount, rows: records }) => {
-    if (rowCount > 1) {
+    if (rowCount) {
       req.records = records;
       next();
     } else {

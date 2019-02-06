@@ -1,5 +1,6 @@
 import { Record } from '../models/records';
 import { User } from '../models/users';
+import recordStats from '../helpers/recordStats';
 import successResponse from '../helpers/successResponse';
 import handleError from '../helpers/errorHelper';
 
@@ -65,24 +66,47 @@ export default {
         );
 
         if (userRecords.length > 0) {
-          successResponse(
-            res,
-            userRecords.reduce(
-              (statCountObj, { status }) =>
-                statCountObj[status]
-                  ? Object.assign(statCountObj, {
-                      [status]: statCountObj[status] + 1,
-                    })
-                  : Object.assign(statCountObj, {
-                      [status]: 1,
-                    }),
-              {}
-            ),
-            200
-          );
+          successResponse(res, recordStats(userRecords), 200);
         } else handleError(res, 'No records found for user', 404);
       } else handleError(res, 'No records found', 404);
     });
+  },
+
+  async getProfileByID(
+    {
+      params: { id },
+      records,
+    },
+    res
+  ) {
+    const profile = {};
+    const userRecords = records.filter(
+      ({ created_by: creator }) => creator === JSON.parse(id)
+    );
+
+    try {
+      ({
+        rows: [
+          {
+            username: profile.username,
+            email: profile.email,
+            registered: profile.registered,
+            id: profile.id,
+            firstname: profile.firstname,
+            lastname: profile.lastname,
+          },
+        ],
+      } = await User.findByID(id));
+      profile.registered = new Date(profile.registered).toLocaleDateString(
+        'en-GB',
+        { hour: '2-digit', minute: '2-digit' }
+      );
+      profile.recordCount = userRecords.length;
+      profile.recordStats = recordStats(userRecords);
+      successResponse(res, profile);
+    } catch (error) {
+      handleError(res, 'User not Found', 404);
+    }
   },
 
   getUsernameByID(
