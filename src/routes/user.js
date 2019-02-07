@@ -14,7 +14,7 @@ router.get(
   userController.getProfileByID
 );
 router.get(
-  /^\/user\/records\/?(intervention|red-flag)?\/?(under%20investigation|resolved|rejected|draft)?\/?$/,
+  /^\/user\/(\d)?\/?records\/?(intervention|red-flag)?\/?(under%20investigation|resolved|rejected|draft)?\/?$/,
   validUser,
   loadAllRecords,
   userController.fetchRecords

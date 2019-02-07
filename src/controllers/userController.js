@@ -5,20 +5,33 @@ import successResponse from '../helpers/successResponse';
 import handleError from '../helpers/errorHelper';
 
 export default {
-  fetchRecords(
+  async fetchRecords(
     {
-      params: { 0: recordType, 1: recordStatus },
+      params: { 0: id, 1: recordType, 2: recordStatus },
       records,
-      user: { id: userID },
+      user,
     },
     res
   ) {
-    const userRecords = records.filter(
-      ({ created_by: creator }) => creator === userID
-    );
+    let userRecords;
+    if (id) {
+      const { rowCount } = await User.findByID(id);
 
+      if (!rowCount) {
+        handleError(res, 'User not Found', 404);
+        return;
+      }
+      userRecords = records.filter(
+        ({ created_by: creator }) => creator === JSON.parse(id)
+      );
+    } else {
+      userRecords = records.filter(
+        ({ created_by: creator }) => creator === user.id
+      );
+    }
     if (!recordType && !recordStatus) {
-      return successResponse(res, userRecords);
+      successResponse(res, userRecords);
+      return;
     }
 
     if (!recordType && recordStatus) {
@@ -26,9 +39,12 @@ export default {
         ({ status }) => status === recordStatus
       );
 
-      return filteredRecords.length > 0
-        ? successResponse(res, filteredRecords)
-        : handleError(res, `No records marked as ${recordStatus}.`, 404);
+      if (filteredRecords.length) {
+        successResponse(res, filteredRecords);
+        return;
+      }
+      handleError(res, `No records marked as ${recordStatus}.`, 404);
+      return;
     }
 
     if (recordType && recordStatus) {
@@ -36,21 +52,23 @@ export default {
         ({ status, type }) => status === recordStatus && type === recordType
       );
 
-      return filteredRecords.length > 0
-        ? successResponse(res, filteredRecords)
-        : handleError(
-            res,
-            `No ${recordType} records marked as ${recordStatus}.`,
-            404
-          );
+      if (filteredRecords.length) {
+        successResponse(res, filteredRecords);
+        return;
+      }
+      handleError(
+        res,
+        `No ${recordType} records marked as ${recordStatus}.`,
+        404
+      );
+      return;
     }
-
-    return recordType
-      ? successResponse(
-          res,
-          userRecords.filter(({ type }) => type === recordType)
-        )
-      : handleError(res, `No ${recordType} records found.`, 404);
+    if (recordType) {
+      successResponse(
+        res,
+        userRecords.filter(({ type }) => type === recordType)
+      );
+    } else handleError(res, `No ${recordType} records found.`, 404);
   },
 
   fetchStats(
