@@ -81,19 +81,27 @@ const IR_HELPERS = {
     }
   },
 
-  buildFetchPath({ singleRecordPath, status, type, profile }) {
+  buildFetchPath({ singleRecordPath, status, type, profile, userID }) {
     return IR_HELPERS.nonExistent(singleRecordPath, status, type, profile)
       ? `${IR_HELPERS.API_ROOT_URL}/records/`
       : IR_HELPERS.exists(singleRecordPath)
       ? `${IR_HELPERS.API_ROOT_URL}/${singleRecordPath}`
+      : IR_HELPERS.exists(type, status, profile, userID)
+      ? `${IR_HELPERS.API_ROOT_URL}/user/${userID}/records/${type}/${status}`
       : IR_HELPERS.exists(type, status, profile)
       ? `${IR_HELPERS.API_ROOT_URL}/user/records/${type}/${status}`
+      : IR_HELPERS.exists(type, profile, userID)
+      ? `${IR_HELPERS.API_ROOT_URL}/user/${userID}/records/${type}`
       : IR_HELPERS.exists(type, profile)
       ? `${IR_HELPERS.API_ROOT_URL}/user/records/${type}`
       : IR_HELPERS.exists(type, status)
       ? `${IR_HELPERS.API_ROOT_URL}/records/${type}/${status}`
+      : IR_HELPERS.exists(status, profile, userID)
+      ? `${IR_HELPERS.API_ROOT_URL}/user/${userID}/records/${status}`
       : IR_HELPERS.exists(status, profile)
       ? `${IR_HELPERS.API_ROOT_URL}/user/records/${status}`
+      : IR_HELPERS.exists(profile, userID)
+      ? `${IR_HELPERS.API_ROOT_URL}/user/${userID}/records`
       : IR_HELPERS.exists(profile)
       ? `${IR_HELPERS.API_ROOT_URL}/user/records`
       : IR_HELPERS.exists(status)
@@ -339,11 +347,12 @@ const IR_HELPERS = {
     return args.every(param => param !== null && typeof param !== 'undefined');
   },
 
-  async fetchRecords({ type, status, profile } = {}) {
+  async fetchRecords({ type, status, profile, userID } = {}) {
     const requestUrl = IR_HELPERS.buildFetchPath({
       type,
       status,
       profile,
+      userID,
     });
     let records;
 
@@ -689,6 +698,16 @@ const IR_HELPERS = {
     return args.every(param => param === '');
   },
 
+  jsonParse(arg) {
+    let parsed;
+    try {
+      parsed = JSON.parse(arg);
+    } catch (e) {
+      return null;
+    }
+    return parsed;
+  },
+
   async loadFeed(feedComponents, node) {
     return feedComponents.forEach(component => {
       node.appendChild(component);
@@ -952,9 +971,13 @@ const IR_HELPERS = {
         : undefined;
 
     if (filter && state.profileFeed) {
-      Object.assign(filter, { profile: true });
+      if (typeof IR_HELPERS.jsonParse(state.userID) === 'number') {
+        Object.assign(filter, { profile: true, userID: state.userID });
+      } else Object.assign(filter, { profile: true });
     } else if (state.profileFeed) {
-      filter = { profile: true };
+      if (typeof IR_HELPERS.jsonParse(state.userID) === 'number') {
+        filter = { profile: true, userID: state.userID };
+      } else filter = { profile: true };
     }
 
     IR_HELPERS.syncState(state, {
@@ -1201,10 +1224,9 @@ const IR_HELPERS = {
     }
     recordTitle.textContent = IR_HELPERS.capitalize(title);
     IR_HELPERS.getUsernameByID(creatorID).then(username => {
-      recordByLine.innerHTML = `by: <a href="${
-        IR_HELPERS.API_ROOT_URL
-      }/users/${creatorID}/profile">${username}</a>`;
+      recordByLine.innerHTML = `by: <a href="./publicprofile.html?uid=${creatorID}">${username}</a>`;
     });
+
     recordComment.textContent = comment;
 
     if (imageUrls.length) {
@@ -1325,6 +1347,85 @@ const IR_HELPERS = {
     IR_HELPERS.syncState(state, {
       detailmodalOpened: false,
     });
+  },
+
+  async populatePublicProfile(userID) {
+    const usernameField = document.querySelector('.user-profile__username');
+    const firstnameField = document.querySelector('.user-profile__firstname');
+    const lastnameField = document.querySelector('.user-profile__lastname');
+    const emailField = document.querySelector('.user-profile__email');
+    const uidField = document.querySelector('.user-profile__uid');
+    const createDateField = document.querySelector(
+      '.user-profile__create-date'
+    );
+    const recordStatWidgets = document.querySelectorAll(
+      '.user-profile__record-stat'
+    );
+
+    const profileRequestResponse = await fetch(
+      `${IR_HELPERS.API_ROOT_URL}/user/${userID}/profile`,
+      { headers: { Authorization: `bearer ${IR_HELPERS.getToken()}` } }
+    );
+    const { errors, data } = await profileRequestResponse.json();
+
+    if (errors) {
+      IR_HELPERS.displayNotification({
+        type: 'error',
+        title: 'Error fetching user profile',
+        message: errors,
+      });
+
+      setTimeout(() => {
+        IR_HELPERS.redirects.back();
+      }, 700);
+    }
+
+    if (data) {
+      const [
+        {
+          profile: {
+            username,
+            email,
+            registered,
+            id,
+            firstname,
+            lastname,
+            recordStats: {
+              draft,
+              resolved,
+              rejected,
+              'under investigation': investigating,
+            },
+          },
+        },
+      ] = data;
+
+      usernameField.textContent = username;
+      firstnameField.textContent = firstname;
+      lastnameField.textContent = lastname;
+      emailField.textContent = email;
+      uidField.textContent = id;
+      createDateField.textContent = registered.split(',').join(' @ ');
+
+      recordStatWidgets.forEach((statWidget, idx) => {
+        const statCount = statWidget.querySelector(
+          '.user-profile__record-stat-count'
+        );
+
+        if (idx === 0) {
+          statCount.textContent = draft || 0;
+        }
+        if (idx === 1) {
+          statCount.textContent = resolved || 0;
+        }
+        if (idx === 2) {
+          statCount.textContent = investigating || 0;
+        }
+        if (idx === 3) {
+          statCount.textContent = rejected || 0;
+        }
+      });
+    }
   },
 
   recordsToFeedComponents(recArray, elementCreator) {

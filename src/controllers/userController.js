@@ -121,7 +121,7 @@ export default {
       );
       profile.recordCount = userRecords.length;
       profile.recordStats = recordStats(userRecords);
-      successResponse(res, profile);
+      successResponse(res, { profile });
     } catch (error) {
       handleError(res, 'User not Found', 404);
     }
