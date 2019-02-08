@@ -129,8 +129,8 @@ this.addEventListener('load', async () => {
   if (publicProfileDash) {
     const recordToggle = dashboard.querySelector('.user-records__toggle');
     const userRecordFeed = dashboard.querySelector('.user-records');
-
     const { search: queryString } = window.location;
+    
     const userID = new URLSearchParams(queryString).get('uid');
 
     if (userID) {

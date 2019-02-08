@@ -1450,6 +1450,9 @@ a {
   .notification-wrapper {
     width: 30rem;
   }
+  .notification-wrapper {
+    width: 30rem;
+  }
 }
 
 @media screen and (min-width: 992px) {
