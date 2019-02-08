@@ -12,6 +12,7 @@ this.addEventListener('load', async () => {
     getStatCounters,
     initAsideListeners,
     initFilterListeners,
+    initUserWidget,
     loadingAnimation,
     logoutListener,
     missingFieldsMessage,
@@ -19,10 +20,10 @@ this.addEventListener('load', async () => {
     populateDashboardStats,
     populateDashboardFeed,
     populateEditForm,
+    populatePublicProfile,
     resetLocationFields,
     responsiveNav,
     stickyFilters,
-    initUserWidget,
     syncState,
   } = window.IR_HELPERS;
 
@@ -128,14 +129,36 @@ this.addEventListener('load', async () => {
   if (publicProfileDash) {
     const recordToggle = dashboard.querySelector('.user-records__toggle');
     const userRecordFeed = dashboard.querySelector('.user-records');
-    recordToggle.addEventListener('click', () => {
-      userRecordFeed.classList.toggle('remove');
-      recordToggle.textContent = userRecordFeed.classList.contains('remove')
-        ? 'View Records'
-        : 'Hide Records';
-    });
-    initAsideListeners(dashboard);
-    stickyFilters();
+    const { search: queryString } = window.location;
+    
+    const userID = new URLSearchParams(queryString).get('uid');
+
+    if (userID) {
+      populatePublicProfile(userID);
+      initAsideListeners(dashboard);
+
+      recordToggle.addEventListener('click', () => {
+        userRecordFeed.classList.toggle('remove');
+        recordToggle.textContent = userRecordFeed.classList.contains('remove')
+          ? 'View Records'
+          : 'Hide Records';
+      });
+
+      stickyFilters();
+      initFilterListeners(dashboard, state);
+
+      syncState(state, { profileFeed: true, userID });
+      await populateDashboardFeed({
+        feedNode: getFeedNode(dashboard),
+        state,
+      });
+    } else {
+      displayNotification({
+        type: 'Error',
+        title: 'Error',
+        message: 'Invalid User profile request',
+      });
+    }
   }
 
   if (recordCreationDash) {
